@@ -18,7 +18,7 @@ export default function GetStarted() {
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.hero}>
             <Image
-              source={require("@/assets/images/Logo.png")}
+              source={require("@/assets/images/Intro_logo.webp")}
               style={styles.logo}
             />
             <Text style={styles.title}>Statera</Text>
