@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   ImageBackground,
   Pressable,
@@ -38,6 +39,41 @@ const steps = [
 ];
 
 export default function Dashboard() {
+  const handleGetUsageStats = async () => {
+    Alert.alert(
+      "Screen Time Permission",
+      "This app would like to access your screen time and device usage data to provide personalized insights.",
+      [
+        {
+          text: "Deny",
+          onPress: () => {
+            Alert.alert("Permission Denied", "You can enable this in Settings > Privacy > Screen Time");
+          },
+          style: "cancel",
+        },
+        {
+          text: "Allow",
+          onPress: () => {
+            // Mock usage stats data - replace with actual API call to get real device data
+            const stats = {
+              socialMedia: "4h 32m",
+              gaming: "2h 15m",
+              productivity: "3h 48m",
+              entertainment: "1h 22m",
+              other: "0h 45m",
+              totalScreenTime: "12h 42m",
+            };
+            Alert.alert(
+              "Screen Time Stats",
+              `Total Screen Time: ${stats.totalScreenTime}\n\nBreakdown:\n• Social Media: ${stats.socialMedia}\n• Gaming: ${stats.gaming}\n• Productivity: ${stats.productivity}\n• Entertainment: ${stats.entertainment}\n• Other: ${stats.other}`,
+              [{ text: "Close", onPress: () => {} }]
+            );
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <ImageBackground
       source={require("@/assets/images/bg.png")}
@@ -86,6 +122,13 @@ export default function Dashboard() {
           />
           <Pressable style={styles.nextButton}>
             <Text style={styles.nextButtonText}>Next -&gt;</Text>
+          </Pressable>
+          
+          <View style={styles.divider} />
+          
+          <Text style={styles.usageStatsTitle}>Check Your Screen Time</Text>
+          <Pressable style={styles.usageStatsButton} onPress={handleGetUsageStats}>
+            <Text style={styles.usageStatsButtonText}>View Usage Stats</Text>
           </Pressable>
         </View>
 
@@ -228,6 +271,38 @@ const styles = StyleSheet.create({
   nextButtonText: {
     color: "#FFFFFF",
     fontWeight: "700",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#E5E7EB",
+    marginVertical: 16,
+  },
+  usageStatsTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#0F172A",
+    textAlign: "center",
+  },
+  usageStatsButton: {
+    backgroundColor: "#1F9D55",
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+    borderRadius: 999,
+    alignSelf: "center",
+  },
+  usageStatsButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
+    fontSize: 14,
+  },
+  usageStatsSection: {
+    marginHorizontal: 16,
+    marginBottom: 80,
+    padding: 16,
+    borderRadius: 15,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    gap: 12,
   },
   footerSmall: {
     color: "#6B7280",
