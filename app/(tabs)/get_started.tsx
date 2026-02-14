@@ -1,7 +1,6 @@
 import { Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Header from "./components/header";
-import Footer from "./components/footer";
+
 
 export default function GetStarted() {
   return (
@@ -9,7 +8,7 @@ export default function GetStarted() {
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <SafeAreaView style={styles.screen} edges={["top", "left", "right"]}>
         <ScrollView contentContainerStyle={styles.content}>
-          <Header />
+         
 
           <View style={styles.hero}>
             <Image source={require("@/assets/images/Logo.png")} style={styles.logo} />
@@ -33,8 +32,7 @@ export default function GetStarted() {
               <Text style={styles.howItWorksText}>How it Works</Text>
             </Pressable>
           </View>
-
-          <Footer />
+          
         </ScrollView>
       </SafeAreaView>
     </View>

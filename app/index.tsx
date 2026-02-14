@@ -1,5 +1,5 @@
-import Dashboard from "./(tabs)/dashboard";
+import Get_Started  from "./(tabs)/get_started";
 
 export default function Index() {
-  return <Dashboard />;
+  return <Get_Started />;
 }
