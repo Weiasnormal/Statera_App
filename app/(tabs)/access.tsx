@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 export default function AccessScreen() {
@@ -28,7 +29,11 @@ export default function AccessScreen() {
         </View>
 
         <View style={styles.actions}>
-          <Pressable style={styles.primaryButton} accessibilityRole="button">
+          <Pressable
+            style={styles.primaryButton}
+            accessibilityRole="button"
+            onPress={() => router.push("/view-results")}
+          >
             <Text style={styles.primaryText}>Allow Access</Text>
           </Pressable>
           <Pressable style={styles.secondaryButton} accessibilityRole="button">
