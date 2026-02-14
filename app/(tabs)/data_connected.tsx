@@ -1,3 +1,5 @@
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import {
     Pressable,
     SafeAreaView,
@@ -12,13 +14,24 @@ export default function DataConnectedScreen() {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View style={styles.container}>
-        <View style={styles.spacer} />
+        <View style={styles.header}>
+          <Pressable
+            style={styles.backButton}
+            accessibilityRole="button"
+            onPress={() => router.push("/access?animation=slide_from_left")}
+          >
+            <Ionicons name="arrow-back" size={20} color="#0F172A" />
+          </Pressable>
+        </View>
 
-        <View style={styles.content}>
-          <Text style={styles.title}>Usage Data Connected</Text>
-          <Text style={styles.subtitle}>
-            We&apos;re now analyzing your digital behavior patterns.
-          </Text>
+        <View style={styles.contentWrapper}>
+          <View style={styles.content}>
+            <View style={styles.placeholderIcon} />
+            <Text style={styles.title}>Usage Data Connected</Text>
+            <Text style={styles.subtitle}>
+              We&apos;re now analyzing your digital behavior patterns.
+            </Text>
+          </View>
         </View>
 
         <Pressable style={styles.generateButton} accessibilityRole="button">
@@ -39,14 +52,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 12,
     paddingBottom: 24,
-    justifyContent: "space-between",
   },
-  spacer: {
+  header: {
+    height: 40,
+    justifyContent: "center",
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  contentWrapper: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   content: {
     alignItems: "center",
     gap: 8,
+  },
+  placeholderIcon: {
+    width: 96,
+    height: 96,
+    borderRadius: 16,
+    backgroundColor: "#F3F4F6",
+    marginBottom: 6,
   },
   title: {
     fontSize: 18,

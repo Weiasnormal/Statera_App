@@ -1,47 +1,58 @@
-import { router } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 export default function AccessScreen() {
+  const { animation } = useLocalSearchParams<{ animation?: string }>();
+  const screenAnimation =
+    animation === "slide_from_left" ? "slide_from_left" : "slide_from_right";
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Usage Access Required</Text>
-          <Text style={styles.body}>
-            To generate accurate behavioral insights, STATERA needs access to
-            your screen time and app usage duration.
-          </Text>
+    <>
+      <Stack.Screen options={{ animation: screenAnimation }} />
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <View style={styles.content}>
+            <Text style={styles.title}>Usage Access Required</Text>
+            <Text style={styles.body}>
+              To generate accurate behavioral insights, STATERA needs access to
+              your screen time and app usage duration.
+            </Text>
 
-          <Text style={styles.sectionLabel}>We only analyze:</Text>
-          <Text style={styles.body}>• Time spent per app category</Text>
-          <Text style={styles.body}>• Total daily usage duration</Text>
+            <Text style={styles.sectionLabel}>We only analyze:</Text>
+            <Text style={styles.body}>• Time spent per app category</Text>
+            <Text style={styles.body}>• Total daily usage duration</Text>
 
-          <Text style={[styles.sectionLabel, styles.sectionSpacing]}>
-            We do NOT access:
-          </Text>
-          <Text style={styles.body}>• Messages</Text>
-          <Text style={styles.body}>• Content inside apps</Text>
-          <Text style={styles.body}>• Personal files</Text>
+            <Text style={[styles.sectionLabel, styles.sectionSpacing]}>
+              We do NOT access:
+            </Text>
+            <Text style={styles.body}>• Messages</Text>
+            <Text style={styles.body}>• Content inside apps</Text>
+            <Text style={styles.body}>• Personal files</Text>
 
-          <Text style={[styles.body, styles.footerNote]}>
-            Your data remains private and is processed securely.
-          </Text>
+            <Text style={[styles.body, styles.footerNote]}>
+              Your data remains private and is processed securely.
+            </Text>
+          </View>
+
+          <View style={styles.actions}>
+            <Pressable
+              style={styles.primaryButton}
+              accessibilityRole="button"
+              onPress={() => router.push("/data_connected")}
+            >
+              <Text style={styles.primaryText}>Allow Access</Text>
+            </Pressable>
+            <Pressable
+              style={styles.secondaryButton}
+              accessibilityRole="button"
+              onPress={() => router.push("/get_started")}
+            >
+              <Text style={styles.secondaryText}>Not Now</Text>
+            </Pressable>
+          </View>
         </View>
-
-        <View style={styles.actions}>
-          <Pressable
-            style={styles.primaryButton}
-            accessibilityRole="button"
-            onPress={() => router.push("/data_connected")}
-          >
-            <Text style={styles.primaryText}>Allow Access</Text>
-          </Pressable>
-          <Pressable style={styles.secondaryButton} accessibilityRole="button">
-            <Text style={styles.secondaryText}>Not Now</Text>
-          </Pressable>
-        </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   );
 }
 
