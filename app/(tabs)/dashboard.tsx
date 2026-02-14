@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     marginBottom: 80,
     padding: 16,
     borderRadius: 15,
-    backgroundColor: "#E5E7EB",
+    backgroundColor: "#FFFFFF",
   },
   stepLabel: {
     fontSize: 12,
