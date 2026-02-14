@@ -12,10 +12,6 @@ export default function RootLayout() {
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
-        name="(tabs)/get_started"
-        options={{ animation: "slide_from_left" }}
-      />
-      <Stack.Screen
         name="(tabs)/view-results"
         options={{ animation: "slide_from_right" }}
       />
