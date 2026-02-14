@@ -1,9 +1,8 @@
 import { useState } from "react";
 import {
   Image,
-  Platform,
+  ImageBackground,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -11,6 +10,8 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 
 const steps = [
   {
@@ -40,25 +41,31 @@ export default function Dashboard() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <SafeAreaView style={styles.screen}>
-      <ScrollView stickyHeaderIndices={[0]} contentContainerStyle={styles.content}>
-        <View style={styles.header}>
-          <View style={styles.brand}>
-            <Image source={require("@/assets/images/Logo.png")} style={styles.logo} />
-            <Text style={styles.title}>Statera</Text>
-          </View>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Toggle menu"
-            accessibilityState={{ expanded: menuOpen }}
-            onPress={() => setMenuOpen((prev) => !prev)}
-            style={styles.menuButton}
-          >
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
-          </Pressable>
-        </View>
+    <ImageBackground
+      source={require("@/assets/images/bg.png")}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <SafeAreaView style={styles.screen} edges={["top", "left", "right"]}>
+        <ScrollView stickyHeaderIndices={[0]} contentContainerStyle={styles.content}>
+          <SafeAreaView style={styles.headerSafeArea}>
+            <View style={styles.headerContainer}>
+              <View style={styles.brand}>
+                <Image source={require("@/assets/images/Logo.png")} style={styles.logo} />
+                <Text style={styles.title}>Statera</Text>
+              </View>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Toggle menu"
+                accessibilityState={{ expanded: menuOpen }}
+                onPress={() => setMenuOpen((prev) => !prev)}
+                style={styles.menuButton}
+              >
+                <Ionicons name="menu-outline" size={24} color="#2D3748" />
+              </Pressable>
+            </View>
+          </SafeAreaView>
 
         {menuOpen ? (
           <View style={styles.menuPanel}>
@@ -136,62 +143,64 @@ export default function Dashboard() {
             </View>
           </View>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   screen: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
-    paddingTop: Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) + 8 : 8,
+    backgroundColor: "transparent",
   },
   content: {
     paddingBottom: 32,
   },
-  header: {
-    paddingTop: 6,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+  headerSafeArea: {
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(0, 0, 0, 0.05)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  headerContainer: {
+    height: 60,
+    paddingHorizontal: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
   },
   brand: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 10,
     flexShrink: 1,
   },
   logo: {
-    width: 28,
-    height: 28,
+    width: 32,
+    height: 32,
     borderRadius: 6,
   },
   title: {
-    fontSize: 20,
-    lineHeight: 24,
-    fontWeight: "600",
-    color: "#1F2937",
+    fontSize: 18,
+    lineHeight: 22,
+    fontWeight: "700",
+    color: "#2D3748",
   },
   menuButton: {
-    width: 32,
-    height: 20,
-    justifyContent: "space-between",
-    paddingVertical: 2,
-    alignItems: "flex-end",
-    flexShrink: 0,
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
     marginLeft: "auto",
-  },
-  menuLine: {
-    height: 2,
-    width: 22,
-    borderRadius: 999,
-    backgroundColor: "#111827",
   },
   menuPanel: {
     borderTopWidth: 1,
@@ -211,7 +220,6 @@ const styles = StyleSheet.create({
   hero: {
     marginTop: 16,
     marginHorizontal: 16,
-    backgroundColor: "#E9F5F6",
     borderRadius: 24,
     paddingVertical: 28,
     paddingHorizontal: 16,
@@ -222,8 +230,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   heroLogo: {
-    width: 60,
-    height: 60,
+    width: 70,
+    height: 70,
   },
   heroTitle: {
     fontSize: 24,
@@ -242,10 +250,10 @@ const styles = StyleSheet.create({
   },
   card: {
     borderRadius: 15,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "transparent",
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: "rgba(148, 163, 184, 0.5)",
   },
   cardHeader: {
     paddingVertical: 12,
@@ -258,7 +266,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   cardBody: {
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "rgba(255, 255, 255, 0.75)",
     padding: 18,
     alignItems: "center",
     gap: 10,
@@ -286,7 +294,7 @@ const styles = StyleSheet.create({
     marginBottom: 80,
     padding: 16,
     borderRadius: 15,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#E5E7EB",
   },
   stepLabel: {
     fontSize: 12,
