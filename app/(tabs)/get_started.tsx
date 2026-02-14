@@ -1,6 +1,14 @@
-import { Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 
 export default function GetStarted() {
   return (
@@ -8,23 +16,32 @@ export default function GetStarted() {
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <SafeAreaView style={styles.screen} edges={["top", "left", "right"]}>
         <ScrollView contentContainerStyle={styles.content}>
-         
-
           <View style={styles.hero}>
-            <Image source={require("@/assets/images/Logo.png")} style={styles.logo} />
+            <Image
+              source={require("@/assets/images/Logo.png")}
+              style={styles.logo}
+            />
             <Text style={styles.title}>Statera</Text>
           </View>
 
           <View style={styles.illustration}>
-            <Image source={require("@/assets/images/get_started.png")} style={styles.image} />
+            <Image
+              source={require("@/assets/images/get_started.png")}
+              style={styles.image}
+            />
           </View>
 
           <View style={styles.textSection}>
-            <Text style={styles.heading}>Understand Student Behavior Through Data</Text>
+            <Text style={styles.heading}>
+              Understand Student Behavior Through Data
+            </Text>
           </View>
 
           <View style={styles.buttonSection}>
-            <Pressable style={styles.getStartedButton}>
+            <Pressable
+              style={styles.getStartedButton}
+              onPress={() => router.push("/view-results")}
+            >
               <Text style={styles.getStartedButtonText}>Get Started</Text>
             </Pressable>
 
@@ -32,7 +49,6 @@ export default function GetStarted() {
               <Text style={styles.howItWorksText}>How it Works</Text>
             </Pressable>
           </View>
-          
         </ScrollView>
       </SafeAreaView>
     </View>
