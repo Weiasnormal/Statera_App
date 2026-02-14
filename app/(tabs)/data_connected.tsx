@@ -17,7 +17,7 @@ export default function DataConnectedScreen() {
         <View style={styles.content}>
           <Text style={styles.title}>Usage Data Connected</Text>
           <Text style={styles.subtitle}>
-            We're now analyzing your digital behavior patterns.
+            We&apos;re now analyzing your digital behavior patterns.
           </Text>
         </View>
 

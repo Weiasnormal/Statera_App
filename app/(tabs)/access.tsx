@@ -32,7 +32,7 @@ export default function AccessScreen() {
           <Pressable
             style={styles.primaryButton}
             accessibilityRole="button"
-            onPress={() => router.push("/view-results")}
+            onPress={() => router.push("/data_connected")}
           >
             <Text style={styles.primaryText}>Allow Access</Text>
           </Pressable>
