@@ -1,5 +1,7 @@
+import { useState } from "react";
 import {
   Alert,
+  FlatList,
   Image,
   ImageBackground,
   Pressable,
@@ -11,8 +13,14 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import Header from "./components/header";
 import Footer from "./components/footer";
+import {
+  getAppUsageData,
+  requestUsagePermission,
+  type AppUsageItem,
+} from "@/services/usage-stats";
 
 const steps = [
   {
@@ -39,7 +47,11 @@ const steps = [
 ];
 
 export default function Dashboard() {
-  const handleGetUsageStats = async () => {
+  const [usageData, setUsageData] = useState<AppUsageItem[]>([]);
+  const [isFetchingUsage, setIsFetchingUsage] = useState(false);
+  const [permissionRequested, setPermissionRequested] = useState(false);
+
+  const handleRefreshUsageStats = async () => {
     Alert.alert(
       "Screen Time Permission",
       "This app would like to access your screen time and device usage data to provide personalized insights.",
@@ -47,27 +59,29 @@ export default function Dashboard() {
         {
           text: "Deny",
           onPress: () => {
+            setPermissionRequested(true);
             Alert.alert("Permission Denied", "You can enable this in Settings > Privacy > Screen Time");
           },
           style: "cancel",
         },
         {
           text: "Allow",
-          onPress: () => {
-            // Mock usage stats data - replace with actual API call to get real device data
-            const stats = {
-              socialMedia: "4h 32m",
-              gaming: "2h 15m",
-              productivity: "3h 48m",
-              entertainment: "1h 22m",
-              other: "0h 45m",
-              totalScreenTime: "12h 42m",
-            };
-            Alert.alert(
-              "Screen Time Stats",
-              `Total Screen Time: ${stats.totalScreenTime}\n\nBreakdown:\n• Social Media: ${stats.socialMedia}\n• Gaming: ${stats.gaming}\n• Productivity: ${stats.productivity}\n• Entertainment: ${stats.entertainment}\n• Other: ${stats.other}`,
-              [{ text: "Close", onPress: () => {} }]
-            );
+          onPress: async () => {
+            setPermissionRequested(true);
+            setIsFetchingUsage(true);
+            const hasPermission = await requestUsagePermission();
+            if (!hasPermission) {
+              setIsFetchingUsage(false);
+              return;
+            }
+            try {
+              const data = await getAppUsageData();
+              setUsageData(data);
+            } catch {
+              Alert.alert("Error", "Unable to fetch usage stats");
+            } finally {
+              setIsFetchingUsage(false);
+            }
           },
         },
       ]
@@ -123,13 +137,37 @@ export default function Dashboard() {
           <Pressable style={styles.nextButton}>
             <Text style={styles.nextButtonText}>Next -&gt;</Text>
           </Pressable>
-          
+
           <View style={styles.divider} />
-          
-          <Text style={styles.usageStatsTitle}>Check Your Screen Time</Text>
-          <Pressable style={styles.usageStatsButton} onPress={handleGetUsageStats}>
-            <Text style={styles.usageStatsButtonText}>View Usage Stats</Text>
-          </Pressable>
+
+          <View style={styles.usageButtonRow}>
+            <Pressable style={styles.usageStatsButton} onPress={handleRefreshUsageStats}>
+              <Text style={styles.usageStatsButtonText}>Check Your Screen Time</Text>
+            </Pressable>
+            <Pressable style={styles.refreshButton} onPress={handleRefreshUsageStats}>
+              <Ionicons name="refresh" size={16} color="#FFFFFF" />
+            </Pressable>
+          </View>
+
+          {isFetchingUsage ? (
+            <Text style={styles.usageEmptyText}>Fetching usage data...</Text>
+          ) : usageData.length > 0 ? (
+            <FlatList
+              data={usageData}
+              keyExtractor={(item) => item.packageName}
+              scrollEnabled={false}
+              renderItem={({ item }) => (
+                <View style={styles.usageRow}>
+                  <Text style={styles.usagePackage}>{item.packageName}</Text>
+                  <Text style={styles.usageTime}>{Math.round(item.totalTimeVisible / 60000)} min</Text>
+                </View>
+              )}
+            />
+          ) : permissionRequested ? (
+            <Text style={styles.usageEmptyText}>No usage data detected yet.</Text>
+          ) : (
+            <Text style={styles.usageEmptyText}>Tap Refresh after granting permission.</Text>
+          )}
         </View>
 
         <Footer />
@@ -283,26 +321,58 @@ const styles = StyleSheet.create({
     color: "#0F172A",
     textAlign: "center",
   },
+  usageButtonRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
   usageStatsButton: {
+    flex: 1,
     backgroundColor: "#1F9D55",
-    paddingHorizontal: 32,
+    paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 999,
-    alignSelf: "center",
   },
   usageStatsButtonText: {
     color: "#FFFFFF",
     fontWeight: "700",
     fontSize: 14,
+    //textAlign: "center",
   },
-  usageStatsSection: {
-    marginHorizontal: 16,
-    marginBottom: 80,
-    padding: 16,
-    borderRadius: 15,
-    backgroundColor: "#FFFFFF",
-    alignItems: "center",
-    gap: 12,
+  usageListTitle: {
+    marginTop: 16,
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#0F172A",
+  },
+  refreshButton: {
+    backgroundColor: "#0EA5A5",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 999,
+  },
+  usageRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  usagePackage: {
+    flex: 1,
+    fontSize: 12,
+    color: "#1F2937",
+  },
+  usageTime: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#0F172A",
+  },
+  usageEmptyText: {
+    marginTop: 8,
+    fontSize: 12,
+    color: "#64748B",
+    textAlign: "center",
   },
   footerSmall: {
     color: "#6B7280",
