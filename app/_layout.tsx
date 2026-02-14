@@ -4,7 +4,7 @@ export default function RootLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen
-        name="(tabs)/dashboard"
+        name="(tabs)/get_started"
         options={{ animation: "slide_from_left" }}
       />
       <Stack.Screen
@@ -13,7 +13,7 @@ export default function RootLayout() {
       />
       <Stack.Screen
         name="(tabs)/modal/how_it_works"
-        options={{ presentation: "modal", headerShown: false }}
+        options={{ presentation: "transparentModal", headerShown: false }}
       />
     </Stack>
   );

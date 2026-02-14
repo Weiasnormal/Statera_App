@@ -25,7 +25,10 @@ export default function GetStarted() {
           </View>
 
           <View style={styles.buttonSection}>
-            <Pressable style={styles.getStartedButton}>
+            <Pressable style={styles.getStartedButton}
+              accessibilityRole="button"
+              onPress={() => router.push("/input")}
+            >
               <Text style={styles.getStartedButtonText}>Get Started</Text>
             </Pressable>
 

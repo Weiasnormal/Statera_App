@@ -12,53 +12,74 @@ import {
 
 export default function HowItWorks() {
 	return (
-		<SafeAreaView style={styles.safeArea}>
-			<StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-			<View style={styles.header}>
-				<View style={styles.headerSpacer} />
-				<Text style={styles.title}>How STATERA Works</Text>
-				<Pressable
-					style={styles.closeButton}
-					accessibilityRole="button"
-					accessibilityLabel="Close"
-					onPress={() => router.back()}
-				>
-					<Ionicons name="close" size={20} color="#111827" />
-				</Pressable>
-			</View>
-
-			<ScrollView contentContainerStyle={styles.content}>
-				<View style={styles.card}>
-					<Text style={styles.cardTitle}>1. Allow Usage Access</Text>
-					<Text style={styles.cardBody}>
-						Your phone&apos;s usage duration helps identify digital behavior
-						patterns.
-					</Text>
+		<View style={styles.overlay}>
+			<StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+			<Pressable
+				style={styles.backdrop}
+				accessibilityRole="button"
+				accessibilityLabel="Close"
+				onPress={() => router.back()}
+			/>
+			<SafeAreaView style={styles.sheet}>
+				<View style={styles.header}>
+					<View style={styles.headerSpacer} />
+					<Text style={styles.title}>How STATERA Works</Text>
+					<Pressable
+						style={styles.closeButton}
+						accessibilityRole="button"
+						accessibilityLabel="Close"
+						onPress={() => router.back()}
+					>
+						<Ionicons name="close" size={20} color="#111827" />
+					</Pressable>
 				</View>
 
-				<View style={styles.card}>
-					<Text style={styles.cardTitle}>2. Enter Your GWA</Text>
-					<Text style={styles.cardBody}>
-						We use academic performance as a structured behavioral
-						indicator.
-					</Text>
-				</View>
+				<ScrollView contentContainerStyle={styles.content}>
+					<View style={styles.card}>
+						<Text style={styles.cardTitle}>1. Allow Usage Access</Text>
+						<Text style={styles.cardBody}>
+							Your phone&apos;s usage duration helps identify digital behavior
+							patterns.
+						</Text>
+					</View>
 
-				<View style={styles.card}>
-					<Text style={styles.cardTitle}>3. Get Your Behavioral Profile</Text>
-					<Text style={styles.cardBody}>
-						Receive insights across five behavioral dimensions.
-					</Text>
-				</View>
-			</ScrollView>
-		</SafeAreaView>
+					<View style={styles.card}>
+						<Text style={styles.cardTitle}>2. Enter Your GWA</Text>
+						<Text style={styles.cardBody}>
+							We use academic performance as a structured behavioral
+							indicator.
+						</Text>
+					</View>
+
+					<View style={styles.card}>
+						<Text style={styles.cardTitle}>3. Get Your Behavioral Profile</Text>
+						<Text style={styles.cardBody}>
+							Receive insights across five behavioral dimensions.
+						</Text>
+					</View>
+				</ScrollView>
+			</SafeAreaView>
+		</View>
 	);
 }
 
 const styles = StyleSheet.create({
-	safeArea: {
+	overlay: {
 		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "rgba(15, 23, 42, 0.35)",
+	},
+	backdrop: {
+		...StyleSheet.absoluteFillObject,
+	},
+	sheet: {
+		width: "92%",
+		maxWidth: 420,
+		maxHeight: "80%",
 		backgroundColor: "#FFFFFF",
+		borderRadius: 16,
+		paddingBottom: 8,
 	},
 	header: {
 		paddingHorizontal: 16,
