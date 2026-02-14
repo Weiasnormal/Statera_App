@@ -45,7 +45,7 @@ export default function GetStarted() {
               <Text style={styles.getStartedButtonText}>Get Started</Text>
             </Pressable>
 
-            <Pressable>
+            <Pressable onPress={() => router.push("/modal/how_it_works")}>
               <Text style={styles.howItWorksText}>How it Works</Text>
             </Pressable>
           </View>
