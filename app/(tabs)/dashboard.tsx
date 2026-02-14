@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Image,
   ImageBackground,
@@ -11,7 +10,8 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
+import Header from "./components/header";
+import Footer from "./components/footer";
 
 const steps = [
   {
@@ -38,8 +38,6 @@ const steps = [
 ];
 
 export default function Dashboard() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
   return (
     <ImageBackground
       source={require("@/assets/images/bg.png")}
@@ -49,34 +47,7 @@ export default function Dashboard() {
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <SafeAreaView style={styles.screen} edges={["top", "left", "right"]}>
         <ScrollView stickyHeaderIndices={[0]} contentContainerStyle={styles.content}>
-          <SafeAreaView style={styles.headerSafeArea}>
-            <View style={styles.headerContainer}>
-              <View style={styles.brand}>
-                <Image source={require("@/assets/images/Logo.png")} style={styles.logo} />
-                <Text style={styles.title}>Statera</Text>
-              </View>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Toggle menu"
-                accessibilityState={{ expanded: menuOpen }}
-                onPress={() => setMenuOpen((prev) => !prev)}
-                style={styles.menuButton}
-              >
-                <Ionicons name="menu-outline" size={24} color="#2D3748" />
-              </Pressable>
-            </View>
-          </SafeAreaView>
-
-        {menuOpen ? (
-          <View style={styles.menuPanel}>
-            <Pressable style={styles.menuItem}>
-              <Text style={styles.menuText}>Behavioral Test</Text>
-            </Pressable>
-            <Pressable style={styles.menuItem}>
-              <Text style={styles.menuText}>Meet the Team</Text>
-            </Pressable>
-          </View>
-        ) : null}
+          <Header />
 
         <View style={styles.hero}>
           <View style={styles.heroContent}>
@@ -118,31 +89,7 @@ export default function Dashboard() {
           </Pressable>
         </View>
 
-        <View style={styles.footerWrapper}>
-          <Image source={require("@/assets/images/Footer.png")} style={styles.footerBackground} />
-          <View style={styles.footer}>
-            <View style={styles.footerBrand}>
-              <Image source={require("@/assets/images/Logo.png")} style={styles.footerLogo} />
-              <Text style={styles.footerTitle}>Statera</Text>
-            </View>
-            <Text style={styles.footerDescription}>
-              Machine Learning-Driven Student Behavior Analysis for personalized insights.
-            </Text>
-            <Text style={styles.footerNote}>
-              Developed for academic and research purposes only. Results are predictive and not for
-              clinical diagnosis.
-            </Text>
-            <View style={styles.footerLinks}>
-              <Text style={styles.footerLink}>Behavioral Test</Text>
-              <Text style={styles.footerLink}>Meet the Team</Text>
-            </View>
-            <View style={styles.footerBottom}>
-              <Text style={styles.footerSmall}>Terms and Conditions</Text>
-              <Text style={styles.footerSmall}>Privacy Policy</Text>
-              <Text style={styles.footerSmall}>2026 STATERA</Text>
-            </View>
-          </View>
-        </View>
+        <Footer />
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>
@@ -159,63 +106,6 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingBottom: 32,
-  },
-  headerSafeArea: {
-    backgroundColor: "#FFFFFF",
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(0, 0, 0, 0.05)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  headerContainer: {
-    height: 60,
-    paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#FFFFFF",
-  },
-  brand: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    flexShrink: 1,
-  },
-  logo: {
-    width: 32,
-    height: 32,
-    borderRadius: 6,
-  },
-  title: {
-    fontSize: 18,
-    lineHeight: 22,
-    fontWeight: "700",
-    color: "#2D3748",
-  },
-  menuButton: {
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: "auto",
-  },
-  menuPanel: {
-    borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
-    backgroundColor: "#FFFFFF",
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    gap: 10,
-  },
-  menuItem: {
-    paddingVertical: 6,
-  },
-  menuText: {
-    fontSize: 16,
-    color: "#111827",
   },
   hero: {
     marginTop: 16,
@@ -338,65 +228,6 @@ const styles = StyleSheet.create({
   nextButtonText: {
     color: "#FFFFFF",
     fontWeight: "700",
-  },
-  footerWrapper: {
-    marginTop: 28,
-    minHeight: 380,
-    paddingTop: 60,
-    paddingBottom: 32,
-  },
-  footerBackground: {
-    width: "100%",
-    height: 380,
-    position: "absolute",
-    top: 0,
-    left: 0,
-    resizeMode: "cover",
-  },
-  footer: {
-    paddingHorizontal: 24,
-    paddingVertical: 28,
-    alignItems: "center",
-    gap: 10,
-  },
-  footerBrand: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  footerLogo: {
-    width: 22,
-    height: 22,
-  },
-  footerTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#1F2937",
-  },
-  footerDescription: {
-    fontSize: 12,
-    color: "#334155",
-    textAlign: "center",
-  },
-  footerNote: {
-    fontSize: 12,
-    color: "#64748B",
-    textAlign: "center",
-  },
-  footerLinks: {
-    marginTop: 6,
-    gap: 8,
-    alignItems: "center",
-  },
-  footerLink: {
-    color: "#0E7490",
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  footerBottom: {
-    marginTop: 10,
-    alignItems: "center",
-    gap: 6,
   },
   footerSmall: {
     color: "#6B7280",
