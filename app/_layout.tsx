@@ -19,6 +19,10 @@ export default function RootLayout() {
         name="(tabs)/view-results"
         options={{ animation: "slide_from_right" }}
       />
+      <Stack.Screen
+        name="(tabs)/modal/how_it_works"
+        options={{ presentation: "modal", animation: "slide_from_bottom" }}
+      />
     </Stack>
   );
 }
