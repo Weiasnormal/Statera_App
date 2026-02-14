@@ -1,5 +1,8 @@
 import { router } from "expo-router";
+import { useEffect, useRef } from "react";
 import {
+  Animated,
+  Easing,
   Image,
   Pressable,
   ScrollView,
@@ -11,18 +14,29 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function GetStarted() {
+  const heroOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(heroOpacity, {
+      toValue: 1,
+      duration: 600,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    }).start();
+  }, [heroOpacity]);
+
   return (
     <View style={styles.background}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <SafeAreaView style={styles.screen} edges={["top", "left", "right"]}>
         <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.hero}>
+          <Animated.View style={[styles.hero, { opacity: heroOpacity }]}>
             <Image
               source={require("@/assets/images/Intro_logo.webp")}
               style={styles.logo}
             />
             <Text style={styles.title}>Statera</Text>
-          </View>
+          </Animated.View>
 
           <View style={styles.illustration}>
             <Image
