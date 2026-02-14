@@ -11,6 +11,10 @@ export default function RootLayout() {
         name="(tabs)/input"
         options={{ animation: "slide_from_right" }}
       />
+      <Stack.Screen
+        name="(tabs)/modal/how_it_works"
+        options={{ presentation: "modal", headerShown: false }}
+      />
     </Stack>
   );
 }

@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -28,7 +29,7 @@ export default function GetStarted() {
               <Text style={styles.getStartedButtonText}>Get Started</Text>
             </Pressable>
 
-            <Pressable>
+            <Pressable onPress={() => router.push("/modal/how_it_works")}>
               <Text style={styles.howItWorksText}>How it Works</Text>
             </Pressable>
           </View>
