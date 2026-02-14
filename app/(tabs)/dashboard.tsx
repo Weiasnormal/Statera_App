@@ -1,26 +1,27 @@
+import {
+    getAppUsageData,
+    requestUsagePermission,
+    type AppUsageItem,
+} from "@/services/usage-stats";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
-  Alert,
-  FlatList,
-  Image,
-  ImageBackground,
-  Pressable,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
+    Alert,
+    FlatList,
+    Image,
+    ImageBackground,
+    Pressable,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
-import Header from "./components/header";
 import Footer from "./components/footer";
-import {
-  getAppUsageData,
-  requestUsagePermission,
-  type AppUsageItem,
-} from "@/services/usage-stats";
+import Header from "./components/header";
 
 const steps = [
   {
@@ -60,7 +61,10 @@ export default function Dashboard() {
           text: "Deny",
           onPress: () => {
             setPermissionRequested(true);
-            Alert.alert("Permission Denied", "You can enable this in Settings > Privacy > Screen Time");
+            Alert.alert(
+              "Permission Denied",
+              "You can enable this in Settings > Privacy > Screen Time",
+            );
           },
           style: "cancel",
         },
@@ -84,7 +88,7 @@ export default function Dashboard() {
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -96,81 +100,110 @@ export default function Dashboard() {
     >
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <SafeAreaView style={styles.screen} edges={["top", "left", "right"]}>
-        <ScrollView stickyHeaderIndices={[0]} contentContainerStyle={styles.content}>
+        <ScrollView
+          stickyHeaderIndices={[0]}
+          contentContainerStyle={styles.content}
+        >
           <Header />
 
-        <View style={styles.hero}>
-          <View style={styles.heroContent}>
-            <Image source={require("@/assets/images/Logo.png")} style={styles.heroLogo} />
-            <Text style={styles.heroTitle}>Behavioral Test</Text>
-            <Text style={styles.heroSubtitle}>Understand Student Behavior Through Data</Text>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          {steps.map((step) => (
-            <View key={step.label} style={styles.card}>
-              <View style={[styles.cardHeader, { backgroundColor: step.accent }]}>
-                <Text style={styles.cardHeaderText}>{step.label}</Text>
-              </View>
-              <View style={styles.cardBody}>
-                <Image source={step.image} style={styles.cardIcon} />
-                <Text style={styles.cardTitle}>{step.title}</Text>
-                <Text style={styles.cardDescription}>{step.description}</Text>
-              </View>
+          <View style={styles.hero}>
+            <View style={styles.heroContent}>
+              <Image
+                source={require("@/assets/images/Logo.png")}
+                style={styles.heroLogo}
+              />
+              <Text style={styles.heroTitle}>Behavioral Test</Text>
+              <Text style={styles.heroSubtitle}>
+                Understand Student Behavior Through Data
+              </Text>
             </View>
-          ))}
-        </View>
-
-        <View style={styles.formSection}>
-          <Text style={styles.stepLabel}>Step 1 of 2</Text>
-          <View style={styles.progressTrack}>
-            <View style={styles.progressFill} />
-          </View>
-          <Text style={styles.question}>What&apos;s your General Weighted Average (GWA)?</Text>
-          <TextInput
-            placeholder="Ex. 1.32"
-            placeholderTextColor="#94A3B8"
-            style={styles.input}
-            keyboardType="numeric"
-          />
-          <Pressable style={styles.nextButton}>
-            <Text style={styles.nextButtonText}>Next -&gt;</Text>
-          </Pressable>
-
-          <View style={styles.divider} />
-
-          <View style={styles.usageButtonRow}>
-            <Pressable style={styles.usageStatsButton} onPress={handleRefreshUsageStats}>
-              <Text style={styles.usageStatsButtonText}>Check Your Screen Time</Text>
-            </Pressable>
-            <Pressable style={styles.refreshButton} onPress={handleRefreshUsageStats}>
-              <Ionicons name="refresh" size={16} color="#FFFFFF" />
-            </Pressable>
           </View>
 
-          {isFetchingUsage ? (
-            <Text style={styles.usageEmptyText}>Fetching usage data...</Text>
-          ) : usageData.length > 0 ? (
-            <FlatList
-              data={usageData}
-              keyExtractor={(item) => item.packageName}
-              scrollEnabled={false}
-              renderItem={({ item }) => (
-                <View style={styles.usageRow}>
-                  <Text style={styles.usagePackage}>{item.packageName}</Text>
-                  <Text style={styles.usageTime}>{Math.round(item.totalTimeVisible / 60000)} min</Text>
+          <View style={styles.section}>
+            {steps.map((step) => (
+              <View key={step.label} style={styles.card}>
+                <View
+                  style={[styles.cardHeader, { backgroundColor: step.accent }]}
+                >
+                  <Text style={styles.cardHeaderText}>{step.label}</Text>
                 </View>
-              )}
-            />
-          ) : permissionRequested ? (
-            <Text style={styles.usageEmptyText}>No usage data detected yet.</Text>
-          ) : (
-            <Text style={styles.usageEmptyText}>Tap Refresh after granting permission.</Text>
-          )}
-        </View>
+                <View style={styles.cardBody}>
+                  <Image source={step.image} style={styles.cardIcon} />
+                  <Text style={styles.cardTitle}>{step.title}</Text>
+                  <Text style={styles.cardDescription}>{step.description}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
 
-        <Footer />
+          <View style={styles.formSection}>
+            <Text style={styles.stepLabel}>Step 1 of 2</Text>
+            <View style={styles.progressTrack}>
+              <View style={styles.progressFill} />
+            </View>
+            <Text style={styles.question}>
+              What&apos;s your General Weighted Average (GWA)?
+            </Text>
+            <TextInput
+              placeholder="Ex. 1.32"
+              placeholderTextColor="#94A3B8"
+              style={styles.input}
+              keyboardType="numeric"
+            />
+            <Pressable
+              style={styles.nextButton}
+              onPress={() => router.push("/input")}
+            >
+              <Text style={styles.nextButtonText}>Next -&gt;</Text>
+            </Pressable>
+
+            <View style={styles.divider} />
+
+            <View style={styles.usageButtonRow}>
+              <Pressable
+                style={styles.usageStatsButton}
+                onPress={handleRefreshUsageStats}
+              >
+                <Text style={styles.usageStatsButtonText}>
+                  Check Your Screen Time
+                </Text>
+              </Pressable>
+              <Pressable
+                style={styles.refreshButton}
+                onPress={handleRefreshUsageStats}
+              >
+                <Ionicons name="refresh" size={16} color="#FFFFFF" />
+              </Pressable>
+            </View>
+
+            {isFetchingUsage ? (
+              <Text style={styles.usageEmptyText}>Fetching usage data...</Text>
+            ) : usageData.length > 0 ? (
+              <FlatList
+                data={usageData}
+                keyExtractor={(item) => item.packageName}
+                scrollEnabled={false}
+                renderItem={({ item }) => (
+                  <View style={styles.usageRow}>
+                    <Text style={styles.usagePackage}>{item.packageName}</Text>
+                    <Text style={styles.usageTime}>
+                      {Math.round(item.totalTimeVisible / 60000)} min
+                    </Text>
+                  </View>
+                )}
+              />
+            ) : permissionRequested ? (
+              <Text style={styles.usageEmptyText}>
+                No usage data detected yet.
+              </Text>
+            ) : (
+              <Text style={styles.usageEmptyText}>
+                Tap Refresh after granting permission.
+              </Text>
+            )}
+          </View>
+
+          <Footer />
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>
