@@ -1,15 +1,69 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-    Image,
     Pressable,
     SafeAreaView,
+    Animated,
     StyleSheet,
     Text,
     View,
 } from "react-native";
 
 export default function ViewResultsScreen() {
+  const [fadeAnim] = useState(new Animated.Value(1));
+  const [slideAnim] = useState(new Animated.Value(0));
+  const [textSwitch] = useState(new Animated.Value(1)); // 1 for Input, 0 for Results
+
+  useEffect(() => {
+    // Fade animation: input.png visible (1) -> behavioral.png visible (0) and back, looping every 2 seconds
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
+    // Slide animation for the blue progress element - loops back and forth
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(slideAnim, {
+          toValue: 1,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
+    // Text switching animation: alternates between Input and Results every 2 seconds
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(textSwitch, {
+          toValue: 0,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(textSwitch, {
+          toValue: 1,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [fadeAnim, slideAnim, textSwitch]);
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -22,22 +76,78 @@ export default function ViewResultsScreen() {
         </Pressable>
 
         <View style={styles.content}>
-          <Image
-            source={require("@/assets/images/behavioral.png")}
-            style={styles.illustration}
-            resizeMode="contain"
-          />
+          <View style={styles.imageContainer}>
+            {/* input.png with fade out */}
+            <Animated.Image
+              source={require("@/assets/images/input.png")}
+              style={[
+                styles.illustration,
+                { opacity: fadeAnim },
+              ]}
+              resizeMode="contain"
+            />
+            {/* behavioral.png with fade in */}
+            <Animated.Image
+              source={require("@/assets/images/behavioral.png")}
+              style={[
+                styles.illustration,
+                styles.absoluteImage,
+                { opacity: Animated.subtract(1, fadeAnim) },
+              ]}
+              resizeMode="contain"
+            />
+          </View>
 
-          <Text style={styles.title}>View Behavioral</Text>
-          <Text style={styles.title}>Results</Text>
+          <View style={styles.textContainer}>
+            <Animated.View
+              style={[
+                styles.textContent,
+                {
+                  opacity: textSwitch,
+                },
+              ]}
+            >
+              <Text style={styles.title}>Input Academic</Text>
+              <Text style={styles.title}>Performance</Text>
+            </Animated.View>
+
+            <Animated.View
+              style={[
+                styles.textContent,
+                styles.absoluteText,
+                {
+                  opacity: Animated.subtract(1, textSwitch),
+                },
+              ]}
+            >
+              <Text style={styles.title}>View Behavioral</Text>
+              <Text style={styles.title}>Results</Text>
+            </Animated.View>
+          </View>
 
           <View style={styles.progressRow}>
             <View style={styles.progressDot} />
-            <View style={styles.progressPill} />
+            <Animated.View
+              style={[
+                styles.progressPill,
+                {
+                  transform: [
+                    {
+                      translateX: slideAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [-20, 20],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            />
           </View>
         </View>
 
-        <Pressable style={styles.continueButton} accessibilityRole="button">
+        <Pressable 
+        style={styles.continueButton} accessibilityRole="button" 
+        onPress={() => router.push("/input")}>
           <Text style={styles.continueText}>Continue</Text>
         </Pressable>
       </View>
@@ -64,15 +174,43 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "center",
   },
+  imageContainer: {
+    position: "relative",
+    width: 220,
+    height: 220,
+    marginBottom: 18,
+  },
   content: {
     alignItems: "center",
     justifyContent: "center",
     marginTop: 12,
+    gap: 12,
+  },
+  textContainer: {
+    position: "relative",
+    minHeight: 48,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textContent: {
+    alignItems: "center",
+  },
+  absoluteText: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
   },
   illustration: {
     width: 220,
     height: 220,
     marginBottom: 18,
+  },
+  absoluteImage: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    marginBottom: 0,
   },
   title: {
     fontSize: 16,

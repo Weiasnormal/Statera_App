@@ -8,11 +8,11 @@ export default function RootLayout() {
         options={{ animation: "slide_from_left" }}
       />
       <Stack.Screen
-        name="(tabs)/input"
+        name="(tabs)/view-results"
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
-        name="(tabs)/view-results"
+        name="(tabs)/input"
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
