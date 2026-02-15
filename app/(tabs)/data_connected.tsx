@@ -1,12 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import {
-    Pressable,
-    SafeAreaView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    View,
+  Pressable,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
 export default function DataConnectedScreen() {
@@ -34,7 +34,11 @@ export default function DataConnectedScreen() {
           </View>
         </View>
 
-        <Pressable style={styles.generateButton} accessibilityRole="button">
+        <Pressable
+          style={styles.generateButton}
+          accessibilityRole="button"
+          onPress={() => router.push("/nav")}
+        >
           <Text style={styles.generateText}>Generate My Profile</Text>
         </Pressable>
       </View>

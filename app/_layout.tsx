@@ -24,6 +24,19 @@ export default function RootLayout() {
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
+        name="(tabs)/overview"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen
+        name="(tabs)/analysis"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen name="nav" options={{ animation: "slide_from_right" }} />
+      <Stack.Screen
+        name="(tabs)/meet-the-team"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen
         name="(tabs)/modal/how_it_works"
         options={{ presentation: "transparentModal", headerShown: false }}
       />
