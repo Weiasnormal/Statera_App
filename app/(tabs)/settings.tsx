@@ -1,3 +1,4 @@
+import { ScreenHeader } from "@/components/ui/screen-header";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
@@ -6,13 +7,11 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 export default function Settings() {
   return (
     <View style={styles.container}>
+      <ScreenHeader title="Settings" align="left" />
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Header */}
-        <Text style={styles.header}>Settings</Text>
-
         {/* Tracking Duration Card */}
         <View style={styles.durationCard}>
           <Text style={styles.durationLabel}>Tracking Duration</Text>
@@ -81,14 +80,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 50,
+    paddingTop: 24,
     paddingBottom: 40,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#1a1a1a",
-    marginBottom: 24,
   },
   durationCard: {
     backgroundColor: "#E8F4F5",

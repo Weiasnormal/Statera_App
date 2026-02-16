@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     alignItems: "center",
-    paddingTop: 70,
+    paddingTop: 24,
     paddingHorizontal: 20,
     paddingBottom: 40,
   },
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     lineHeight: 38,
   },
   illustrationContainer: {
-    marginVertical: 40,
+    marginVertical: 30,
     alignItems: "center",
   },
   illustration: {

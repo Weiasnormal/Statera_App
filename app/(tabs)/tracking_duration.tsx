@@ -1,5 +1,6 @@
 import { ConfirmModal } from "@/components/ui/confirm-modal";
 import { PrimaryButton } from "@/components/ui/primary-button";
+import { ScreenHeader } from "@/components/ui/screen-header";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
@@ -81,19 +82,15 @@ export default function TrackingDuration() {
 			style={styles.container}
 			behavior={Platform.OS === "ios" ? "padding" : undefined}
 		>
+			<ScreenHeader
+				title="Tracking Duration"
+				showBack
+				onBackPress={handleBackPress}
+			/>
 			<ScrollView
 				contentContainerStyle={styles.scrollContent}
 				keyboardShouldPersistTaps="handled"
 			>
-				{/* Header */}
-				<View style={styles.headerRow}>
-					<Pressable style={styles.backButton} onPress={handleBackPress}>
-						<Ionicons name="arrow-back" size={22} color="#1a1a1a" />
-					</Pressable>
-					<Text style={styles.headerTitle}>Tracking Duration</Text>
-					<View style={styles.headerSpacer} />
-				</View>
-
 				{/* Title & Description */}
 				<View style={styles.section}>
 					<Text style={styles.title}>Adjust Analysis Period</Text>
@@ -181,31 +178,9 @@ const styles = StyleSheet.create({
 		backgroundColor: "#ffffff",
 	},
 	scrollContent: {
-		paddingTop: 50,
+		paddingTop: 24,
 		paddingHorizontal: 24,
 		paddingBottom: 32,
-	},
-	headerRow: {
-		flexDirection: "row",
-		alignItems: "center",
-		marginBottom: 32,
-	},
-	backButton: {
-		width: 40,
-		height: 40,
-		borderRadius: 20,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	headerTitle: {
-		flex: 1,
-		textAlign: "center",
-		fontSize: 18,
-		fontWeight: "600",
-		color: "#1a1a1a",
-	},
-	headerSpacer: {
-		width: 40,
 	},
 	section: {
 		marginBottom: 32,

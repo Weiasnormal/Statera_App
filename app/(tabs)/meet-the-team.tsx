@@ -1,27 +1,21 @@
+import { ScreenHeader } from "@/components/ui/screen-header";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import {
-    Image,
-    Pressable,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  Image,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
 export default function MeetTheTeam() {
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header with Back Button */}
-      <View style={styles.header}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#1a1a1a" />
-        </Pressable>
-        <Text style={styles.headerTitle}>Meet the Team</Text>
-        <View style={styles.placeholder} />
-      </View>
+      <ScreenHeader title="Meet the Team" showBack onBackPress={() => router.back()} />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Team Title */}
@@ -226,31 +220,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "flex-start",
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1a1a1a",
-    flex: 1,
-    textAlign: "center",
-  },
-  placeholder: {
-    width: 40,
   },
   scrollContent: {
     alignItems: "center",

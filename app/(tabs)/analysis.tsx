@@ -1,3 +1,4 @@
+import { ScreenHeader } from "@/components/ui/screen-header";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
@@ -12,13 +13,11 @@ export default function Analysis() {
 
   return (
     <View style={styles.container}>
+      <ScreenHeader title="Behavior Analysis" align="left" />
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Header */}
-        <Text style={styles.header}>Behavior Analysis</Text>
-
         {/* Academic Indicator Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Academic Indicator</Text>
@@ -81,14 +80,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 70,
+    paddingTop: 24,
     paddingBottom: 40,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#1a1a1a",
-    marginBottom: 24,
   },
   section: {
     marginBottom: 32,

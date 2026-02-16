@@ -1,7 +1,7 @@
-import { Ionicons } from "@expo/vector-icons";
+import { ScreenHeader } from "@/components/ui/screen-header";
 import { router } from "expo-router";
 import React from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function AboutStatera() {
 	const handleBack = () => {
@@ -10,17 +10,7 @@ export default function AboutStatera() {
 
 	return (
 		<View style={styles.container}>
-			{/* Header */}
-			<View style={styles.headerContainer}>
-				<View style={styles.headerInner}>
-					<Pressable style={styles.backButton} onPress={handleBack}>
-						<Ionicons name="arrow-back" size={22} color="#1a1a1a" />
-					</Pressable>
-					<Text style={styles.headerTitle}>About STATERA</Text>
-					<View style={styles.headerSpacer} />
-				</View>
-				<View style={styles.headerDivider} />
-			</View>
+			<ScreenHeader title="About STATERA" showBack onBackPress={handleBack} />
 
 			<ScrollView
 				style={styles.scrollView}
@@ -88,37 +78,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: "#ffffff",
-	},
-	headerContainer: {
-		backgroundColor: "#ffffff",
-	},
-	headerInner: {
-		flexDirection: "row",
-		alignItems: "center",
-		paddingTop: 24,
-		paddingHorizontal: 20,
-		paddingBottom: 12,
-	},
-	backButton: {
-		width: 40,
-		height: 40,
-		borderRadius: 20,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	headerTitle: {
-		flex: 1,
-		textAlign: "center",
-		fontSize: 18,
-		fontWeight: "600",
-		color: "#1a1a1a",
-	},
-	headerSpacer: {
-		width: 40,
-	},
-	headerDivider: {
-		height: 1,
-		backgroundColor: "#E0E0E0",
 	},
 	scrollView: {
 		flex: 1,
