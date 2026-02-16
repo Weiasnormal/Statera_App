@@ -31,7 +31,7 @@ export default function Settings() {
             onPress={() => router.push("/tracking_duration")}
           >
             <View style={styles.menuLeft}>
-              <Ionicons name="time-outline" size={22} color="#1a1a1a" />
+              <Ionicons name="timer-outline" size={22} color="#1a1a1a" />
               <Text style={styles.menuText}>Tracking Duration</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
@@ -73,7 +73,7 @@ export default function Settings() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#ffffff",
   },
   scrollView: {
     flex: 1,
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   durationCard: {
-    backgroundColor: "#E8F4F5",
+    backgroundColor: "#F8F8F8",
     borderRadius: 12,
     padding: 20,
     marginBottom: 32,
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "baseline",
     gap: 8,
+    justifyContent: "space-between",
   },
   currentlyText: {
     fontSize: 24,
@@ -108,6 +109,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#16B8C5",
+    flex: 1,
+    textAlign: "right",
   },
   sectionTitle: {
     fontSize: 18,

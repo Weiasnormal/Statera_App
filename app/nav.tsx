@@ -19,11 +19,20 @@ function BottomNavBar({
         style={styles.navItem}
         onPress={() => setActiveTab("overview")}
       >
+      <View
+        style={[
+          styles.iconWrapper,
+          activeTab === "overview" && styles.iconWrapperActive,
+        ]}
+      >
         <Ionicons
-          name="grid-outline"
+          name={
+            activeTab === "overview" ? "bar-chart" : "bar-chart-outline"
+          }
           size={24}
           color={activeTab === "overview" ? "#2196F3" : "#757575"}
         />
+      </View>
         <Text
           style={[
             styles.navLabel,
@@ -32,18 +41,26 @@ function BottomNavBar({
         >
           Overview
         </Text>
-        {activeTab === "overview" && <View style={styles.activeIndicator} />}
       </Pressable>
 
       <Pressable
         style={styles.navItem}
         onPress={() => setActiveTab("analysis")}
       >
+      <View
+        style={[
+          styles.iconWrapper,
+          activeTab === "analysis" && styles.iconWrapperActive,
+        ]}
+      >
         <Ionicons
-          name="bulb-outline"
+          name={
+            activeTab === "analysis" ? "analytics" : "analytics-outline"
+          }
           size={24}
           color={activeTab === "analysis" ? "#2196F3" : "#757575"}
         />
+      </View>
         <Text
           style={[
             styles.navLabel,
@@ -52,18 +69,26 @@ function BottomNavBar({
         >
           Analysis
         </Text>
-        {activeTab === "analysis" && <View style={styles.activeIndicator} />}
       </Pressable>
 
       <Pressable
         style={styles.navItem}
         onPress={() => setActiveTab("settings")}
       >
+      <View
+        style={[
+          styles.iconWrapper,
+          activeTab === "settings" && styles.iconWrapperActive,
+        ]}
+      >
         <Ionicons
-          name="settings-outline"
+          name={
+            activeTab === "settings" ? "settings" : "settings-outline"
+          }
           size={24}
           color={activeTab === "settings" ? "#2196F3" : "#757575"}
         />
+      </View>
         <Text
           style={[
             styles.navLabel,
@@ -72,7 +97,6 @@ function BottomNavBar({
         >
           Settings
         </Text>
-        {activeTab === "settings" && <View style={styles.activeIndicator} />}
       </Pressable>
     </View>
   );
@@ -113,14 +137,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#e0e0e0",
     height: 80,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 10,
     justifyContent: "space-evenly",
   },
   navItem: {
@@ -128,21 +144,28 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "relative",
   },
+  iconWrapper: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconWrapperActive: {
+    backgroundColor: "#DDF3FF",
+    borderRadius: 12,
+  },
   navLabel: {
     fontSize: 12,
     color: "#757575",
     marginTop: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
   },
   navLabelActive: {
     color: "#2196F3",
     fontWeight: "600",
-  },
-  activeIndicator: {
-    position: "absolute",
-    bottom: -12,
-    width: 60,
-    height: 3,
-    backgroundColor: "#2196F3",
-    borderRadius: 2,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
   },
 });
