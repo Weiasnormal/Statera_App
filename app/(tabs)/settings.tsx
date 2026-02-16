@@ -27,7 +27,10 @@ export default function Settings() {
 
         <View style={styles.menuContainer}>
           {/* Tracking Duration Menu */}
-          <Pressable style={styles.menuItem}>
+          <Pressable
+            style={styles.menuItem}
+            onPress={() => router.push("/tracking_duration")}
+          >
             <View style={styles.menuLeft}>
               <Ionicons name="time-outline" size={22} color="#1a1a1a" />
               <Text style={styles.menuText}>Tracking Duration</Text>

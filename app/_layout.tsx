@@ -31,6 +31,10 @@ export default function RootLayout() {
         name="(tabs)/analysis"
         options={{ animation: "slide_from_right" }}
       />
+      <Stack.Screen
+        name="(tabs)/tracking_duration"
+        options={{ animation: "slide_from_right" }}
+      />
       <Stack.Screen name="nav" options={{ animation: "slide_from_right" }} />
       <Stack.Screen
         name="(tabs)/meet-the-team"
