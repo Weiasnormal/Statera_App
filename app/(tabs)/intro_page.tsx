@@ -23,8 +23,7 @@ export default function IntroPage() {
   const textTranslateY = useSharedValue(120);
   const textOpacity = useSharedValue(0);
 
-  const udesignTranslateX = useSharedValue(0);
-  const bdesignTranslateX = useSharedValue(0);
+  const udesignTranslateX = useSharedValue(0);  const udesignTranslateY = useSharedValue(0);  const bdesignTranslateX = useSharedValue(0);
   const bdesignTranslateY = useSharedValue(0);
 
   const fadeOutOpacity = useSharedValue(1);
@@ -39,16 +38,15 @@ export default function IntroPage() {
     const startAnimations = () => {
       // Logo animation: rotate -360, scale down (stays in center)
       logoRotation.value = withTiming(-360, { duration: 1500 });
-      logoScale.value = withTiming(0.5, { duration: 1500 });
+      logoScale.value = withTiming(0.6, { duration: 1500 });
 
       // Text animation: slide up and fade in after logo rotation (with delay)
-      textTranslateY.value = withDelay(1500, withTiming(-10, { duration: 800 }));
+      textTranslateY.value = withDelay(1500, withTiming(-20, { duration: 800 }));
       textOpacity.value = withDelay(1500, withTiming(1, { duration: 800 }));
 
-      // Corner designs slide out
+      // Corner designs slide out horizontally (maintaining Y position)
       udesignTranslateX.value = withTiming(-width, { duration: 1200 });
       bdesignTranslateX.value = withTiming(width, { duration: 1200 });
-      bdesignTranslateY.value = withTiming(height, { duration: 1200 });
 
       // Fade out after animations complete (1.5s animation + 0.5s delay)
       fadeOutOpacity.value = withDelay(
@@ -81,7 +79,10 @@ export default function IntroPage() {
   }));
 
   const animatedUdesignStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: udesignTranslateX.value }],
+    transform: [
+      { translateX: udesignTranslateX.value },
+      { translateY: udesignTranslateY.value },
+    ],
   }));
 
   const animatedBdesignStyle = useAnimatedStyle(() => ({
@@ -143,20 +144,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   topLeftCorner: {
-    ...StyleSheet.absoluteFillObject,
-    width: 120,
-    height: 120,
-    top: 0,
-    left: 0,
+    position: 'absolute',
+    width: 250,
+    height: 250,
+    top: -70,
+    left: -50,
   },
   bottomRightCorner: {
-    ...StyleSheet.absoluteFillObject,
-    width: 120,
-    height: 120,
-    bottom: 0,
-    right: 0,
-    top: undefined,
-    left: undefined,
+    position: 'absolute',
+    width: 250,
+    height: 250,
+    bottom: -80,
+    right: -70,
   },
   cornerImage: {
     width: '100%',
@@ -167,8 +166,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logoContainer: {
-    width: 230,
-    height: 230,
+    width: 160,
+    height: 160,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -180,7 +179,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   stateraText: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#2C3E50',
     letterSpacing: 2,
