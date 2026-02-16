@@ -1,9 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import Analysis from "./(tabs)/analysis";
-import Overview from "./(tabs)/overview";
-import Settings from "./(tabs)/settings";
+import Analysis from "./(tabs)/navigation-pages/analysis";
+import Overview from "./(tabs)/navigation-pages/overview";
+import Settings from "./(tabs)/navigation-pages/settings";
 
 // Bottom Navigation Bar Component
 function BottomNavBar({
@@ -19,20 +19,18 @@ function BottomNavBar({
         style={styles.navItem}
         onPress={() => setActiveTab("overview")}
       >
-      <View
-        style={[
-          styles.iconWrapper,
-          activeTab === "overview" && styles.iconWrapperActive,
-        ]}
-      >
-        <Ionicons
-          name={
-            activeTab === "overview" ? "bar-chart" : "bar-chart-outline"
-          }
-          size={24}
-          color={activeTab === "overview" ? "#2196F3" : "#757575"}
-        />
-      </View>
+        <View
+          style={[
+            styles.iconWrapper,
+            activeTab === "overview" && styles.iconWrapperActive,
+          ]}
+        >
+          <Ionicons
+            name={activeTab === "overview" ? "bar-chart" : "bar-chart-outline"}
+            size={24}
+            color={activeTab === "overview" ? "#2196F3" : "#757575"}
+          />
+        </View>
         <Text
           style={[
             styles.navLabel,
@@ -47,20 +45,18 @@ function BottomNavBar({
         style={styles.navItem}
         onPress={() => setActiveTab("analysis")}
       >
-      <View
-        style={[
-          styles.iconWrapper,
-          activeTab === "analysis" && styles.iconWrapperActive,
-        ]}
-      >
-        <Ionicons
-          name={
-            activeTab === "analysis" ? "analytics" : "analytics-outline"
-          }
-          size={24}
-          color={activeTab === "analysis" ? "#2196F3" : "#757575"}
-        />
-      </View>
+        <View
+          style={[
+            styles.iconWrapper,
+            activeTab === "analysis" && styles.iconWrapperActive,
+          ]}
+        >
+          <Ionicons
+            name={activeTab === "analysis" ? "analytics" : "analytics-outline"}
+            size={24}
+            color={activeTab === "analysis" ? "#2196F3" : "#757575"}
+          />
+        </View>
         <Text
           style={[
             styles.navLabel,
@@ -75,20 +71,18 @@ function BottomNavBar({
         style={styles.navItem}
         onPress={() => setActiveTab("settings")}
       >
-      <View
-        style={[
-          styles.iconWrapper,
-          activeTab === "settings" && styles.iconWrapperActive,
-        ]}
-      >
-        <Ionicons
-          name={
-            activeTab === "settings" ? "settings" : "settings-outline"
-          }
-          size={24}
-          color={activeTab === "settings" ? "#2196F3" : "#757575"}
-        />
-      </View>
+        <View
+          style={[
+            styles.iconWrapper,
+            activeTab === "settings" && styles.iconWrapperActive,
+          ]}
+        >
+          <Ionicons
+            name={activeTab === "settings" ? "settings" : "settings-outline"}
+            size={24}
+            color={activeTab === "settings" ? "#2196F3" : "#757575"}
+          />
+        </View>
         <Text
           style={[
             styles.navLabel,

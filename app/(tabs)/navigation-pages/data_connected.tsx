@@ -18,7 +18,11 @@ export default function DataConnectedScreen() {
           <Pressable
             style={styles.backButton}
             accessibilityRole="button"
-            onPress={() => router.push("/access?animation=slide_from_left")}
+            onPress={() =>
+              router.push(
+                "/(tabs)/navigation-pages/access?animation=slide_from_left",
+              )
+            }
           >
             <Ionicons name="arrow-back" size={20} color="#0F172A" />
           </Pressable>

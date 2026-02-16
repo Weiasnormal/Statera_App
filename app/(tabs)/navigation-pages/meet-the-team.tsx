@@ -15,7 +15,11 @@ import {
 export default function MeetTheTeam() {
   return (
     <SafeAreaView style={styles.container}>
-      <ScreenHeader title="Meet the Team" showBack onBackPress={() => router.back()} />
+      <ScreenHeader
+        title="Meet the Team"
+        showBack
+        onBackPress={() => router.back()}
+      />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Team Title */}
@@ -45,7 +49,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/joko.png")}
+              source={require("@/assets/images/dev-characters/joko.png")}
               style={styles.contactImage}
               resizeMode="contain"
             />
@@ -69,7 +73,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/wincel.png")}
+              source={require("@/assets/images/dev-characters/wincel.png")}
               style={styles.contactImage}
               resizeMode="contain"
             />
@@ -93,7 +97,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/freesia.png")}
+              source={require("@/assets/images/dev-characters/freesia.png")}
               style={styles.contactImage}
               resizeMode="contain"
             />
@@ -117,7 +121,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/neil.png")}
+              source={require("@/assets/images/dev-characters/neil.png")}
               style={styles.contactImage}
               resizeMode="contain"
             />
@@ -141,7 +145,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/gio.png")}
+              source={require("@/assets/images/dev-characters/gio.png")}
               style={styles.contactImage}
               resizeMode="contain"
             />
@@ -165,7 +169,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/nathaniel.png")}
+              source={require("@/assets/images/dev-characters/nathaniel.png")}
               style={styles.contactImage}
               resizeMode="contain"
             />
@@ -189,7 +193,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/joel.png")}
+              source={require("@/assets/images/dev-characters/joel.png")}
               style={styles.contactImage}
               resizeMode="contain"
             />

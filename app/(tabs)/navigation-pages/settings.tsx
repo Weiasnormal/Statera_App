@@ -28,7 +28,9 @@ export default function Settings() {
           {/* Tracking Duration Menu */}
           <Pressable
             style={styles.menuItem}
-            onPress={() => router.push("/tracking_duration")}
+            onPress={() =>
+              router.push("/(tabs)/navigation-pages/tracking_duration")
+            }
           >
             <View style={styles.menuLeft}>
               <Ionicons name="timer-outline" size={22} color="#1a1a1a" />
@@ -40,7 +42,9 @@ export default function Settings() {
           {/* Meet the Team Menu */}
           <Pressable
             style={styles.menuItem}
-            onPress={() => router.push("/meet-the-team")}
+            onPress={() =>
+              router.push("/(tabs)/navigation-pages/meet-the-team")
+            }
           >
             <View style={styles.menuLeft}>
               <Ionicons name="people-outline" size={22} color="#1a1a1a" />
@@ -52,7 +56,9 @@ export default function Settings() {
           {/* About STATERA Menu */}
           <Pressable
             style={[styles.menuItem, styles.menuItemLast]}
-            onPress={() => router.push("/about_statera")}
+            onPress={() =>
+              router.push("/(tabs)/navigation-pages/about_statera")
+            }
           >
             <View style={styles.menuLeft}>
               <Ionicons

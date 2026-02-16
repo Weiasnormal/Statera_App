@@ -2,12 +2,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-    Pressable,
-    SafeAreaView,
-    Animated,
-    StyleSheet,
-    Text,
-    View,
+  Animated,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
 export default function ViewResultsScreen() {
@@ -29,7 +29,7 @@ export default function ViewResultsScreen() {
           duration: 3000,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
 
     // Slide animation for the blue progress element - loops back and forth
@@ -45,7 +45,7 @@ export default function ViewResultsScreen() {
           duration: 3000,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
 
     // Text switching animation: alternates between Input and Results every 2 seconds
@@ -61,7 +61,7 @@ export default function ViewResultsScreen() {
           duration: 3000,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
   }, [fadeAnim, slideAnim, textSwitch]);
   return (
@@ -80,10 +80,7 @@ export default function ViewResultsScreen() {
             {/* input.png with fade out */}
             <Animated.Image
               source={require("@/assets/images/input.png")}
-              style={[
-                styles.illustration,
-                { opacity: fadeAnim },
-              ]}
+              style={[styles.illustration, { opacity: fadeAnim }]}
               resizeMode="contain"
             />
             {/* behavioral.png with fade in */}
@@ -145,9 +142,11 @@ export default function ViewResultsScreen() {
           </View>
         </View>
 
-        <Pressable 
-        style={styles.continueButton} accessibilityRole="button" 
-        onPress={() => router.push("/input")}>
+        <Pressable
+          style={styles.continueButton}
+          accessibilityRole="button"
+          onPress={() => router.push("/(tabs)/navigation-pages/input")}
+        >
           <Text style={styles.continueText}>Continue</Text>
         </Pressable>
       </View>

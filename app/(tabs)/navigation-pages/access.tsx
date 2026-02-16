@@ -38,14 +38,14 @@ export default function AccessScreen() {
             <Pressable
               style={styles.primaryButton}
               accessibilityRole="button"
-              onPress={() => router.push("/data_connected")}
+              onPress={() => router.push("./data_connected")}
             >
               <Text style={styles.primaryText}>Allow Access</Text>
             </Pressable>
             <Pressable
               style={styles.secondaryButton}
               accessibilityRole="button"
-              onPress={() => router.push("/get_started")}
+              onPress={() => router.push("./get_started")}
             >
               <Text style={styles.secondaryText}>Not Now</Text>
             </Pressable>

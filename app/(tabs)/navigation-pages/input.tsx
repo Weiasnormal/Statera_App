@@ -20,7 +20,7 @@ export default function InputScreen() {
           <Pressable
             style={styles.backButton}
             accessibilityRole="button"
-            onPress={() => router.push("/get_started")}
+            onPress={() => router.push("/(tabs)/get_started")}
           >
             <Ionicons name="arrow-back" size={20} color="#0F172A" />
           </Pressable>
@@ -48,7 +48,7 @@ export default function InputScreen() {
         <Pressable
           style={styles.continueButton}
           accessibilityRole="button"
-          onPress={() => router.push("/access")}
+          onPress={() => router.push("/(tabs)/navigation-pages/access")}
         >
           <Text style={styles.continueText}>Continue</Text>
         </Pressable>
