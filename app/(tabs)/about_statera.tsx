@@ -67,7 +67,39 @@ export default function AboutStatera() {
 						<Text style={styles.bulletItem}>{"\u2022"} Provide transparency in usage patterns</Text>
 						<Text style={styles.bulletItem}>{"\u2022"} Support self-reflection</Text>
 					</View>
+                    <Text style={styles.bodyText}>It is a tool for awareness, not judgment.</Text>
 					<View style={styles.sectionDivider} />
+				</View>
+
+                {/* Data & Privacy */}
+				<View style={styles.section}>
+					<Text style={styles.sectionTitle}>Data & Privacy</Text>
+					<View style={styles.bulletList}>
+						<Text style={styles.bulletItem}>{"\u2022"} Your data remains on your device unless explicitly shared by you.</Text>
+						<Text style={styles.bulletItem}>{"\u2022"} STATERA only accesses usage statistics required for analysis.</Text>
+						<Text style={styles.bulletItem}>{"\u2022"} We do not sell or distribute personal data.</Text>
+					</View>
+					<View style={styles.sectionDivider} />
+				</View>
+
+                {/* Disclaimer */}
+				<View style={styles.section}>
+					<Text style={styles.sectionTitle}>Disclaimer</Text>
+                    <Text style={styles.bodyText}>
+                        STATERA does not provide medical, psychological, or academic advising services. 
+                        </Text>
+                    <Text style={styles.bodyText}>
+                        The behavioral status and analysis are generated from measurable usage patterns and 
+                        should be interpreted as informational only.</Text>
+					<View style={styles.sectionDivider} />
+				</View>
+
+                {/* Version Information */}
+				<View style={styles.section}>
+					<Text style={styles.sectionTitle}>Version Information</Text>
+					<Text style={styles.bodyText}>STATERA App Version: 1.0.0</Text>
+                    <Text style={styles.bodyText}>Release Date: February 2025</Text>
+                    <Text style={styles.bodyText}>Developed by: The Team SEBEN</Text>
 				</View>
 			</ScrollView>
 		</View>
