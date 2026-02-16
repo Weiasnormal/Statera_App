@@ -1,5 +1,5 @@
-import Get_Started  from "./(tabs)/get_started";
+import IntroPage from "./(tabs)/intro_page";
 
 export default function Index() {
-  return <Get_Started />;
+  return <IntroPage />;
 }
