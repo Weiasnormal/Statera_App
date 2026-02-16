@@ -51,7 +51,10 @@ export default function Settings() {
           </Pressable>
 
           {/* About STATERA Menu */}
-          <Pressable style={[styles.menuItem, styles.menuItemLast]}>
+          <Pressable
+            style={[styles.menuItem, styles.menuItemLast]}
+            onPress={() => router.push("/about_statera")}
+          >
             <View style={styles.menuLeft}>
               <Ionicons
                 name="information-circle-outline"
