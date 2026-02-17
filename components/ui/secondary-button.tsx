@@ -1,12 +1,12 @@
 import React from "react";
 import {
-  Pressable,
-  PressableProps,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
+    Pressable,
+    PressableProps,
+    StyleSheet,
+    Text,
+    TextStyle,
+    View,
+    ViewStyle,
 } from "react-native";
 
 type SecondaryButtonProps = {
@@ -51,7 +51,7 @@ export function SecondaryButton({
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 10,
+    height: 48,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   text: {
-    color: "#6b6b6b",
-    fontSize: 14,
-    fontWeight: "500",
+    color: "#006B8F",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   textWithIcon: {
     marginHorizontal: 6,

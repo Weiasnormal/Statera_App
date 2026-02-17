@@ -1,3 +1,5 @@
+import { PrimaryButton } from "@/components/ui/primary-button";
+import { SecondaryButton } from "@/components/ui/secondary-button";
 import { requestUsagePermission } from "@/services/usage-stats";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, router, useLocalSearchParams } from "expo-router";
@@ -75,23 +77,15 @@ export default function AccessScreen() {
           </View>
 
           <View style={styles.actions}>
-            <Pressable
-              style={styles.primaryButton}
-              accessibilityRole="button"
+            <PrimaryButton
+              title={isRequesting ? "Opening Settings..." : "Allow Access"}
               onPress={handleAllowAccess}
               disabled={isRequesting}
-            >
-              <Text style={styles.primaryText}>
-                {isRequesting ? "Opening Settings..." : "Allow Access"}
-              </Text>
-            </Pressable>
-            <Pressable
-              style={styles.secondaryButton}
-              accessibilityRole="button"
+            />
+            <SecondaryButton
+              title="Not Now"
               onPress={() => router.push("./get_started")}
-            >
-              <Text style={styles.secondaryText}>Not Now</Text>
-            </Pressable>
+            />
           </View>
         </View>
       </SafeAreaView>
@@ -147,28 +141,7 @@ const styles = StyleSheet.create({
     marginTop: 14,
   },
   actions: {
+    marginBottom: 8,
     gap: 14,
-  },
-  primaryButton: {
-    height: 48,
-    borderRadius: 999,
-    backgroundColor: "#006B8F",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  primaryText: {
-    color: "#FFFFFF",
-    fontWeight: "700",
-    fontSize: 14,
-  },
-  secondaryButton: {
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  secondaryText: {
-    color: "#006B8F",
-    fontWeight: "700",
-    fontSize: 13,
   },
 });

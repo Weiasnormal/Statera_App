@@ -1,6 +1,8 @@
+import { PrimaryButton } from "@/components/ui/primary-button";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import {
+  Image,
   Pressable,
   SafeAreaView,
   StatusBar,
@@ -30,7 +32,7 @@ export default function DataConnectedScreen() {
 
         <View style={styles.contentWrapper}>
           <View style={styles.content}>
-            <View style={styles.placeholderIcon} />
+            <Image source={require("@/assets/images/check.gif")} style={styles.placeholderIcon} />
             <Text style={styles.title}>Usage Data Connected</Text>
             <Text style={styles.subtitle}>
               We&apos;re now analyzing your digital behavior patterns.
@@ -38,13 +40,11 @@ export default function DataConnectedScreen() {
           </View>
         </View>
 
-        <Pressable
-          style={styles.generateButton}
-          accessibilityRole="button"
+        <PrimaryButton
+          title="Generate My Profile"
           onPress={() => router.push("/nav")}
-        >
-          <Text style={styles.generateText}>Generate My Profile</Text>
-        </Pressable>
+          style={styles.generateButton}
+        />
       </View>
     </SafeAreaView>
   );
@@ -83,10 +83,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   placeholderIcon: {
-    width: 96,
-    height: 96,
+    width: 150,
+    height: 150,
     borderRadius: 16,
-    backgroundColor: "#F3F4F6",
     marginBottom: 6,
   },
   title: {
@@ -102,16 +101,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   generateButton: {
-    height: 48,
-    borderRadius: 999,
-    backgroundColor: "#006B8F",
-    alignItems: "center",
-    justifyContent: "center",
     marginBottom: 75,
-  },
-  generateText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 16,
   },
 });

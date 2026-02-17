@@ -1,3 +1,4 @@
+import { PrimaryButton } from "@/components/ui/primary-button";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -88,14 +89,12 @@ export default function InputScreen() {
           </Text>
         </View>
 
-        <Pressable
-          style={[styles.continueButton, !isButtonEnabled && styles.continueButtonDisabled]}
-          accessibilityRole="button"
-          onPress={() => isButtonEnabled && router.push("./usage_request")}
+        <PrimaryButton
+          title="Continue"
+          onPress={() => router.push("./usage_request")}
           disabled={!isButtonEnabled}
-        >
-          <Text style={[styles.continueText, !isButtonEnabled && styles.continueTextDisabled]}>Continue</Text>
-        </Pressable>
+          style={styles.continueButton}
+        />
       </View>
     </SafeAreaView>
     </>
@@ -160,22 +159,6 @@ const styles = StyleSheet.create({
     color: "#9CA3AF",
   },
   continueButton: {
-    height: 48,
-    borderRadius: 999,
-    backgroundColor: "#006B8F",
-    alignItems: "center",
-    justifyContent: "center",
     marginBottom: 75,
-  },
-  continueButtonDisabled: {
-    backgroundColor: "#D1D5DB",
-  },
-  continueText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  continueTextDisabled: {
-    color: "#9CA3AF",
   },
 });

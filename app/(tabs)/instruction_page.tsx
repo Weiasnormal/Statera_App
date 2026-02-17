@@ -1,3 +1,4 @@
+import { PrimaryButton } from "@/components/ui/primary-button";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -153,13 +154,11 @@ export default function ViewResultsScreen() {
           </View>
         </View>
 
-        <Pressable
-          style={styles.continueButton}
-          accessibilityRole="button"
+        <PrimaryButton
+          title="Continue"
           onPress={() => router.push("./gwa_input?animation=slide_from_right")}
-        >
-          <Text style={styles.continueText}>Continue</Text>
-        </Pressable>
+          style={styles.continueButton}
+        />
       </View>
     </SafeAreaView>
   );
@@ -244,17 +243,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#006B8F",
   },
   continueButton: {
-    height: 48, // Adjust button height (e.g., 56 for taller button)
-    borderRadius: 999,
-    backgroundColor: "#006B8F",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 50, // Add marginBottom: 20 to move button up from bottom
-    // Add marginBottom: 20 to move button up from bottom
-  },
-  continueText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 16,
+    marginBottom: 50,
   },
 });

@@ -31,9 +31,9 @@ export function PrimaryButton({ title, onPress, disabled, style }: PrimaryButton
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#0a7ea4",
+    backgroundColor: "#006B8F",
     borderRadius: 999,
-    paddingVertical: 14,
+    height: 48,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -41,11 +41,11 @@ const styles = StyleSheet.create({
     opacity: 0.85,
   },
   buttonDisabled: {
-    opacity: 0.5,
+    backgroundColor: "#D1D5DB",
   },
   text: {
-    color: "#ffffff",
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "bold",
   },
 });

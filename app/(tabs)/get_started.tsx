@@ -1,10 +1,11 @@
+import { PrimaryButton } from "@/components/ui/primary-button";
+import { SecondaryButton } from "@/components/ui/secondary-button";
 import { router } from "expo-router";
 import { useEffect, useRef } from "react";
 import {
   Animated,
   Easing,
   Image,
-  Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -52,17 +53,15 @@ export default function GetStarted() {
           </View>
 
           <View style={styles.buttonSection}>
-            <Pressable
-              style={styles.getStartedButton}
-              accessibilityRole="button"
+            <PrimaryButton
+              title="Get Started"
               onPress={() => router.push("./instruction_page")}
-            >
-              <Text style={styles.getStartedButtonText}>Get Started</Text>
-            </Pressable>
+            />
 
-            <Pressable onPress={() => router.push("/modal/how_it_works")}>
-              <Text style={styles.howItWorksText}>How it Works</Text>
-            </Pressable>
+            <SecondaryButton
+              title="How it Works"
+              onPress={() => router.push("/modal/how_it_works")}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -125,26 +124,7 @@ const styles = StyleSheet.create({
   },
   buttonSection: {
     paddingHorizontal: 16,
-    paddingVertical: 24,
+    paddingVertical: 37,
     gap: 16,
-  },
-  getStartedButton: {
-    backgroundColor: "#006B8F",
-    paddingVertical: 14,
-    borderRadius: 999,
-    alignItems: "center",
-    
-  },
-  getStartedButtonText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  howItWorksText: {
-    color: "#006B8F",
-    fontWeight: "bold",
-    fontSize: 14,
-    textAlign: "center",
-    paddingVertical: 8,
   },
 });
