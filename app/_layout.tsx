@@ -4,12 +4,12 @@ export default function RootLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen
-        name="(tabs)/_loading_screen"
+        name="_loading_screen"
         options={{ animation: "fade" }}
       />
       <Stack.Screen
         name="(tabs)/get_started"
-        options={{ animation: "slide_from_left" }}
+        options={{ animation: "fade" }}
       />
       <Stack.Screen
         name="(tabs)/instruction_page"

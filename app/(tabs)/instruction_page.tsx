@@ -245,8 +245,8 @@ const styles = StyleSheet.create({
     // Add marginBottom: 20 to move button up from bottom
   },
   continueText: {
-    fontSize: 14,
-    fontWeight: "700",
     color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });

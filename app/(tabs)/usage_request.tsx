@@ -124,17 +124,19 @@ const styles = StyleSheet.create({
   },
   primaryText: {
     color: "#FFFFFF",
-    fontWeight: "700",
-    fontSize: 14,
+    fontWeight: "bold",
+    fontSize: 16,
   },
   secondaryButton: {
     height: 40,
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 20,
   },
   secondaryText: {
     color: "#006B8F",
-    fontWeight: "700",
-    fontSize: 13,
+    fontWeight: "bold",
+    fontSize: 14,
+    marginBottom: 8,
   },
 });

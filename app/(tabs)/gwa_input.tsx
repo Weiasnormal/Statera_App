@@ -126,11 +126,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#006B8F",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 60,
+    marginBottom: 75,
   },
   continueText: {
-    fontSize: 14,
-    fontWeight: "700",
     color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
