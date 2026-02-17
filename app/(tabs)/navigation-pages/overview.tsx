@@ -1,12 +1,15 @@
+import BottomWave from "@/assets/images/waves/bottom-wave.svg";
+import TopWave from "@/assets/images/waves/top-wave.svg";
 import { SecondaryButton } from "@/components/ui/secondary-button";
 import { Ionicons } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import Svg, { G, Path, Text as SvgText } from "react-native-svg";
 
 export default function Overview() {
+  const waveBaseColor = "#FFFFFF";
   const waveTopColor = "#C5E6E8";
-  const waveMiddleColor = "#D7F0F2";
   const waveBottomColor = "#EAF9FA";
   const actionColor = "#00838F";
   const usageData = [
@@ -55,33 +58,31 @@ export default function Overview() {
   };
 
   return (
-    <View style={styles.container}>
-      <View pointerEvents="none" style={styles.waveContainer}>
-        <View
-          style={[
-            styles.wave,
-            styles.waveTop,
-            { backgroundColor: waveTopColor },
-          ]}
-        />
-        <View
-          style={[
-            styles.wave,
-            styles.waveMiddle,
-            { backgroundColor: waveMiddleColor },
-          ]}
-        />
-        <View
-          style={[
-            styles.wave,
-            styles.waveBottom,
-            { backgroundColor: waveBottomColor },
-          ]}
-        />
-      </View>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
-        <Text style={styles.headerText}>Your behavioral state profile:</Text>
+    <View style={[styles.container, { backgroundColor: waveBaseColor }]}>
+      <StatusBar style="dark" backgroundColor={waveTopColor} />
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View style={styles.waveFullBleed}>
+            <View pointerEvents="none" style={styles.waveContainer}>
+              <BottomWave
+                width="100%"
+                height={500}
+                preserveAspectRatio="xMidYMin meet"
+                color={waveBottomColor}
+                style={[styles.waveSvg, styles.waveBottom]}
+              />
+              <TopWave
+                width="100%"
+                height={500}
+                preserveAspectRatio="xMidYMin meet"
+                color={waveTopColor}
+                style={[styles.waveSvg, styles.waveTop]}
+              />
+            </View>
+          </View>
+          <View style={styles.contentWrap}>
+          {/* Header */}
+          <Text style={styles.headerText}>Your behavioral state profile:</Text>
 
         {/* Main Title */}
         <Text style={styles.mainTitle}>Minimal Digital</Text>
@@ -193,7 +194,9 @@ export default function Overview() {
             iconPosition="right"
           />
         </View>
-      </ScrollView>
+        </View>
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 }
@@ -201,45 +204,52 @@ export default function Overview() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#C5E6E8",
+    backgroundColor: "#ffffff",
+  },
+  safeArea: {
+    flex: 1,
   },
   waveContainer: {
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 0,
-    height: 220,
+    top: 0,
+    height: 600,
+    overflow: "hidden",
   },
-  wave: {
+  waveFullBleed: {
+    position: "relative",
+    width: "100%",
+    alignSelf: "stretch",
+  },
+  waveSvg: {
     position: "absolute",
-    width: "200%",
-    height: 220,
-    borderTopLeftRadius: 220,
-    borderTopRightRadius: 220,
+    left: 0,
+    right: 0,
   },
   waveTop: {
-    bottom: 120,
-    left: "-30%",
-  },
-  waveMiddle: {
-    bottom: 70,
-    left: "-10%",
+    top: 0,
   },
   waveBottom: {
-    bottom: 0,
-    left: "-20%",
+    top: 100,
   },
   scrollContent: {
     alignItems: "center",
-    paddingTop: 24,
-    paddingHorizontal: 20,
+    paddingTop: 20,
     paddingBottom: 40,
+  },
+  contentWrap: {
+    width: "100%",
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
   headerText: {
     fontSize: 14,
     fontWeight: "bold",
     color: "#555",
+    paddingTop: 40,
     marginBottom: 16,
+    textAlign: "center",
   },
   mainTitle: {
     fontSize: 32,
