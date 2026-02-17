@@ -1,8 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Animated,
+  Dimensions,
+  Image,
+  PanResponder,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -10,60 +13,66 @@ import {
   View,
 } from "react-native";
 
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
 export default function ViewResultsScreen() {
-  const [fadeAnim] = useState(new Animated.Value(1));
-  const [slideAnim] = useState(new Animated.Value(0));
-  const [textSwitch] = useState(new Animated.Value(1)); // 1 for Input, 0 for Results
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slideAnim = useRef(new Animated.Value(0)).current;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startSlideTimer = () => {
+    // Clear existing timer
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    // Set timer to switch slides
+    timerRef.current = setTimeout(() => {
+      goToSlide((currentSlide + 1) % 2);
+    }, 3000) as unknown as NodeJS.Timeout;
+  };
+
+  const goToSlide = (slideIndex: number) => {
+    setCurrentSlide(slideIndex);
+    
+    // Animate horizontal slide transition
+    Animated.timing(slideAnim, {
+      toValue: -slideIndex,
+      duration: 400,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        return Math.abs(gestureState.dx) > 10;
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dx > 50 && currentSlide === 1) {
+          // Swipe right, go to previous slide
+          goToSlide(0);
+        } else if (gestureState.dx < -50 && currentSlide === 0) {
+          // Swipe left, go to next slide
+          goToSlide(1);
+        }
+      },
+    })
+  ).current;
 
   useEffect(() => {
-    // Fade animation: input.png visible (1) -> behavioral.png visible (0) and back, looping every 2 seconds
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 3000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 3000,
-          useNativeDriver: true,
-        }),
-      ]),
-    ).start();
+    startSlideTimer();
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [currentSlide]);
 
-    // Slide animation for the blue progress element - loops back and forth
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(slideAnim, {
-          toValue: 1,
-          duration: 3000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 3000,
-          useNativeDriver: true,
-        }),
-      ]),
-    ).start();
+  const handleProgressDotPress = (index: number) => {
+    goToSlide(index);
+  };
 
-    // Text switching animation: alternates between Input and Results every 2 seconds
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(textSwitch, {
-          toValue: 0,
-          duration: 3000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(textSwitch, {
-          toValue: 1,
-          duration: 3000,
-          useNativeDriver: true,
-        }),
-      ]),
-    ).start();
-  }, [fadeAnim, slideAnim, textSwitch]);
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -76,69 +85,71 @@ export default function ViewResultsScreen() {
         </Pressable>
 
         <View style={styles.content}>
-          <View style={styles.imageContainer}>
-            {/* input.png with fade out */}
-            <Animated.Image
-              source={require("@/assets/images/input.png")}
-              style={[styles.illustration, { opacity: fadeAnim }]}
-              resizeMode="contain"
-            />
-            {/* behavioral.png with fade in */}
-            <Animated.Image
-              source={require("@/assets/images/behavioral.png")}
-              style={[
-                styles.illustration,
-                styles.absoluteImage,
-                { opacity: Animated.subtract(1, fadeAnim) },
-              ]}
-              resizeMode="contain"
-            />
-          </View>
-
-          <View style={styles.textContainer}>
+          <View style={styles.carouselContainer} {...panResponder.panHandlers}>
             <Animated.View
               style={[
-                styles.textContent,
-                {
-                  opacity: textSwitch,
-                },
-              ]}
-            >
-              <Text style={styles.title}>Input Academic</Text>
-              <Text style={styles.title}>Performance</Text>
-            </Animated.View>
-
-            <Animated.View
-              style={[
-                styles.textContent,
-                styles.absoluteText,
-                {
-                  opacity: Animated.subtract(1, textSwitch),
-                },
-              ]}
-            >
-              <Text style={styles.title}>View Behavioral</Text>
-              <Text style={styles.title}>Results</Text>
-            </Animated.View>
-          </View>
-
-          <View style={styles.progressRow}>
-            <View style={styles.progressDot} />
-            <Animated.View
-              style={[
-                styles.progressPill,
+                styles.slidesWrapper,
                 {
                   transform: [
                     {
                       translateX: slideAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [-20, 20],
+                        inputRange: [-1, 0],
+                        outputRange: [-(SCREEN_WIDTH - 40), 0],
                       }),
                     },
                   ],
                 },
               ]}
-            />
+            >
+              {/* Slide 1 */}
+              <View style={styles.slide}>
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={require("@/assets/images/input.png")}
+                    style={styles.illustration}
+                    resizeMode="contain"
+                  />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.title}>Input Academic</Text>
+                  <Text style={styles.title}>Performance</Text>
+                </View>
+              </View>
+
+              {/* Slide 2 */}
+              <View style={styles.slide}>
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={require("@/assets/images/behavioral.png")}
+                    style={styles.illustration}
+                    resizeMode="contain"
+                  />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.title}>View Behavioral</Text>
+                  <Text style={styles.title}>Results</Text>
+                </View>
+              </View>
+            </Animated.View>
+          </View>
+
+          <View style={styles.progressRow}>
+            <Pressable onPress={() => handleProgressDotPress(0)}>
+              <View
+                style={[
+                  styles.progressDot,
+                  currentSlide === 0 && styles.progressDotActive,
+                ]}
+              />
+            </Pressable>
+            <Pressable onPress={() => handleProgressDotPress(1)}>
+              <View
+                style={[
+                  styles.progressDot,
+                  currentSlide === 1 && styles.progressDotActive,
+                ]}
+              />
+            </Pressable>
           </View>
         </View>
 
@@ -173,43 +184,42 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 8,
   },
-  imageContainer: {
-    position: "relative",
-    width: 250, // Adjust image size (e.g., 280 for larger, 180 for smaller)
-    height: 250, // Keep same as width for square aspect ratio
-    marginBottom: 8, // Increase to add more space below image (e.g., 32)
-  },
   content: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 12, // Increase to move content down (e.g., 50), decrease to move up (e.g., -20)
-    gap: 12, // Increase to add more space between image, text, and progress (e.g., 24)
+    marginTop: 12,
+    gap: 12,
+    flex: 1,
   },
-  textContainer: {
-    position: "relative",
-    minHeight: 48,
+  carouselContainer: {
+    width: SCREEN_WIDTH - 40,
+    overflow: "hidden",
+  },
+  slidesWrapper: {
+    flexDirection: "row",
+    width: (SCREEN_WIDTH - 40) * 2,
+  },
+  slide: {
+    width: SCREEN_WIDTH - 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  imageContainer: {
+    width: 250,
+    height: 250,
+    marginBottom: 8,
     justifyContent: "center",
     alignItems: "center",
   },
-  textContent: {
+  textContainer: {
+    minHeight: 48,
+    justifyContent: "center",
     alignItems: "center",
-  },
-  absoluteText: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
   },
   illustration: {
     width: 250,
     height: 250,
     marginBottom: 8,
-  },
-  absoluteImage: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    marginBottom: 0,
   },
   title: {
     fontSize: 24,
@@ -221,8 +231,8 @@ const styles = StyleSheet.create({
   progressRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    marginTop: 24, // Increase to add more space above progress dots (e.g., 24)
+    gap: 8,
+    marginTop: 24,
   },
   progressDot: {
     width: 8,
@@ -230,10 +240,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "#D1D5DB",
   },
-  progressPill: {
-    width: 20,
-    height: 8,
-    borderRadius: 999,
+  progressDotActive: {
     backgroundColor: "#006B8F",
   },
   continueButton: {

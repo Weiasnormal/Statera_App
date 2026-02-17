@@ -2,7 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import {
 	Pressable,
-	SafeAreaView,
 	ScrollView,
 	StatusBar,
 	StyleSheet,
@@ -13,14 +12,14 @@ import {
 export default function HowItWorks() {
 	return (
 		<View style={styles.overlay}>
-			<StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+			<StatusBar barStyle="dark-content" />
 			<Pressable
 				style={styles.backdrop}
 				accessibilityRole="button"
 				accessibilityLabel="Close"
 				onPress={() => router.back()}
 			/>
-			<SafeAreaView style={styles.sheet}>
+			<View style={styles.sheet}>
 				<View style={styles.header}>
 					<View style={styles.headerSpacer} />
 					<Text style={styles.title}>How STATERA Works</Text>
@@ -58,7 +57,7 @@ export default function HowItWorks() {
 						</Text>
 					</View>
 				</ScrollView>
-			</SafeAreaView>
+			</View>
 		</View>
 	);
 }
@@ -68,7 +67,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "rgba(15, 23, 42, 0.35)",
+		backgroundColor: "rgba(15, 23, 42, 0.5)",
 	},
 	backdrop: {
 		...StyleSheet.absoluteFillObject,
@@ -79,7 +78,13 @@ const styles = StyleSheet.create({
 		maxHeight: "80%",
 		backgroundColor: "#FFFFFF",
 		borderRadius: 16,
+		paddingTop: 8,
 		paddingBottom: 8,
+		elevation: 10,
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 4 },
+		shadowOpacity: 0.3,
+		shadowRadius: 8,
 	},
 	header: {
 		paddingHorizontal: 16,

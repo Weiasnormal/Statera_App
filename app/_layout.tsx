@@ -43,7 +43,11 @@ export default function RootLayout() {
       />
       <Stack.Screen
         name="(tabs)/modal/how_it_works"
-        options={{ presentation: "transparentModal", headerShown: false }}
+        options={{ 
+          presentation: "transparentModal", 
+          animation: "fade",
+          headerShown: false 
+        }}
       />
     </Stack>
   );
