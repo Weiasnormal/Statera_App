@@ -4,7 +4,12 @@
     "slug": "statera",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/Intro_logo.webp",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#E6F4FE"
+    },
     "scheme": "statera",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -12,12 +17,16 @@
       "supportsTablet": true
     },
     "android": {
-      "permissions": ["android.permission.PACKAGE_USAGE_STATS"],
+      "permissions": [
+        "android.permission.PACKAGE_USAGE_STATS"
+      ],
       "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#E6F4FE"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.wincelpogi.statera"
     },
     "web": {
       "output": "static"

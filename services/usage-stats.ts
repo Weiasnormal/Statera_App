@@ -1,10 +1,9 @@
-import { Linking, Platform } from "react-native";
 import {
-  checkForPermission,
-  EventFrequency,
-  queryUsageStats,
-  showUsageAccessSettings,
-} from "@brighthustle/react-native-usage-stats-manager";
+  getUsageStats,
+  hasUsageStatsPermission,
+  requestUsageStatsPermission,
+} from "expo-android-usagestats";
+import { Platform } from "react-native";
 
 export type AppUsageItem = {
   packageName: string;
@@ -16,22 +15,36 @@ export async function requestUsagePermission(): Promise<boolean> {
     return false;
   }
 
-  const hasPermission = await checkForPermission();
-  if (hasPermission) {
-    return true;
+  try {
+    // Check if we already have permission
+    const hasPermission = await hasUsageStatsPermission();
+    if (hasPermission) {
+      return true;
+    }
+
+    // Request permission (opens settings)
+    await requestUsageStatsPermission();
+    
+    // Return false because user needs to manually enable in settings
+    // The app will check again when they return
+    return false;
+  } catch (error) {
+    console.error("Error requesting usage permission:", error);
+    return false;
+  }
+}
+
+export async function checkUsagePermission(): Promise<boolean> {
+  if (Platform.OS !== "android") {
+    return false;
   }
 
   try {
-    if (typeof Linking.sendIntent === "function") {
-      await Linking.sendIntent("android.settings.USAGE_ACCESS_SETTINGS");
-    } else {
-      showUsageAccessSettings("");
-    }
-  } catch {
-    showUsageAccessSettings("");
+    return await hasUsageStatsPermission();
+  } catch (error) {
+    console.error("Error checking usage permission:", error);
+    return false;
   }
-
-  return false;
 }
 
 export async function getAppUsageData(): Promise<AppUsageItem[]> {
@@ -39,16 +52,29 @@ export async function getAppUsageData(): Promise<AppUsageItem[]> {
     return [];
   }
 
-  const endTime = Date.now();
-  const startTime = endTime - 86_400_000;
-  const result = await queryUsageStats(EventFrequency.INTERVAL_DAILY, startTime, endTime);
-  const items = Array.isArray(result) ? result : [];
-
-  return items
-    .map((item: any) => ({
-      packageName: item.packageName ?? item.package ?? "unknown",
-      totalTimeVisible: Number(item.totalTimeVisible ?? item.totalTimeInForeground ?? 0),
-    }))
-    .filter((item: AppUsageItem) => item.packageName !== "unknown")
-    .sort((a: AppUsageItem, b: AppUsageItem) => b.totalTimeVisible - a.totalTimeVisible);
+  try {
+    const endTime = Date.now();
+    const startTime = endTime - 86_400_000; // Last 24 hours
+    
+    const stats = await getUsageStats(startTime, endTime);
+    
+    return stats
+      .map((item: any) => ({
+        packageName: item.packageName || "unknown",
+        totalTimeVisible: Number(item.totalTimeInForeground || 0),
+      }))
+      .filter((item: AppUsageItem) => {
+        const pkg = item.packageName.toLowerCase();
+        return (
+          item.packageName !== "unknown" &&
+          item.totalTimeVisible > 0 &&
+          !pkg.startsWith("com.android") &&
+          !pkg.startsWith("com.google.android")
+        );
+      })
+      .sort((a: AppUsageItem, b: AppUsageItem) => b.totalTimeVisible - a.totalTimeVisible);
+  } catch (error) {
+    console.error("Error getting app usage data:", error);
+    return [];
+  }
 }

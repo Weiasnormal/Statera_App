@@ -1,4 +1,3 @@
-import { PrimaryButton } from "@/components/ui/primary-button";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import {
@@ -40,11 +39,23 @@ export default function DataConnectedScreen() {
           </View>
         </View>
 
-        <PrimaryButton
-          title="Generate My Profile"
-          onPress={() => router.push("/nav")}
-          style={styles.generateButton}
-        />
+        <View style={styles.buttonContainer}>
+          <Pressable
+            style={styles.generateButton}
+            accessibilityRole="button"
+            onPress={() => router.push("/nav")}
+          >
+            <Text style={styles.generateText}>Generate My Profile</Text>
+          </Pressable>
+          
+          <Pressable
+            style={styles.debugButton}
+            accessibilityRole="button"
+            onPress={() => router.push("/(debug)/debug_stats_page")}
+          >
+            <Text style={styles.debugText}>View Debug Stats</Text>
+          </Pressable>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -100,7 +111,30 @@ const styles = StyleSheet.create({
     color: "#6B7280",
     textAlign: "center",
   },
+  buttonContainer: {
+    gap: 12,
+  },
   generateButton: {
+    height: 48,
+    borderRadius: 999,
+    backgroundColor: "#006B8F",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  generateText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  debugButton: {
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 75,
+  },
+  debugText: {
+    color: "#006B8F",
+    fontWeight: "600",
+    fontSize: 14,
   },
 });

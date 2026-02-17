@@ -1,9 +1,9 @@
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { SecondaryButton } from "@/components/ui/secondary-button";
-import { requestUsagePermission } from "@/services/usage-stats";
+import { checkUsagePermission, requestUsagePermission } from "@/services/usage-stats";
 import { Ionicons } from "@expo/vector-icons";
-import { Stack, router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { Stack, router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useState } from "react";
 import { Alert, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 export default function AccessScreen() {
@@ -13,6 +13,25 @@ export default function AccessScreen() {
   
   const [isRequesting, setIsRequesting] = useState(false);
 
+  // Check permission when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      checkPermissionStatus();
+    }, [])
+  );
+
+  const checkPermissionStatus = async () => {
+    try {
+      const hasPermission = await checkUsagePermission();
+      if (hasPermission) {
+        // If permission is already granted, proceed to next screen
+        router.push("./data_connected");
+      }
+    } catch (error) {
+      console.error("Error checking permission:", error);
+    }
+  };
+
   const handleAllowAccess = async () => {
     setIsRequesting(true);
     try {
@@ -20,11 +39,19 @@ export default function AccessScreen() {
       if (granted) {
         router.push("./data_connected");
       } else {
-        // Permission not granted, show alert
+        // Permission not granted, show alert with instructions
         Alert.alert(
-          "Permission Required",
-          "Usage access permission is required to continue. Please enable it in Settings to proceed.",
-          [{ text: "OK" }]
+          "Enable Usage Access",
+          "Please enable usage access for STATERA in the Settings screen that will open. After enabling, return to this app.",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                // User will be taken to settings when requestUsagePermission was called
+                // When they return, useFocusEffect will check the permission again
+              }
+            }
+          ]
         );
       }
       //router.push("./data_connected");
