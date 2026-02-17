@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   durationLabel: {
     fontSize: 14,
     color: "#666",
-    marginBottom: 8,
+    marginBottom: 5,
   },
   durationValue: {
     flexDirection: "row",
@@ -107,12 +107,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   currentlyText: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
     color: "#1a1a1a",
   },
   daysText: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
     color: "#16B8C5",
     flex: 1,

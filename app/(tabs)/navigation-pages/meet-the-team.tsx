@@ -27,9 +27,9 @@ export default function MeetTheTeam() {
           <Text style={styles.teamText}>Team</Text>
           <View style={styles.sebenContainer}>
             <Text style={[styles.sebenLetter, { color: "#0EA5D8" }]}>S</Text>
-            <Text style={[styles.sebenLetter, { color: "#0EA5D8" }]}>E</Text>
+            <Text style={[styles.sebenLetter, { color: "#27B1A8" }]}>E</Text>
             <Text style={[styles.sebenLetter, { color: "#F5A623" }]}>B</Text>
-            <Text style={[styles.sebenLetter, { color: "#0EA5D8" }]}>E</Text>
+            <Text style={[styles.sebenLetter, { color: "#27B1A8" }]}>E</Text>
             <Text style={[styles.sebenLetter, { color: "#0EA5D8" }]}>N</Text>
           </View>
         </View>
@@ -45,8 +45,6 @@ export default function MeetTheTeam() {
 
         {/* Contact Us Section */}
         <View style={styles.contactSection}>
-          <Text style={styles.contactTitle}>Contact Us</Text>
-
           <View style={styles.contactCard}>
             <Image
               source={require("@/assets/images/dev-characters/joko.png")}
@@ -54,21 +52,6 @@ export default function MeetTheTeam() {
               resizeMode="contain"
             />
             <Text style={styles.contactName}>Joko Ymmanuel Comia</Text>
-
-            <View style={styles.socialIcons}>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-instagram" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-facebook" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-github" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-linkedin" size={20} color="#1a1a1a" />
-              </Pressable>
-            </View>
           </View>
 
           <View style={styles.contactCard}>
@@ -78,21 +61,6 @@ export default function MeetTheTeam() {
               resizeMode="contain"
             />
             <Text style={styles.contactName}>Wincel Crusit</Text>
-
-            <View style={styles.socialIcons}>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-instagram" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-facebook" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-github" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-linkedin" size={20} color="#1a1a1a" />
-              </Pressable>
-            </View>
           </View>
 
           <View style={styles.contactCard}>
@@ -102,21 +70,6 @@ export default function MeetTheTeam() {
               resizeMode="contain"
             />
             <Text style={styles.contactName}>Freesia Mae Masakayan</Text>
-
-            <View style={styles.socialIcons}>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-instagram" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-facebook" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-github" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-linkedin" size={20} color="#1a1a1a" />
-              </Pressable>
-            </View>
           </View>
 
           <View style={styles.contactCard}>
@@ -126,21 +79,6 @@ export default function MeetTheTeam() {
               resizeMode="contain"
             />
             <Text style={styles.contactName}>Neil Patrick Pajadan</Text>
-
-            <View style={styles.socialIcons}>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-instagram" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-facebook" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-github" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-linkedin" size={20} color="#1a1a1a" />
-              </Pressable>
-            </View>
           </View>
 
           <View style={styles.contactCard}>
@@ -150,21 +88,6 @@ export default function MeetTheTeam() {
               resizeMode="contain"
             />
             <Text style={styles.contactName}>Gio Andrew Briones</Text>
-
-            <View style={styles.socialIcons}>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-instagram" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-facebook" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-github" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-linkedin" size={20} color="#1a1a1a" />
-              </Pressable>
-            </View>
           </View>
 
           <View style={styles.contactCard}>
@@ -174,21 +97,6 @@ export default function MeetTheTeam() {
               resizeMode="contain"
             />
             <Text style={styles.contactName}>Nathaniel Segovia</Text>
-
-            <View style={styles.socialIcons}>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-instagram" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-facebook" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-github" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-linkedin" size={20} color="#1a1a1a" />
-              </Pressable>
-            </View>
           </View>
 
           <View style={styles.contactCard}>
@@ -198,21 +106,6 @@ export default function MeetTheTeam() {
               resizeMode="contain"
             />
             <Text style={styles.contactName}>Patrick Joel Fernandez</Text>
-
-            <View style={styles.socialIcons}>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-instagram" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-facebook" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-github" size={20} color="#1a1a1a" />
-              </Pressable>
-              <Pressable style={styles.socialIcon}>
-                <Ionicons name="logo-linkedin" size={20} color="#1a1a1a" />
-              </Pressable>
-            </View>
           </View>
         </View>
       </ScrollView>
@@ -228,26 +121,27 @@ const styles = StyleSheet.create({
   scrollContent: {
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: 40,
-    paddingBottom: 40,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   titleContainer: {
-    marginBottom: 30,
+    marginBottom: -60,
   },
   teamText: {
-    fontSize: 130,
+    fontSize: 120,
     fontWeight: "900",
-    color: "#1a1a1a",
+    color: "#343235",
     textAlign: "center",
+    lineHeight: 100,
   },
   sebenContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: 4,
-    marginTop: -40,
+    gap: 2,
+    marginTop: -20,
   },
   sebenLetter: {
-    fontSize: 110,
+    fontSize: 100,
     fontWeight: "900",
   },
   imageContainer: {
@@ -260,7 +154,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   contactSection: {
-    marginTop: 60,
+    marginTop: 20,
     width: "100%",
   },
   contactTitle: {

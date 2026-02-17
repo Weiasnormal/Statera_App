@@ -5,9 +5,9 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 export default function Analysis() {
   const distributionData = [
     { label: "Academic Breakdown", percentage: 53, color: "#16B8C5" },
-    { label: "Productivity apps", percentage: 20, color: "#16B8C5" },
+    { label: "Productivity apps", percentage: 20, color: "#27B1A8" },
     { label: "Social media apps", percentage: 33, color: "#16B8C5" },
-    { label: "Entertainment/leisure apps", percentage: 67, color: "#16B8C5" },
+    { label: "Entertainment/leisure apps", percentage: 67, color: "#27B1A8" },
     { label: "Overall app usage", percentage: 24, color: "#16B8C5" },
   ];
 
@@ -64,6 +64,14 @@ export default function Analysis() {
         {/* Pattern Interpretation Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Pattern Interpretation</Text>
+          <Text style={styles.sectionDescription}>
+            Your usage pattern shows frequent social interaction alongside 
+            moderate structuredtask engagement.
+          </Text>
+          <Text style={styles.sectionDescription}>
+            This interpretation is descriptive and not a clinical or psychological 
+            diagnosis.
+          </Text>
         </View>
       </ScrollView>
     </View>
@@ -73,7 +81,7 @@ export default function Analysis() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#ffffff",
   },
   scrollView: {
     flex: 1,
@@ -96,6 +104,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
     lineHeight: 20,
+    paddingBottom: 8,
   },
   distributionContainer: {
     backgroundColor: "#fff",
