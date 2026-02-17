@@ -70,7 +70,7 @@ export default function ViewResultsScreen() {
         <Pressable
           style={styles.backButton}
           accessibilityRole="button"
-          onPress={() => router.push("/get_started")}
+          onPress={() => router.push("./get_started")}
         >
           <Ionicons name="arrow-back" size={20} color="#0F172A" />
         </Pressable>
@@ -145,7 +145,7 @@ export default function ViewResultsScreen() {
         <Pressable
           style={styles.continueButton}
           accessibilityRole="button"
-          onPress={() => router.push("/(tabs)/gwa_input?animation=slide_from_right")}
+          onPress={() => router.push("./gwa_input?animation=slide_from_right")}
         >
           <Text style={styles.continueText}>Continue</Text>
         </Pressable>

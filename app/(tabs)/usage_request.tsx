@@ -25,6 +25,7 @@ export default function AccessScreen() {
           [{ text: "OK" }]
         );
       }
+      //router.push("./data_connected");
     } catch (error) {
       console.error("Error requesting usage permission:", error);
       Alert.alert(
@@ -46,7 +47,7 @@ export default function AccessScreen() {
             <Pressable
               style={styles.backButton}
               accessibilityRole="button"
-              onPress={() => router.push("/(tabs)/gwa_input?animation=slide_from_left")}
+              onPress={() => router.push("./gwa_input?animation=slide_from_left")}
             >
               <Ionicons name="arrow-back" size={20} color="#0F172A" />
             </Pressable>
@@ -87,7 +88,7 @@ export default function AccessScreen() {
             <Pressable
               style={styles.secondaryButton}
               accessibilityRole="button"
-              onPress={() => router.push("/(tabs)/get_started")}
+              onPress={() => router.push("./get_started")}
             >
               <Text style={styles.secondaryText}>Not Now</Text>
             </Pressable>

@@ -55,7 +55,7 @@ export default function GetStarted() {
             <Pressable
               style={styles.getStartedButton}
               accessibilityRole="button"
-              onPress={() => router.push("/instruction_page")}
+              onPress={() => router.push("./instruction_page")}
             >
               <Text style={styles.getStartedButtonText}>Get Started</Text>
             </Pressable>
