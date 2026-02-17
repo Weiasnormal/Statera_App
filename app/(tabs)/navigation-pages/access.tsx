@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
@@ -12,6 +13,14 @@ export default function AccessScreen() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.content}>
+            <Pressable
+              style={styles.backButton}
+              accessibilityRole="button"
+              onPress={() => router.push("./gwa_input")}
+            >
+              <Ionicons name="arrow-back" size={20} color="#0F172A" />
+            </Pressable>
+
             <Text style={styles.title}>Usage Access Required</Text>
             <Text style={styles.body}>
               To generate accurate behavioral insights, STATERA needs access to
@@ -64,21 +73,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 22,
-    paddingTop: 56,
+    paddingTop: 18,
     paddingBottom: 28,
     justifyContent: "space-between",
   },
   content: {
     gap: 8,
   },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "flex-start",
+    justifyContent: "center",
+    marginBottom: 8,
+  },
   title: {
-    fontSize: 26,
-    fontWeight: "700",
+    fontSize: 34,
+    fontWeight: "bold",
     color: "#111827",
     marginBottom: 6,
   },
   body: {
-    fontSize: 13,
+    fontSize: 16,
     lineHeight: 18,
     color: "#4B5563",
   },
@@ -101,7 +118,7 @@ const styles = StyleSheet.create({
   primaryButton: {
     height: 48,
     borderRadius: 999,
-    backgroundColor: "#0F6A7A",
+    backgroundColor: "#006B8F",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -116,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   secondaryText: {
-    color: "#0F6A7A",
+    color: "#006B8F",
     fontWeight: "700",
     fontSize: 13,
   },

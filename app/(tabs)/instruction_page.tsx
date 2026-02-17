@@ -161,10 +161,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 24,
-    justifyContent: "space-between",
+    paddingHorizontal: 20, // Adjust left/right margins (e.g., 32 for more space) // Increase to move back button down (e.g., 20)
+    paddingBottom: 48, // Increase to move continue button up (e.g., 40)
+    justifyContent: "space-between", // Keeps back button at top, continue at bottom
   },
   backButton: {
     width: 40,
@@ -175,15 +174,15 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     position: "relative",
-    width: 220,
-    height: 220,
-    marginBottom: 18,
+    width: 250, // Adjust image size (e.g., 280 for larger, 180 for smaller)
+    height: 250, // Keep same as width for square aspect ratio
+    marginBottom: 8, // Increase to add more space below image (e.g., 32)
   },
   content: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 12,
-    gap: 12,
+    marginTop: 12, // Increase to move content down (e.g., 50), decrease to move up (e.g., -20)
+    gap: 12, // Increase to add more space between image, text, and progress (e.g., 24)
   },
   textContainer: {
     position: "relative",
@@ -201,9 +200,9 @@ const styles = StyleSheet.create({
     right: 0,
   },
   illustration: {
-    width: 220,
-    height: 220,
-    marginBottom: 18,
+    width: 250,
+    height: 250,
+    marginBottom: 8,
   },
   absoluteImage: {
     position: "absolute",
@@ -212,7 +211,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   title: {
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: "600",
     color: "#111827",
     lineHeight: 22,
@@ -221,8 +220,8 @@ const styles = StyleSheet.create({
   progressRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    marginTop: 12,
+    gap: 4,
+    marginTop: 24, // Increase to add more space above progress dots (e.g., 24)
   },
   progressDot: {
     width: 8,
@@ -234,14 +233,16 @@ const styles = StyleSheet.create({
     width: 20,
     height: 8,
     borderRadius: 999,
-    backgroundColor: "#0F6A7A",
+    backgroundColor: "#006B8F",
   },
   continueButton: {
-    height: 48,
+    height: 48, // Adjust button height (e.g., 56 for taller button)
     borderRadius: 999,
-    backgroundColor: "#0F6A7A",
+    backgroundColor: "#006B8F",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 50, // Add marginBottom: 20 to move button up from bottom
+    // Add marginBottom: 20 to move button up from bottom
   },
   continueText: {
     fontSize: 14,

@@ -81,13 +81,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "700",
+    fontSize: 32,
+    fontWeight: "bold",
     color: "#111827",
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: 18,
     lineHeight: 18,
     color: "#6B7280",
     marginBottom: 24,
@@ -110,15 +110,17 @@ const styles = StyleSheet.create({
   },
   helperText: {
     marginTop: 8,
+    marginBottom: 32,
     fontSize: 11,
     color: "#9CA3AF",
   },
   continueButton: {
     height: 48,
     borderRadius: 999,
-    backgroundColor: "#0EA5A5",
+    backgroundColor: "#006B8F",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 60,
   },
   continueText: {
     fontSize: 14,

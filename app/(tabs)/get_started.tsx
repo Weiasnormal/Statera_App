@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "700",
+    fontWeight: "bold",
     color: "#2D3748",
   },
   illustration: {
@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   image: {
-    width: 280,
-    height: 280,
+    width: 300,
+    height: 300,
     resizeMode: "contain",
   },
   textSection: {
@@ -115,7 +115,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   heading: {
-    fontSize: 20,
+    marginTop: -60,
+    marginBottom: 70,
+    fontSize: 24,
     fontWeight: "600",
     color: "#0F172A",
     textAlign: "center",
@@ -127,19 +129,20 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   getStartedButton: {
-    backgroundColor: "#0E7490",
+    backgroundColor: "#006B8F",
     paddingVertical: 14,
-    borderRadius: 8,
+    borderRadius: 999,
     alignItems: "center",
+    
   },
   getStartedButtonText: {
     color: "#FFFFFF",
-    fontWeight: "700",
+    fontWeight: "bold",
     fontSize: 16,
   },
   howItWorksText: {
-    color: "#0E7490",
-    fontWeight: "600",
+    color: "#006B8F",
+    fontWeight: "bold",
     fontSize: 14,
     textAlign: "center",
     paddingVertical: 8,
