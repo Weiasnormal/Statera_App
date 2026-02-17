@@ -1,5 +1,5 @@
-import IntroPage from "./(tabs)/intro_page";
+import LoadingScreen from "./(tabs)/_loading_screen";
 
 export default function Index() {
-  return <IntroPage />;
+  return <LoadingScreen />;
 }

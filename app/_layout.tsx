@@ -4,7 +4,7 @@ export default function RootLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen
-        name="(tabs)/intro_page"
+        name="(tabs)/_loading_screen"
         options={{ animation: "fade" }}
       />
       <Stack.Screen
@@ -12,11 +12,11 @@ export default function RootLayout() {
         options={{ animation: "slide_from_left" }}
       />
       <Stack.Screen
-        name="(tabs)/view-results"
+        name="(tabs)/instruction_page"
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
-        name="(tabs)/input"
+        name="(tabs)/gwa_input"
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
