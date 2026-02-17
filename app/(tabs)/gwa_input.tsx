@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import {
   Keyboard,
   Pressable,
@@ -12,8 +12,13 @@ import {
 } from "react-native";
 
 export default function InputScreen() {
+  const { animation } = useLocalSearchParams<{ animation?: string }>();
+  const screenAnimation =
+    animation === "slide_from_left" ? "slide_from_left" : "slide_from_right";
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <>
+      <Stack.Screen options={{ animation: screenAnimation }} />
+      <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View style={styles.container}>
         <View style={styles.content}>
@@ -48,12 +53,13 @@ export default function InputScreen() {
         <Pressable
           style={styles.continueButton}
           accessibilityRole="button"
-          onPress={() => router.push("/(tabs)/navigation-pages/access")}
+          onPress={() => router.push("/usage_request")}
         >
           <Text style={styles.continueText}>Continue</Text>
         </Pressable>
       </View>
     </SafeAreaView>
+    </>
   );
 }
 

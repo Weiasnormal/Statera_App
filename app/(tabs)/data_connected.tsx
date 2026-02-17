@@ -20,7 +20,7 @@ export default function DataConnectedScreen() {
             accessibilityRole="button"
             onPress={() =>
               router.push(
-                "/(tabs)/navigation-pages/access?animation=slide_from_left",
+                "/usage_request?animation=slide_from_left",
               )
             }
           >

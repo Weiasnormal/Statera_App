@@ -145,7 +145,7 @@ export default function ViewResultsScreen() {
         <Pressable
           style={styles.continueButton}
           accessibilityRole="button"
-          onPress={() => router.push("/(tabs)/navigation-pages/gwa_input")}
+          onPress={() => router.push("/(tabs)/gwa_input?animation=slide_from_right")}
         >
           <Text style={styles.continueText}>Continue</Text>
         </Pressable>

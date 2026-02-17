@@ -15,12 +15,9 @@ export default function RootLayout() {
         name="(tabs)/instruction_page"
         options={{ animation: "slide_from_right" }}
       />
+      <Stack.Screen name="(tabs)/gwa_input" />
       <Stack.Screen
-        name="(tabs)/gwa_input"
-        options={{ animation: "slide_from_right" }}
-      />
-      <Stack.Screen
-        name="(tabs)/access"
+        name="(tabs)/usage_request"
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen

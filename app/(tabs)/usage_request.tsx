@@ -16,7 +16,7 @@ export default function AccessScreen() {
             <Pressable
               style={styles.backButton}
               accessibilityRole="button"
-              onPress={() => router.push("./gwa_input")}
+              onPress={() => router.push("/(tabs)/gwa_input?animation=slide_from_left")}
             >
               <Ionicons name="arrow-back" size={20} color="#0F172A" />
             </Pressable>
@@ -54,7 +54,7 @@ export default function AccessScreen() {
             <Pressable
               style={styles.secondaryButton}
               accessibilityRole="button"
-              onPress={() => router.push("./get_started")}
+              onPress={() => router.push("/(tabs)/get_started")}
             >
               <Text style={styles.secondaryText}>Not Now</Text>
             </Pressable>
