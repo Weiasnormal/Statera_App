@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, router, useLocalSearchParams } from "expo-router";
+import { useState } from "react";
 import {
   Keyboard,
   Pressable,
@@ -15,6 +16,40 @@ export default function InputScreen() {
   const { animation } = useLocalSearchParams<{ animation?: string }>();
   const screenAnimation =
     animation === "slide_from_left" ? "slide_from_left" : "slide_from_right";
+  
+  const [gwa, setGwa] = useState("");
+  
+  // Validate GWA format (x.xx) and range (1.00 - 5.00)
+  const isValidGwa = (value: string): boolean => {
+    const regex = /^\d\.\d{2}$/;
+    if (!regex.test(value)) return false;
+    const num = parseFloat(value);
+    return num >= 1.00 && num <= 5.00;
+  };
+
+  const handleGwaChange = (text: string) => {
+    // Remove any non-numeric characters except dot
+    const cleaned = text.replace(/[^0-9.]/g, '');
+    
+    // Only allow one dot
+    const parts = cleaned.split('.');
+    if (parts.length > 2) return;
+    
+    // Format: x.xx (max length 4)
+    if (cleaned.length <= 4) {
+      // Ensure proper format
+      if (parts.length === 2) {
+        // Limit first part to 1 digit and second part to 2 digits
+        const formatted = parts[0].slice(0, 1) + '.' + parts[1].slice(0, 2);
+        setGwa(formatted);
+      } else {
+        setGwa(cleaned);
+      }
+    }
+  };
+
+  const isButtonEnabled = isValidGwa(gwa);
+
   return (
     <>
       <Stack.Screen options={{ animation: screenAnimation }} />
@@ -43,7 +78,10 @@ export default function InputScreen() {
             returnKeyType="done"
             keyboardType="numeric"
             inputMode="decimal"
+            value={gwa}
+            onChangeText={handleGwaChange}
             onSubmitEditing={Keyboard.dismiss}
+            maxLength={4}
           />
           <Text style={styles.helperText}>
             Please enter a valid GWA between 1.00 and 5.00.
@@ -51,11 +89,12 @@ export default function InputScreen() {
         </View>
 
         <Pressable
-          style={styles.continueButton}
+          style={[styles.continueButton, !isButtonEnabled && styles.continueButtonDisabled]}
           accessibilityRole="button"
-          onPress={() => router.push("/usage_request")}
+          onPress={() => isButtonEnabled && router.push("/usage_request")}
+          disabled={!isButtonEnabled}
         >
-          <Text style={styles.continueText}>Continue</Text>
+          <Text style={[styles.continueText, !isButtonEnabled && styles.continueTextDisabled]}>Continue</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -128,9 +167,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 75,
   },
+  continueButtonDisabled: {
+    backgroundColor: "#D1D5DB",
+  },
   continueText: {
     color: "#FFFFFF",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  continueTextDisabled: {
+    color: "#9CA3AF",
   },
 });
