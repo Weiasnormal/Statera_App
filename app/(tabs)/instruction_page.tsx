@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "flex-start",
     justifyContent: "center",
+    marginBottom: 8,
   },
   imageContainer: {
     position: "relative",

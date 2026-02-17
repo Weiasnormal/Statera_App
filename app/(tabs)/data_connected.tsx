@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "flex-start",
     justifyContent: "center",
+    marginBottom: 8,
   },
   contentWrapper: {
     flex: 1,
@@ -103,13 +104,14 @@ const styles = StyleSheet.create({
   generateButton: {
     height: 48,
     borderRadius: 999,
-    backgroundColor: "#0F6A7A",
+    backgroundColor: "#006B8F",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 75,
   },
   generateText: {
-    fontSize: 14,
-    fontWeight: "700",
     color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
