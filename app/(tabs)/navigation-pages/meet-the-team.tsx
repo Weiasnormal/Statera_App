@@ -1,10 +1,8 @@
 import { ScreenHeader } from "@/components/ui/screen-header";
-import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import {
   Image,
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -47,7 +45,7 @@ export default function MeetTheTeam() {
         <View style={styles.contactSection}>
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/dev-characters/joko.png")}
+              source={require("@/assets/images/dev-characters/joko.webp")}
               style={styles.contactImage}
               resizeMode="contain"
             />
@@ -56,7 +54,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/dev-characters/wincel.png")}
+              source={require("@/assets/images/dev-characters/wincel.webp")}
               style={styles.contactImage}
               resizeMode="contain"
             />
@@ -65,7 +63,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/dev-characters/freesia.png")}
+              source={require("@/assets/images/dev-characters/freesia.webp")}
               style={styles.contactImage}
               resizeMode="contain"
             />
@@ -74,7 +72,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/dev-characters/neil.png")}
+              source={require("@/assets/images/dev-characters/neil.webp")}
               style={styles.contactImage}
               resizeMode="contain"
             />
@@ -83,7 +81,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/dev-characters/gio.png")}
+              source={require("@/assets/images/dev-characters/gio.webp")}
               style={styles.contactImage}
               resizeMode="contain"
             />
@@ -92,7 +90,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/dev-characters/nathaniel.png")}
+              source={require("@/assets/images/dev-characters/nathaniel.webp")}
               style={styles.contactImage}
               resizeMode="contain"
             />
@@ -101,7 +99,7 @@ export default function MeetTheTeam() {
 
           <View style={styles.contactCard}>
             <Image
-              source={require("@/assets/images/dev-characters/joel.png")}
+              source={require("@/assets/images/dev-characters/joel.webp")}
               style={styles.contactImage}
               resizeMode="contain"
             />

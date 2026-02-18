@@ -4,7 +4,14 @@ import { SecondaryButton } from "@/components/ui/secondary-button";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import Svg, { G, Path, Text as SvgText } from "react-native-svg";
 
 export default function Overview() {
@@ -81,120 +88,122 @@ export default function Overview() {
             </View>
           </View>
           <View style={styles.contentWrap}>
-          {/* Header */}
-          <Text style={styles.headerText}>Your behavioral state profile:</Text>
+            {/* Header */}
+            <Text style={styles.headerText}>
+              Your behavioral state profile:
+            </Text>
 
-        {/* Main Title */}
-        <Text style={styles.mainTitle}>Minimal Digital</Text>
-        <Text style={styles.mainTitle}>Engager</Text>
+            {/* Main Title */}
+            <Text style={styles.mainTitle}>Minimal Digital</Text>
+            <Text style={styles.mainTitle}>Engager</Text>
 
-        {/* Illustration */}
-        <View style={styles.illustrationContainer}>
-          <Image
-            source={require("@/assets/images/minimal-digital-engager.png")}
-            style={styles.illustration}
-            resizeMode="contain"
-          />
-        </View>
+            {/* Illustration */}
+            <View style={styles.illustrationContainer}>
+              <Image
+                source={require("@/assets/images/state_characters/minimal_digital_engager.webp")}
+                style={styles.illustration}
+                resizeMode="contain"
+              />
+            </View>
 
-        {/* Pattern Match */}
-        <View style={styles.matchContainer}>
-          <Text style={styles.matchPercentage}>72% Pattern Match</Text>
-          <Text style={styles.matchDescription}>
-            This status reflects your current balance between academic
-            performance and digital usage duration.
-          </Text>
-        </View>
+            {/* Pattern Match */}
+            <View style={styles.matchContainer}>
+              <Text style={styles.matchPercentage}>72% Pattern Match</Text>
+              <Text style={styles.matchDescription}>
+                This status reflects your current balance between academic
+                performance and digital usage duration.
+              </Text>
+            </View>
 
-        <View style={styles.usageCard}>
-          <Text style={styles.usageTitle}>Usage Summary</Text>
-          <View style={styles.usageBody}>
-            <View style={styles.usageList}>
-              {usageData.map((item) => (
-                <View key={item.label} style={styles.usageRow}>
-                  <Text style={styles.usageLabel}>{item.label}</Text>
-                  <Text style={styles.usageTime}>{item.time}</Text>
+            <View style={styles.usageCard}>
+              <Text style={styles.usageTitle}>Usage Summary</Text>
+              <View style={styles.usageBody}>
+                <View style={styles.usageList}>
+                  {usageData.map((item) => (
+                    <View key={item.label} style={styles.usageRow}>
+                      <Text style={styles.usageLabel}>{item.label}</Text>
+                      <Text style={styles.usageTime}>{item.time}</Text>
+                    </View>
+                  ))}
+                  <View style={styles.usageRow}>
+                    <Text style={styles.usageLabel}>Total Screen Time</Text>
+                    <Text style={styles.usageTime}>6h 10m</Text>
+                  </View>
                 </View>
-              ))}
-              <View style={styles.usageRow}>
-                <Text style={styles.usageLabel}>Total Screen Time</Text>
-                <Text style={styles.usageTime}>6h 10m</Text>
+                <View style={styles.chartWrap}>
+                  <Svg width={chartSize} height={chartSize}>
+                    <G>
+                      {(() => {
+                        let currentAngle = 0;
+                        return usageData.map((slice) => {
+                          const sliceAngle = (slice.value / totalUsage) * 360;
+                          const startAngle = currentAngle;
+                          const endAngle = currentAngle + sliceAngle;
+                          currentAngle = endAngle;
+
+                          const midAngle = startAngle + sliceAngle / 2;
+                          const labelPoint = polarToCartesian(
+                            chartRadius,
+                            chartRadius * 0.6,
+                            midAngle,
+                          );
+
+                          return (
+                            <G key={slice.label}>
+                              <Path
+                                d={createArcPath(startAngle, endAngle)}
+                                fill={slice.color}
+                              />
+                              <SvgText
+                                x={labelPoint.x}
+                                y={labelPoint.y}
+                                fontSize={12}
+                                fontWeight="600"
+                                fill="#ffffff"
+                                textAnchor="middle"
+                                alignmentBaseline="middle"
+                              >
+                                {Math.round((slice.value / totalUsage) * 100)}%
+                              </SvgText>
+                            </G>
+                          );
+                        });
+                      })()}
+                    </G>
+                  </Svg>
+                </View>
               </View>
             </View>
-            <View style={styles.chartWrap}>
-              <Svg width={chartSize} height={chartSize}>
-                <G>
-                  {(() => {
-                    let currentAngle = 0;
-                    return usageData.map((slice) => {
-                      const sliceAngle = (slice.value / totalUsage) * 360;
-                      const startAngle = currentAngle;
-                      const endAngle = currentAngle + sliceAngle;
-                      currentAngle = endAngle;
 
-                      const midAngle = startAngle + sliceAngle / 2;
-                      const labelPoint = polarToCartesian(
-                        chartRadius,
-                        chartRadius * 0.6,
-                        midAngle
-                      );
-
-                      return (
-                        <G key={slice.label}>
-                          <Path
-                            d={createArcPath(startAngle, endAngle)}
-                            fill={slice.color}
-                          />
-                          <SvgText
-                            x={labelPoint.x}
-                            y={labelPoint.y}
-                            fontSize={12}
-                            fontWeight="600"
-                            fill="#ffffff"
-                            textAnchor="middle"
-                            alignmentBaseline="middle"
-                          >
-                            {Math.round((slice.value / totalUsage) * 100)}%
-                          </SvgText>
-                        </G>
-                      );
-                    });
-                  })()}
-                </G>
-              </Svg>
+            <View style={styles.actionGroup}>
+              <SecondaryButton
+                title="Share results"
+                style={styles.secondaryAction}
+                textStyle={styles.secondaryActionText}
+                icon={
+                  <Ionicons
+                    name="share-outline"
+                    size={16}
+                    color={actionColor}
+                  />
+                }
+                iconPosition="right"
+              />
+              <SecondaryButton
+                title="Run New Analysis"
+                style={{ ...styles.secondaryAction, marginTop: 12 }}
+                textStyle={styles.secondaryActionText}
+                icon={
+                  <Ionicons
+                    name="arrow-forward"
+                    size={16}
+                    color={actionColor}
+                  />
+                }
+                iconPosition="right"
+              />
             </View>
           </View>
-        </View>
-
-        <View style={styles.actionGroup}>
-          <SecondaryButton
-            title="Share results"
-            style={styles.secondaryAction}
-            textStyle={styles.secondaryActionText}
-            icon={
-              <Ionicons
-                name="share-outline"
-                size={16}
-                color={actionColor}
-              />
-            }
-            iconPosition="right"
-          />
-          <SecondaryButton
-            title="Run New Analysis"
-            style={{ ...styles.secondaryAction, marginTop: 12 }}
-            textStyle={styles.secondaryActionText}
-            icon={
-              <Ionicons
-                name="arrow-forward"
-                size={16}
-                color={actionColor}
-              />
-            }
-            iconPosition="right"
-          />
-        </View>
-        </View>
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -263,19 +272,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   illustration: {
-    width: 200,
-    height: 280,
+    width: 280,
+    height: 382,
   },
   matchContainer: {
     alignItems: "center",
-    paddingTop: 50,
+    paddingTop: 20,
     paddingHorizontal: 30,
   },
   matchPercentage: {
     fontSize: 22,
     fontWeight: "bold",
     color: "#1a1a1a",
-    marginBottom: 12,
+    marginBottom: 8,
   },
   matchDescription: {
     fontSize: 14,
