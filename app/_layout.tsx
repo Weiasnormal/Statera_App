@@ -25,20 +25,20 @@ export default function RootLayout() {
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
-        name="(tabs)/overview"
+        name="(tabs)/navigation-pages/overview"
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
-        name="(tabs)/analysis"
+        name="(tabs)/navigation-pages/analysis"
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
-        name="(tabs)/tracking_duration"
+        name="(tabs)/navigation-pages/tracking_duration"
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen name="nav" options={{ animation: "slide_from_right" }} />
       <Stack.Screen
-        name="(tabs)/meet-the-team"
+        name="(tabs)/navigation-pages/meet-the-team"
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen
