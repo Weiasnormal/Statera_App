@@ -35,7 +35,7 @@ export default function ViewResultsScreen() {
 
   const goToSlide = (slideIndex: number) => {
     setCurrentSlide(slideIndex);
-    
+
     // Animate horizontal slide transition
     Animated.timing(slideAnim, {
       toValue: -slideIndex,
@@ -58,7 +58,7 @@ export default function ViewResultsScreen() {
           goToSlide(1);
         }
       },
-    })
+    }),
   ).current;
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export default function ViewResultsScreen() {
               <View style={styles.slide}>
                 <View style={styles.imageContainer}>
                   <Image
-                    source={require("@/assets/images/input.png")}
+                    source={require("@/assets/images/input.webp")}
                     style={styles.illustration}
                     resizeMode="contain"
                   />
@@ -121,7 +121,7 @@ export default function ViewResultsScreen() {
               <View style={styles.slide}>
                 <View style={styles.imageContainer}>
                   <Image
-                    source={require("@/assets/images/behavioral.png")}
+                    source={require("@/assets/images/behavioral.webp")}
                     style={styles.illustration}
                     resizeMode="contain"
                   />

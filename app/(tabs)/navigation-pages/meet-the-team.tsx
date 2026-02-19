@@ -35,7 +35,7 @@ export default function MeetTheTeam() {
         {/* Team Image */}
         <View style={styles.imageContainer}>
           <Image
-            source={require("@/assets/images/seben.png")}
+            source={require("@/assets/images/seben.webp")}
             style={styles.teamImage}
             resizeMode="contain"
           />

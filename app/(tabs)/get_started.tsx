@@ -41,7 +41,7 @@ export default function GetStarted() {
 
           <View style={styles.illustration}>
             <Image
-              source={require("@/assets/images/get_started.png")}
+              source={require("@/assets/images/get_started.webp")}
               style={styles.image}
             />
           </View>
