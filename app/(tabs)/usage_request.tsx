@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 34,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
     color: "#111827",
     marginBottom: 6,
   },
@@ -167,11 +167,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 18,
     color: "#4B5563",
+    fontFamily: "Poppins_400Regular",
   },
   sectionLabel: {
     fontSize: 13,
     lineHeight: 18,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
     color: "#374151",
     marginTop: 12,
   },
