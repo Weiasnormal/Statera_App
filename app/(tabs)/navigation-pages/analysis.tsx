@@ -65,12 +65,12 @@ export default function Analysis() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Pattern Interpretation</Text>
           <Text style={styles.sectionDescription}>
-            Your usage pattern shows frequent social interaction alongside 
+            Your usage pattern shows frequent social interaction alongside
             moderate structuredtask engagement.
           </Text>
           <Text style={styles.sectionDescription}>
-            This interpretation is descriptive and not a clinical or psychological 
-            diagnosis.
+            This interpretation is descriptive and not a clinical or
+            psychological diagnosis.
           </Text>
         </View>
       </ScrollView>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
     color: "#1a1a1a",
     marginBottom: 12,
   },
@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     color: "#666",
     lineHeight: 20,
     paddingBottom: 8,
+    fontFamily: "Poppins_400Regular",
   },
   distributionContainer: {
     backgroundColor: "#fff",
@@ -153,12 +154,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   labelText: {
-    fontSize: 14,
+    fontSize: 13,
     color: "#666",
+    fontFamily: "Poppins_400Regular",
   },
   percentageText: {
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
     color: "#16B8C5",
   },
 });

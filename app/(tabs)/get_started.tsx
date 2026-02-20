@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
     color: "#2D3748",
   },
   illustration: {
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     marginTop: -60,
     marginBottom: 70,
     fontSize: 24,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
     color: "#0F172A",
     textAlign: "center",
     lineHeight: 28,

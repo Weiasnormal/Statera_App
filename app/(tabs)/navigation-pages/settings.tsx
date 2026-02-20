@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
     marginBottom: 5,
+    fontFamily: "Poppins_400Regular",
   },
   durationValue: {
     flexDirection: "row",
@@ -108,19 +109,19 @@ const styles = StyleSheet.create({
   },
   currentlyText: {
     fontSize: 30,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
     color: "#1a1a1a",
   },
   daysText: {
     fontSize: 30,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
     color: "#16B8C5",
     flex: 1,
     textAlign: "right",
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
     color: "#1a1a1a",
     marginBottom: 16,
   },
@@ -149,5 +150,6 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 16,
     color: "#1a1a1a",
+    fontFamily: "Poppins_400Regular",
   },
 });

@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     paddingHorizontal: 6,
     paddingVertical: 2,
+    fontFamily: "Poppins_400Regular",
   },
   navLabelActive: {
     color: "#2196F3",

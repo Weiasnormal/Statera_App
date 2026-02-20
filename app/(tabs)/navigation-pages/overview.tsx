@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontFamily: "Poppins_600SemiBold",
     color: "#555",
     paddingTop: 40,
     marginBottom: 16,
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   },
   mainTitle: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
     color: "#1a1a1a",
     textAlign: "center",
     lineHeight: 38,
@@ -282,12 +282,13 @@ const styles = StyleSheet.create({
   },
   matchPercentage: {
     fontSize: 22,
-    fontWeight: "bold",
+    fontFamily: "Poppins_600SemiBold",
     color: "#1a1a1a",
     marginBottom: 8,
   },
   matchDescription: {
     fontSize: 14,
+    fontFamily: "Poppins_400Regular",
     color: "#555",
     textAlign: "center",
     lineHeight: 20,
@@ -303,7 +304,7 @@ const styles = StyleSheet.create({
   },
   usageTitle: {
     fontSize: 18,
-    fontWeight: "700",
+    fontFamily: "Poppins_700Bold",
     color: "#1F2937",
     marginBottom: 16,
   },
@@ -323,10 +324,11 @@ const styles = StyleSheet.create({
   usageLabel: {
     fontSize: 13,
     color: "#6B7280",
+    fontFamily: "Poppins_400Regular",
   },
   usageTime: {
     fontSize: 14,
-    fontWeight: "700",
+    fontFamily: "Poppins_700Bold",
     color: "#0F8BA0",
   },
   chartWrap: {
@@ -347,7 +349,7 @@ const styles = StyleSheet.create({
   },
   secondaryActionText: {
     color: "#00838F",
-    fontWeight: "700",
+    fontFamily: "Poppins_700Bold",
     fontSize: 14,
   },
 });

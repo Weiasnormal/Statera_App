@@ -1,15 +1,15 @@
-import { useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { useRouter } from "expo-router";
+import React, { useEffect } from "react";
+import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
-  withTiming
-} from 'react-native-reanimated';
+  withTiming,
+} from "react-native-reanimated";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 export default function IntroPage() {
   const router = useRouter();
@@ -23,14 +23,16 @@ export default function IntroPage() {
   const textTranslateY = useSharedValue(120);
   const textOpacity = useSharedValue(0);
 
-  const udesignTranslateX = useSharedValue(0);  const udesignTranslateY = useSharedValue(0);  const bdesignTranslateX = useSharedValue(0);
+  const udesignTranslateX = useSharedValue(0);
+  const udesignTranslateY = useSharedValue(0);
+  const bdesignTranslateX = useSharedValue(0);
   const bdesignTranslateY = useSharedValue(0);
 
   const fadeOutOpacity = useSharedValue(1);
 
   // Navigation function
   const navigateToNext = () => {
-    router.replace('/(tabs)/get_started');
+    router.replace("/(tabs)/get_started");
   };
 
   useEffect(() => {
@@ -41,7 +43,10 @@ export default function IntroPage() {
       logoScale.value = withTiming(0.6, { duration: 1500 });
 
       // Text animation: slide up and fade in after logo rotation (with delay)
-      textTranslateY.value = withDelay(1500, withTiming(-20, { duration: 800 }));
+      textTranslateY.value = withDelay(
+        1500,
+        withTiming(-20, { duration: 800 }),
+      );
       textOpacity.value = withDelay(1500, withTiming(1, { duration: 800 }));
 
       // Corner designs slide out horizontally (maintaining Y position)
@@ -55,7 +60,7 @@ export default function IntroPage() {
           if (finished) {
             runOnJS(navigateToNext)();
           }
-        })
+        }),
       );
     };
 
@@ -101,7 +106,7 @@ export default function IntroPage() {
       {/* Top Left Corner Design */}
       <Animated.View style={[styles.topLeftCorner, animatedUdesignStyle]}>
         <Image
-          source={require('@/assets/images/Udesign.png')}
+          source={require("@/assets/images/Udesign.png")}
           style={styles.cornerImage}
           resizeMode="contain"
         />
@@ -110,7 +115,7 @@ export default function IntroPage() {
       {/* Bottom Right Corner Design */}
       <Animated.View style={[styles.bottomRightCorner, animatedBdesignStyle]}>
         <Image
-          source={require('@/assets/images/Bdesign.png')}
+          source={require("@/assets/images/Bdesign.png")}
           style={styles.cornerImage}
           resizeMode="contain"
         />
@@ -121,7 +126,7 @@ export default function IntroPage() {
         {/* Logo */}
         <Animated.View style={[styles.logoContainer, animatedLogoStyle]}>
           <Image
-            source={require('@/assets/images/Intro_logo.webp')}
+            source={require("@/assets/images/Intro_logo.webp")}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -139,49 +144,49 @@ export default function IntroPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
   },
   topLeftCorner: {
-    position: 'absolute',
+    position: "absolute",
     width: 250,
     height: 250,
     top: -70,
     left: -50,
   },
   bottomRightCorner: {
-    position: 'absolute',
+    position: "absolute",
     width: 250,
     height: 250,
     bottom: -80,
     right: -70,
   },
   cornerImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   centerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   logoContainer: {
     width: 160,
     height: 160,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   logo: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   textContainer: {
     marginTop: 20,
   },
   stateraText: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2C3E50',
+    fontWeight: "bold",
+    color: "#2C3E50",
     letterSpacing: 2,
   },
 });

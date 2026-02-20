@@ -20,9 +20,7 @@ export default function DataConnectedScreen() {
             style={styles.backButton}
             accessibilityRole="button"
             onPress={() =>
-              router.push(
-                "./usage_request?animation=slide_from_left",
-              )
+              router.push("./usage_request?animation=slide_from_left")
             }
           >
             <Ionicons name="arrow-back" size={20} color="#0F172A" />
@@ -31,7 +29,10 @@ export default function DataConnectedScreen() {
 
         <View style={styles.contentWrapper}>
           <View style={styles.content}>
-            <Image source={require("@/assets/images/check.gif")} style={styles.placeholderIcon} />
+            <Image
+              source={require("@/assets/images/check.gif")}
+              style={styles.placeholderIcon}
+            />
             <Text style={styles.title}>Usage Data Connected</Text>
             <Text style={styles.subtitle}>
               We&apos;re now analyzing your digital behavior patterns.
@@ -47,7 +48,7 @@ export default function DataConnectedScreen() {
           >
             <Text style={styles.generateText}>Generate My Profile</Text>
           </Pressable>
-          
+
           <Pressable
             style={styles.debugButton}
             accessibilityRole="button"
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
     color: "#111827",
     textAlign: "center",
   },
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     color: "#6B7280",
     textAlign: "center",
+    fontFamily: "Poppins_400Regular",
   },
   buttonContainer: {
     gap: 12,
@@ -123,7 +125,7 @@ const styles = StyleSheet.create({
   },
   generateText: {
     color: "#FFFFFF",
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
     fontSize: 16,
   },
   debugButton: {
@@ -134,7 +136,7 @@ const styles = StyleSheet.create({
   },
   debugText: {
     color: "#006B8F",
-    fontWeight: "600",
     fontSize: 14,
+    fontFamily: "Poppins_700Bold",
   },
 });

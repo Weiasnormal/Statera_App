@@ -222,9 +222,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
     color: "#111827",
-    lineHeight: 22,
+    lineHeight: 28,
     textAlign: "center",
   },
   progressRow: {

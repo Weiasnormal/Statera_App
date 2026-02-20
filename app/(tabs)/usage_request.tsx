@@ -1,23 +1,35 @@
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { SecondaryButton } from "@/components/ui/secondary-button";
-import { checkUsagePermission, requestUsagePermission } from "@/services/usage-stats";
+import { checkUsagePermission } from "@/services/usage-stats";
 import { Ionicons } from "@expo/vector-icons";
-import { Stack, router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import {
+  Stack,
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+} from "expo-router";
 import { useCallback, useState } from "react";
-import { Alert, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 export default function AccessScreen() {
   const { animation } = useLocalSearchParams<{ animation?: string }>();
   const screenAnimation =
     animation === "slide_from_left" ? "slide_from_left" : "slide_from_right";
-  
+
   const [isRequesting, setIsRequesting] = useState(false);
 
   // Check permission when screen comes into focus
   useFocusEffect(
     useCallback(() => {
       checkPermissionStatus();
-    }, [])
+    }, []),
   );
 
   const checkPermissionStatus = async () => {
@@ -35,32 +47,32 @@ export default function AccessScreen() {
   const handleAllowAccess = async () => {
     setIsRequesting(true);
     try {
-      const granted = await requestUsagePermission();
-      if (granted) {
-        router.push("./data_connected");
-      } else {
-        // Permission not granted, show alert with instructions
-        Alert.alert(
-          "Enable Usage Access",
-          "Please enable usage access for STATERA in the Settings screen that will open. After enabling, return to this app.",
-          [
-            {
-              text: "OK",
-              onPress: () => {
-                // User will be taken to settings when requestUsagePermission was called
-                // When they return, useFocusEffect will check the permission again
-              }
-            }
-          ]
-        );
-      }
-      //router.push("./data_connected");
+      // const granted = await requestUsagePermission();
+      // if (granted) {
+      //   router.push("./data_connected");
+      // } else {
+      //   // Permission not granted, show alert with instructions
+      //   Alert.alert(
+      //     "Enable Usage Access",
+      //     "Please enable usage access for STATERA in the Settings screen that will open. After enabling, return to this app.",
+      //     [
+      //       {
+      //         text: "OK",
+      //         onPress: () => {
+      //           // User will be taken to settings when requestUsagePermission was called
+      //           // When they return, useFocusEffect will check the permission again
+      //         }
+      //       }
+      //     ]
+      //   );
+      // }
+      router.push("./data_connected");
     } catch (error) {
       console.error("Error requesting usage permission:", error);
       Alert.alert(
         "Error",
         "An error occurred while requesting permission. Please try again.",
-        [{ text: "OK" }]
+        [{ text: "OK" }],
       );
     } finally {
       setIsRequesting(false);
@@ -76,7 +88,9 @@ export default function AccessScreen() {
             <Pressable
               style={styles.backButton}
               accessibilityRole="button"
-              onPress={() => router.push("./gwa_input?animation=slide_from_left")}
+              onPress={() =>
+                router.push("./gwa_input?animation=slide_from_left")
+              }
             >
               <Ionicons name="arrow-back" size={20} color="#0F172A" />
             </Pressable>

@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   text: {
     color: "#006B8F",
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Poppins_700Bold",
   },
   textWithIcon: {
     marginHorizontal: 6,
