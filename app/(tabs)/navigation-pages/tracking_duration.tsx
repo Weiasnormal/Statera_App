@@ -1,6 +1,10 @@
 import { ConfirmModal } from "@/components/ui/confirm-modal";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { ScreenHeader } from "@/components/ui/screen-header";
+import {
+  getTrackingDurationDays,
+  setTrackingDurationDays,
+} from "@/services/tracking-duration";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -14,14 +18,15 @@ import {
 
 export default function TrackingDuration() {
   const dayOptions = [1, 7, 30];
-  const [savedDays, setSavedDays] = useState(7);
-  const [selectedDays, setSelectedDays] = useState(7);
+  const [savedDays, setSavedDays] = useState(getTrackingDurationDays());
+  const [selectedDays, setSelectedDays] = useState(getTrackingDurationDays());
   const [showDiscardModal, setShowDiscardModal] = useState(false);
 
   const hasChanges = selectedDays !== savedDays;
 
   const handleSave = () => {
     setSavedDays(selectedDays);
+    setTrackingDurationDays(selectedDays);
     router.back();
   };
 

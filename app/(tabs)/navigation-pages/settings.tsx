@@ -1,10 +1,19 @@
 import { ScreenHeader } from "@/components/ui/screen-header";
+import { getTrackingDurationDays } from "@/services/tracking-duration";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import React from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function Settings() {
+  const [days, setDays] = useState(getTrackingDurationDays());
+
+  useFocusEffect(
+    useCallback(() => {
+      setDays(getTrackingDurationDays());
+    }, []),
+  );
+
   return (
     <View style={styles.container}>
       <ScreenHeader title="Settings" align="left" />
@@ -17,7 +26,7 @@ export default function Settings() {
           <Text style={styles.durationLabel}>Tracking Duration</Text>
           <View style={styles.durationValue}>
             <Text style={styles.currentlyText}>Currently:</Text>
-            <Text style={styles.daysText}>7 Days</Text>
+            <Text style={styles.daysText}>{days} {days === 1 ? "Day" : "Days"}</Text>
           </View>
         </View>
 
@@ -108,16 +117,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   currentlyText: {
-    fontSize: 30,
+    fontSize: 22,
     fontFamily: "Poppins_700Bold",
     color: "#1a1a1a",
+    flexShrink: 1,
   },
   daysText: {
-    fontSize: 30,
+    fontSize: 22,
     fontFamily: "Poppins_700Bold",
     color: "#16B8C5",
     flex: 1,
     textAlign: "right",
+    flexShrink: 1,
   },
   sectionTitle: {
     fontSize: 18,
