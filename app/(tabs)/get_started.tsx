@@ -6,7 +6,6 @@ import {
   Animated,
   Easing,
   Image,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -30,7 +29,7 @@ export default function GetStarted() {
     <View style={styles.background}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <SafeAreaView style={styles.screen} edges={["top", "left", "right"]}>
-        <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.content}>
           <Animated.View style={[styles.hero, { opacity: heroOpacity }]}>
             <Image
               source={require("@/assets/images/Intro_logo.webp")}
@@ -63,7 +62,7 @@ export default function GetStarted() {
               onPress={() => router.push("/modal/how_it_works")}
             />
           </View>
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </View>
   );
@@ -124,7 +123,7 @@ const styles = StyleSheet.create({
   },
   buttonSection: {
     paddingHorizontal: 16,
-    paddingVertical: 37,
+    paddingVertical: 28,
     gap: 16,
   },
 });
