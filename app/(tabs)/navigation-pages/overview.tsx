@@ -2,7 +2,7 @@ import BottomWave from "@/assets/images/waves/bottom-wave.svg";
 import TopWave from "@/assets/images/waves/top-wave.svg";
 import { SecondaryButton } from "@/components/ui/secondary-button";
 import { Ionicons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
+import { router } from "expo-router";
 import React from "react";
 import {
   Image,
@@ -66,7 +66,6 @@ export default function Overview() {
 
   return (
     <View style={[styles.container, { backgroundColor: waveBaseColor }]}>
-      <StatusBar style="dark" backgroundColor={waveTopColor} />
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.waveFullBleed}>
@@ -177,12 +176,13 @@ export default function Overview() {
 
             <View style={styles.actionGroup}>
               <SecondaryButton
-                title="Share results"
+                title="View Statistics"
+                onPress={() => router.push("/(debug)/debug_stats_page")}
                 style={styles.secondaryAction}
                 textStyle={styles.secondaryActionText}
                 icon={
                   <Ionicons
-                    name="share-outline"
+                    name="stats-chart-outline"
                     size={16}
                     color={actionColor}
                   />
@@ -191,6 +191,7 @@ export default function Overview() {
               />
               <SecondaryButton
                 title="Run New Analysis"
+                onPress={() => router.push("./(tabs)/gwa_input")}
                 style={{ ...styles.secondaryAction, marginTop: 12 }}
                 textStyle={styles.secondaryActionText}
                 icon={

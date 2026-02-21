@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Analysis from "./(tabs)/navigation-pages/analysis";
@@ -102,11 +103,42 @@ export default function Nav() {
 
   return (
     <View style={styles.container}>
-      {/* Content Section - Conditionally render based on active tab */}
+      <StatusBar
+        style="dark"
+        backgroundColor={activeTab === "overview" ? "#C5E6E8" : "#FFFFFF"}
+      />
+
+      {/* Content Section - Keep screens mounted to avoid remount flicker */}
       <View style={styles.content}>
-        {activeTab === "overview" && <Overview />}
-        {activeTab === "analysis" && <Analysis />}
-        {activeTab === "settings" && <Settings />}
+        <View
+          style={[
+            styles.tabScreen,
+            activeTab === "overview" ? styles.tabVisible : styles.tabHidden,
+          ]}
+          pointerEvents={activeTab === "overview" ? "auto" : "none"}
+        >
+          <Overview />
+        </View>
+
+        <View
+          style={[
+            styles.tabScreen,
+            activeTab === "analysis" ? styles.tabVisible : styles.tabHidden,
+          ]}
+          pointerEvents={activeTab === "analysis" ? "auto" : "none"}
+        >
+          <Analysis />
+        </View>
+
+        <View
+          style={[
+            styles.tabScreen,
+            activeTab === "settings" ? styles.tabVisible : styles.tabHidden,
+          ]}
+          pointerEvents={activeTab === "settings" ? "auto" : "none"}
+        >
+          <Settings />
+        </View>
       </View>
 
       {/* Bottom Navigation */}
@@ -122,6 +154,16 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    position: "relative",
+  },
+  tabScreen: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  tabVisible: {
+    opacity: 1,
+  },
+  tabHidden: {
+    opacity: 0,
   },
   bottomNav: {
     flexDirection: "row",

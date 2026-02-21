@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type ScreenHeaderProps = {
   title: string;
@@ -11,10 +12,17 @@ export type ScreenHeaderProps = {
 
 export function ScreenHeader({ title, showBack = false, onBackPress, align = "center" }: ScreenHeaderProps) {
   const isLeft = align === "left";
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.wrapper}>
-      <View style={[styles.inner, isLeft && styles.innerLeft]}>
+      <View
+        style={[
+          styles.inner,
+          isLeft && styles.innerLeft,
+          { paddingTop: Math.max(insets.top, 8) + 8 },
+        ]}
+      >
         {showBack ? (
           <Pressable style={styles.backButton} onPress={onBackPress}>
             <Ionicons name="arrow-back" size={22} color="#1a1a1a" />
@@ -49,7 +57,6 @@ const styles = StyleSheet.create({
   inner: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 24,
     paddingHorizontal: 20,
     paddingBottom: 12,
   },
