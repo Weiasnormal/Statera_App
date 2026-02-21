@@ -39,6 +39,11 @@ export default function Overview() {
       color: "#0F93B8",
     },
   ];
+  const academicBalanceData = [
+    { label: "Academic", value: 40, color: "#25AFA8" },
+    { label: "Leisure", value: 50, color: "#F3C23C" },
+    { label: "Utility", value: 20, color: "#0F93B8" },
+  ];
   const totalUsage = usageData.reduce((sum, item) => sum + item.value, 0);
   const chartSize = 140;
   const chartRadius = chartSize / 2;
@@ -171,6 +176,31 @@ export default function Overview() {
                     </G>
                   </Svg>
                 </View>
+              </View>
+            </View>
+
+            <View style={styles.balanceCard}>
+              <Text style={styles.balanceTitle}>Academic Balance</Text>
+              <View style={styles.balanceList}>
+                {academicBalanceData.map((item) => (
+                  <View key={item.label} style={styles.balanceRow}>
+                    <Text style={styles.balanceLabel}>{item.label}</Text>
+                    <View style={styles.balanceScaleWrap}>
+                      <View style={styles.balanceScaleTrack}>
+                        <View
+                          style={[
+                            styles.balanceScaleFill,
+                            {
+                              width: `${item.value}%`,
+                              backgroundColor: item.color,
+                            },
+                          ]}
+                        />
+                      </View>
+                      <Text style={styles.balanceValue}>{item.value}%</Text>
+                    </View>
+                  </View>
+                ))}
               </View>
             </View>
 
@@ -337,6 +367,61 @@ const styles = StyleSheet.create({
     height: 140,
     alignItems: "center",
     justifyContent: "center",
+  },
+  balanceCard: {
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "#E1E6EA",
+    padding: 18,
+    marginTop: 14,
+  },
+  balanceTitle: {
+    fontSize: 18,
+    fontFamily: "Poppins_700Bold",
+    color: "#1F2937",
+    marginBottom: 14,
+  },
+  balanceList: {
+    gap: 12,
+  },
+  balanceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  balanceLabel: {
+    width: 70,
+    fontSize: 13,
+    color: "#6B7280",
+    fontFamily: "Poppins_400Regular",
+  },
+  balanceScaleWrap: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  balanceScaleTrack: {
+    flex: 1,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#F4F7FA",
+    borderWidth: 1,
+    borderColor: "#E1E6EA",
+    overflow: "hidden",
+  },
+  balanceScaleFill: {
+    height: "100%",
+    borderRadius: 6,
+  },
+  balanceValue: {
+    width: 40,
+    textAlign: "right",
+    fontSize: 14,
+    fontFamily: "Poppins_700Bold",
+    color: "#1F2937",
   },
   actionGroup: {
     width: "100%",
