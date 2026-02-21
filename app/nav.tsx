@@ -1,10 +1,50 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
 import Analysis from "./(tabs)/navigation-pages/analysis";
 import Overview from "./(tabs)/navigation-pages/overview";
 import Settings from "./(tabs)/navigation-pages/settings";
+
+function AnimatedIconWrapper({
+  isActive,
+  children,
+}: {
+  isActive: boolean;
+  children: React.ReactNode;
+}) {
+  const progress = useRef(new Animated.Value(isActive ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(progress, {
+      toValue: isActive ? 1 : 0,
+      duration: 220,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [isActive, progress]);
+
+  const scale = progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.7, 1],
+  });
+
+  return (
+    <View style={styles.iconWrapper}>
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          styles.iconWrapperActive,
+          {
+            opacity: progress,
+            transform: [{ scale }],
+          },
+        ]}
+      />
+      {children}
+    </View>
+  );
+}
 
 // Bottom Navigation Bar Component
 function BottomNavBar({
@@ -20,18 +60,13 @@ function BottomNavBar({
         style={styles.navItem}
         onPress={() => setActiveTab("overview")}
       >
-        <View
-          style={[
-            styles.iconWrapper,
-            activeTab === "overview" && styles.iconWrapperActive,
-          ]}
-        >
+        <AnimatedIconWrapper isActive={activeTab === "overview"}>
           <Ionicons
             name={activeTab === "overview" ? "bar-chart" : "bar-chart-outline"}
             size={24}
-            color={activeTab === "overview" ? "#2196F3" : "#757575"}
+            color={activeTab === "overview" ? "#16B8C5" : "#757575"}
           />
-        </View>
+        </AnimatedIconWrapper>
         <Text
           style={[
             styles.navLabel,
@@ -46,18 +81,13 @@ function BottomNavBar({
         style={styles.navItem}
         onPress={() => setActiveTab("analysis")}
       >
-        <View
-          style={[
-            styles.iconWrapper,
-            activeTab === "analysis" && styles.iconWrapperActive,
-          ]}
-        >
+        <AnimatedIconWrapper isActive={activeTab === "analysis"}>
           <Ionicons
             name={activeTab === "analysis" ? "analytics" : "analytics-outline"}
             size={24}
-            color={activeTab === "analysis" ? "#2196F3" : "#757575"}
+            color={activeTab === "analysis" ? "#16B8C5" : "#757575"}
           />
-        </View>
+        </AnimatedIconWrapper>
         <Text
           style={[
             styles.navLabel,
@@ -72,18 +102,13 @@ function BottomNavBar({
         style={styles.navItem}
         onPress={() => setActiveTab("settings")}
       >
-        <View
-          style={[
-            styles.iconWrapper,
-            activeTab === "settings" && styles.iconWrapperActive,
-          ]}
-        >
+        <AnimatedIconWrapper isActive={activeTab === "settings"}>
           <Ionicons
             name={activeTab === "settings" ? "settings" : "settings-outline"}
             size={24}
-            color={activeTab === "settings" ? "#2196F3" : "#757575"}
+            color={activeTab === "settings" ? "#16B8C5" : "#757575"}
           />
-        </View>
+        </AnimatedIconWrapper>
         <Text
           style={[
             styles.navLabel,
@@ -186,9 +211,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
+    position: "relative",
+    overflow: "hidden",
   },
   iconWrapperActive: {
-    backgroundColor: "#DDF3FF",
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#d2f5f8",
     borderRadius: 12,
   },
   navLabel: {
@@ -200,7 +228,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_400Regular",
   },
   navLabelActive: {
-    color: "#2196F3",
+    color: "#16B8C5",
     fontWeight: "600",
     paddingHorizontal: 6,
     paddingVertical: 2,
