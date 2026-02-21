@@ -291,7 +291,7 @@ export default function DebugStatsPage() {
     return (
       <SafeAreaView
         style={styles.safeArea}
-        edges={["left", "right", "bottom"]}
+        edges={["left", "right", "top"]}
       >
         <ScreenHeader
           title="Statistics"
@@ -328,7 +328,7 @@ export default function DebugStatsPage() {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
+    <SafeAreaView style={styles.safeArea} edges={["left", "right"]}>
       <ScreenHeader
         title="Statistics"
         align="left"

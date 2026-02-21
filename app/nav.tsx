@@ -1,11 +1,28 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DebugStatsPage from "./(debug)/debug_stats_page";
 import Analysis from "./(tabs)/navigation-pages/analysis";
 import Overview from "./(tabs)/navigation-pages/overview";
 import Settings from "./(tabs)/navigation-pages/settings";
+
+type NavTab = "overview" | "analysis" | "statistics" | "settings";
+
+const resolveTabFromParam = (tabParam: string | string[] | undefined): NavTab => {
+  const normalized = Array.isArray(tabParam) ? tabParam[0] : tabParam;
+  if (
+    normalized === "overview" ||
+    normalized === "analysis" ||
+    normalized === "statistics" ||
+    normalized === "settings"
+  ) {
+    return normalized;
+  }
+  return "overview";
+};
 
 function AnimatedIconWrapper({
   isActive,
@@ -51,12 +68,14 @@ function AnimatedIconWrapper({
 function BottomNavBar({
   activeTab,
   setActiveTab,
+  bottomInset,
 }: {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
+  activeTab: NavTab;
+  setActiveTab: (tab: NavTab) => void;
+  bottomInset: number;
 }) {
   return (
-    <View style={styles.bottomNav}>
+    <View style={[styles.bottomNav, { paddingBottom: Math.max(bottomInset, 8) }]}>
       <Pressable
         style={styles.navItem}
         onPress={() => setActiveTab("overview")}
@@ -150,7 +169,13 @@ function BottomNavBar({
 
 // Main Component
 export default function Nav() {
-  const [activeTab, setActiveTab] = useState("overview");
+  const { tab } = useLocalSearchParams<{ tab?: string | string[] }>();
+  const [activeTab, setActiveTab] = useState<NavTab>(() => resolveTabFromParam(tab));
+  const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    setActiveTab(resolveTabFromParam(tab));
+  }, [tab]);
 
   return (
     <View style={styles.container}>
@@ -203,7 +228,11 @@ export default function Nav() {
       </View>
 
       {/* Bottom Navigation */}
-      <BottomNavBar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <BottomNavBar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        bottomInset={insets.bottom}
+      />
     </View>
   );
 }
@@ -229,11 +258,11 @@ const styles = StyleSheet.create({
   bottomNav: {
     flexDirection: "row",
     backgroundColor: "#fff",
-    paddingVertical: 12,
+    paddingTop: 12,
     paddingHorizontal: 20,
     borderTopWidth: 1,
     borderTopColor: "#e0e0e0",
-    height: 80,
+    minHeight: 80,
     justifyContent: "space-evenly",
   },
   navItem: {

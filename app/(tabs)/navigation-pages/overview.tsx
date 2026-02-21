@@ -71,7 +71,7 @@ export default function Overview() {
 
   return (
     <View style={[styles.container, { backgroundColor: waveBaseColor }]}>
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -210,7 +210,7 @@ export default function Overview() {
             <View style={styles.actionGroup}>
               <SecondaryButton
                 title="View Statistics"
-                onPress={() => router.push("/(debug)/debug_stats_page")}
+                onPress={() => router.push({ pathname: "/nav", params: { tab: "statistics" } })}
                 style={styles.secondaryAction}
                 textStyle={styles.secondaryActionText}
                 icon={

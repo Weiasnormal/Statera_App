@@ -51,14 +51,6 @@ export default function DataConnectedScreen() {
           >
             <Text style={styles.generateText}>Generate My Profile</Text>
           </Pressable>
-
-          <Pressable
-            style={styles.debugButton}
-            accessibilityRole="button"
-            onPress={() => router.push("/(debug)/debug_stats_page")}
-          >
-            <Text style={styles.debugText}>View Debug Stats</Text>
-          </Pressable>
         </View>
       </View>
     </SafeAreaView>
@@ -118,6 +110,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     gap: 12,
+    marginBottom: 75,
   },
   generateButton: {
     height: 48,
@@ -130,16 +123,5 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontFamily: "Poppins_700Bold",
     fontSize: 16,
-  },
-  debugButton: {
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 75,
-  },
-  debugText: {
-    color: "#006B8F",
-    fontSize: 14,
-    fontFamily: "Poppins_700Bold",
   },
 });
