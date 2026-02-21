@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
+import DebugStatsPage from "./(debug)/debug_stats_page";
 import Analysis from "./(tabs)/navigation-pages/analysis";
 import Overview from "./(tabs)/navigation-pages/overview";
 import Settings from "./(tabs)/navigation-pages/settings";
@@ -100,6 +101,31 @@ function BottomNavBar({
 
       <Pressable
         style={styles.navItem}
+        onPress={() => setActiveTab("statistics")}
+      >
+        <AnimatedIconWrapper isActive={activeTab === "statistics"}>
+          <Ionicons
+            name={
+              activeTab === "statistics"
+                ? "stats-chart"
+                : "stats-chart-outline"
+            }
+            size={24}
+            color={activeTab === "statistics" ? "#16B8C5" : "#757575"}
+          />
+        </AnimatedIconWrapper>
+        <Text
+          style={[
+            styles.navLabel,
+            activeTab === "statistics" && styles.navLabelActive,
+          ]}
+        >
+          Statistics
+        </Text>
+      </Pressable>
+
+      <Pressable
+        style={styles.navItem}
         onPress={() => setActiveTab("settings")}
       >
         <AnimatedIconWrapper isActive={activeTab === "settings"}>
@@ -153,6 +179,16 @@ export default function Nav() {
           pointerEvents={activeTab === "analysis" ? "auto" : "none"}
         >
           <Analysis />
+        </View>
+
+        <View
+          style={[
+            styles.tabScreen,
+            activeTab === "statistics" ? styles.tabVisible : styles.tabHidden,
+          ]}
+          pointerEvents={activeTab === "statistics" ? "auto" : "none"}
+        >
+          <DebugStatsPage />
         </View>
 
         <View

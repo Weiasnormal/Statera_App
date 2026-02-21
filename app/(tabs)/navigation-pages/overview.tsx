@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     alignItems: "center",
-    paddingTop: 20,
+    paddingTop: 0,
     paddingBottom: 40,
   },
   contentWrap: {
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Poppins_600SemiBold",
     color: "#74767E",
-    paddingTop: 40,
+    paddingTop: 12,
     marginBottom: 6,
     textAlign: "center",
   },

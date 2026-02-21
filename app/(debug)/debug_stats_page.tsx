@@ -1,3 +1,4 @@
+import { ScreenHeader } from "@/components/ui/screen-header";
 import { Ionicons } from "@expo/vector-icons";
 import {
   getInstalledApps,
@@ -11,7 +12,6 @@ import {
   FlatList,
   Image,
   Pressable,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -234,24 +234,6 @@ export default function DebugStatsPage() {
     </View>
   );
 
-  const renderHeader = () => (
-    <View style={styles.headerContainer}>
-      <View>
-        <Text style={styles.title}>Usage Statistics</Text>
-        <Text style={styles.subtitle}>Top apps by foreground usage</Text>
-      </View>
-      <View style={styles.headerActions}>
-        <Pressable
-          style={styles.refreshButton}
-          onPress={hasPermission ? fetchData : checkPermission}
-        >
-          <Ionicons name="refresh" size={16} color="#FFFFFF" />
-          <Text style={styles.refreshButtonText}>Refresh</Text>
-        </Pressable>
-      </View>
-    </View>
-  );
-
   const renderDurationSelector = () => (
     <View style={styles.durationContainer}>
       <Pressable
@@ -307,9 +289,24 @@ export default function DebugStatsPage() {
 
   if (!hasPermission) {
     return (
-      <SafeAreaView 
-        style={styles.safeArea} edges={["top", "left", "right", "bottom"]}>
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <SafeAreaView
+        style={styles.safeArea}
+        edges={["left", "right", "bottom"]}
+      >
+        <ScreenHeader
+          title="Statistics"
+          align="left"
+          rightAction={
+            <Pressable
+              style={styles.refreshIconButton}
+              onPress={checkPermission}
+              accessibilityLabel="Refresh statistics"
+              hitSlop={10}
+            >
+              <Ionicons name="refresh" size={18} color="#0a7ea4" />
+            </Pressable>
+          }
+        />
         <View style={styles.centeredContainer}>
           <Text style={styles.permissionTitle}>Permission Required</Text>
           <Text style={styles.permissionText}>
@@ -331,10 +328,22 @@ export default function DebugStatsPage() {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+    <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
+      <ScreenHeader
+        title="Statistics"
+        align="left"
+        rightAction={
+          <Pressable
+            style={styles.refreshIconButton}
+            onPress={hasPermission ? fetchData : checkPermission}
+            accessibilityLabel="Refresh statistics"
+            hitSlop={10}
+          >
+            <Ionicons name="refresh" size={18} color="#0a7ea4" />
+          </Pressable>
+        }
+      />
       <View style={styles.container}>
-        {renderHeader()}
         {renderDurationSelector()}
         <View style={styles.summaryCard}>
           <View style={styles.summaryItem}>
@@ -387,55 +396,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 24,
   },
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  refreshIconButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#E0F2FE",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#0F172A",
-  },
-  subtitle: {
-    marginTop: 2,
-    fontSize: 13,
-    color: "#64748B",
-  },
-  headerActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  refreshButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    backgroundColor: "#0a7ea4",
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  refreshButtonText: {
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontWeight: "600",
+    justifyContent: "center",
   },
   listContent: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingBottom: 24,
   },
   summaryCard: {
-    marginHorizontal: 16,
+    marginHorizontal: 20,
     marginVertical: 12,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#F8F8F8",
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 12,
@@ -447,17 +424,18 @@ const styles = StyleSheet.create({
   summaryDivider: {
     width: 1,
     alignSelf: "stretch",
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "#E5E7EB",
   },
   summaryLabel: {
     fontSize: 12,
     color: "#64748B",
+    fontFamily: "Poppins_400Regular",
   },
   summaryValue: {
     marginTop: 4,
     fontSize: 16,
-    fontWeight: "700",
-    color: "#0F172A",
+    fontFamily: "Poppins_700Bold",
+    color: "#343235",
   },
   listItemCard: {
     flexDirection: "row",
@@ -466,7 +444,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: "#f0f0f0",
     padding: 12,
     marginBottom: 10,
   },
@@ -481,7 +459,7 @@ const styles = StyleSheet.create({
   },
   rankText: {
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: "Poppins_700Bold",
     color: "#0369A1",
   },
   iconContainer: {
@@ -506,7 +484,7 @@ const styles = StyleSheet.create({
   },
   fallbackIconText: {
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: "Poppins_700Bold",
     color: "#FFFFFF",
   },
   appInfoContainer: {
@@ -520,19 +498,20 @@ const styles = StyleSheet.create({
   },
   appName: {
     flex: 1,
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#0F172A",
+    fontSize: 14,
+    color: "#343235",
+    fontFamily: "Poppins_600SemiBold",
   },
   packageName: {
     marginTop: 4,
     fontSize: 12,
     color: "#64748B",
+    fontFamily: "Poppins_400Regular",
   },
   usageTime: {
     fontSize: 14,
-    fontWeight: "700",
-    color: "#0F172A",
+    color: "#16B8C5",
+    fontFamily: "Poppins_600SemiBold",
   },
   usageBarTrack: {
     marginTop: 8,
@@ -555,6 +534,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 14,
     color: "#64748B",
+    fontFamily: "Poppins_400Regular",
   },
   emptyContainer: {
     paddingVertical: 48,
@@ -564,11 +544,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#64748B",
     textAlign: "center",
+    fontFamily: "Poppins_400Regular",
   },
   permissionTitle: {
     fontSize: 24,
-    fontWeight: "700",
-    color: "#0F172A",
+    fontFamily: "Poppins_700Bold",
+    color: "#343235",
     marginBottom: 12,
     textAlign: "center",
   },
@@ -578,6 +559,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 24,
     lineHeight: 24,
+    fontFamily: "Poppins_400Regular",
   },
   grantButton: {
     backgroundColor: "#0a7ea4",
@@ -589,22 +571,22 @@ const styles = StyleSheet.create({
   grantButtonText: {
     color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
   },
   instructionText: {
     fontSize: 12,
     color: "#94A3B8",
     textAlign: "center",
     fontStyle: "italic",
+    fontFamily: "Poppins_400Regular",
   },
   durationContainer: {
     flexDirection: "row",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 10,
     gap: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#FFFFFF",
   },
   durationButton: {
     flex: 1,
@@ -623,7 +605,7 @@ const styles = StyleSheet.create({
   },
   durationButtonText: {
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
     color: "#64748B",
   },
   durationButtonTextActive: {

@@ -8,9 +8,16 @@ export type ScreenHeaderProps = {
   showBack?: boolean;
   onBackPress?: () => void;
   align?: "center" | "left";
+  rightAction?: React.ReactNode;
 };
 
-export function ScreenHeader({ title, showBack = false, onBackPress, align = "center" }: ScreenHeaderProps) {
+export function ScreenHeader({
+  title,
+  showBack = false,
+  onBackPress,
+  align = "center",
+  rightAction,
+}: ScreenHeaderProps) {
   const isLeft = align === "left";
   const insets = useSafeAreaInsets();
 
@@ -41,8 +48,11 @@ export function ScreenHeader({ title, showBack = false, onBackPress, align = "ce
           {title}
         </Text>
 
-        {/* Right placeholder only for centered layout */}
-        {!isLeft && <View style={styles.placeholder} />}
+        {rightAction ? (
+          <View style={styles.rightAction}>{rightAction}</View>
+        ) : !isLeft ? (
+          <View style={styles.placeholder} />
+        ) : null}
       </View>
     </View>
   );
@@ -73,6 +83,12 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 40,
     height: 40,
+  },
+  rightAction: {
+    minWidth: 40,
+    minHeight: 40,
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     flex: 1,
