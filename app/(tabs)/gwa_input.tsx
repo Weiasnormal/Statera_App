@@ -5,13 +5,13 @@ import { useState } from "react";
 import {
   Keyboard,
   Pressable,
-  SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function InputScreen() {
   const { animation } = useLocalSearchParams<{ animation?: string }>();
@@ -54,7 +54,7 @@ export default function InputScreen() {
   return (
     <>
       <Stack.Screen options={{ animation: screenAnimation }} />
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
         <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
         <View style={styles.container}>
           <View style={styles.content}>
@@ -127,21 +127,21 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontSize: 32,
+    fontSize: 30,
     fontFamily: "Poppins_700Bold",
     color: "#111827",
     marginBottom: 10,
     lineHeight: 36,
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 14,
     lineHeight: 20,
     color: "#6B7280",
     marginBottom: 24,
     fontFamily: "Poppins_400Regular",
   },
   label: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: "Poppins_600SemiBold",
     color: "#111827",
     marginBottom: 8,

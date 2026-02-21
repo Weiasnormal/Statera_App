@@ -1,9 +1,9 @@
 import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_600SemiBold,
-  Poppins_700Bold,
-  useFonts,
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_600SemiBold,
+    Poppins_700Bold,
+    useFonts,
 } from "@expo-google-fonts/poppins";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -71,6 +71,10 @@ export default function RootLayout() {
       <Stack.Screen name="nav" options={{ animation: "slide_from_right" }} />
       <Stack.Screen
         name="(tabs)/navigation-pages/meet-the-team"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen
+        name="(tabs)/navigation-pages/about_statera"
         options={{ animation: "slide_from_right" }}
       />
       <Stack.Screen

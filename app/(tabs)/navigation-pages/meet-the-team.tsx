@@ -19,7 +19,10 @@ export default function MeetTheTeam() {
         onBackPress={() => router.back()}
       />
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Team Title */}
         <View style={styles.titleContainer}>
           <Text style={styles.teamText}>Team</Text>
@@ -35,7 +38,7 @@ export default function MeetTheTeam() {
         {/* Team Image */}
         <View style={styles.imageContainer}>
           <Image
-            source={require("@/assets/images/seben.webp")}
+            source={require("@/assets/images/dev-characters/seben.webp")}
             style={styles.teamImage}
             resizeMode="contain"
           />
@@ -147,8 +150,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   teamImage: {
-    width: 350,
-    height: 350,
+    width: 300,
+    height: 300,
     borderRadius: 20,
   },
   contactSection: {

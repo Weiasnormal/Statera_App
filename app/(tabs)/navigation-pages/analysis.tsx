@@ -16,6 +16,7 @@ export default function Analysis() {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
       >
         {/* Academic Indicator Section */}
         <View style={styles.section}>

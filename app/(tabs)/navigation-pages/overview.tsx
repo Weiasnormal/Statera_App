@@ -72,7 +72,10 @@ export default function Overview() {
   return (
     <View style={[styles.container, { backgroundColor: waveBaseColor }]}>
       <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.waveFullBleed}>
             <View pointerEvents="none" style={styles.waveContainer}>
               <BottomWave
@@ -296,7 +299,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_700Bold",
     color: "#1a1a1a",
     textAlign: "center",
-    lineHeight: 38,
+    lineHeight: 42,
   },
   illustrationContainer: {
     marginVertical: 30,
