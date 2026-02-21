@@ -117,13 +117,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   currentlyText: {
-    fontSize: 22,
+    fontSize: 24,
     fontFamily: "Poppins_700Bold",
     color: "#1a1a1a",
     flexShrink: 1,
   },
   daysText: {
-    fontSize: 22,
+    fontSize: 24,
     fontFamily: "Poppins_700Bold",
     color: "#16B8C5",
     flex: 1,

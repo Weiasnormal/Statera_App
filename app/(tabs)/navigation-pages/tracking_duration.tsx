@@ -89,8 +89,6 @@ export default function TrackingDuration() {
         <View style={styles.divider} />
 
         {/* Range Info */}
-        <Text style={styles.rangeText}>Available options: 1, 7, and 30 days</Text>
-
         <View style={styles.infoRow}>
           <Ionicons
             name="information-circle-outline"
@@ -140,7 +138,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontFamily: "Poppins_700Bold",
     color: "#1a1a1a",
     marginBottom: 8,
@@ -181,12 +179,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#e5e5e5",
     marginBottom: 16,
   },
-  rangeText: {
-    fontSize: 13,
-    color: "#666666",
-    marginBottom: 12,
-    fontFamily: "Poppins_400Regular",
-  },
+
   infoRow: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -194,7 +187,7 @@ const styles = StyleSheet.create({
   },
   infoText: {
     flex: 1,
-    fontSize: 13,
+    fontSize: 12,
     color: "#666666",
     lineHeight: 18,
     fontFamily: "Poppins_400Regular",

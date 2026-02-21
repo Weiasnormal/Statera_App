@@ -129,8 +129,8 @@ const styles = StyleSheet.create({
     marginBottom: -60,
   },
   teamText: {
-    fontSize: 120,
-    fontWeight: "900",
+    fontSize: 100,
+    fontFamily: "Poppins_700Bold",
     color: "#343235",
     textAlign: "center",
     lineHeight: 100,
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   },
   sebenLetter: {
     fontSize: 100,
-    fontWeight: "900",
+    fontFamily: "Poppins_700Bold",
   },
   imageContainer: {
     width: "100%",
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   contactTitle: {
     fontSize: 20,
-    fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
     color: "#1a1a1a",
     marginBottom: 20,
     textAlign: "center",

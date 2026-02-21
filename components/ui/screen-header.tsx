@@ -77,14 +77,14 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     textAlign: "center",
-    fontSize: 18,
-    fontWeight: "600",
+    fontSize: 16,
+    fontFamily: "Poppins_600SemiBold",
     color: "#1a1a1a",
   },
   titleLeft: {
     textAlign: "left",
     fontSize: 24,
-    fontWeight: "700",
+    fontFamily: "Poppins_700Bold",
   },
   titleLeftWithBack: {
     marginLeft: 12,
