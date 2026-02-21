@@ -12,11 +12,11 @@ import { useCallback, useState } from "react";
 import {
   Alert,
   Pressable,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AccessScreen() {
   const { animation } = useLocalSearchParams<{ animation?: string }>();
@@ -82,7 +82,10 @@ export default function AccessScreen() {
   return (
     <>
       <Stack.Screen options={{ animation: screenAnimation }} />
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView 
+      style={styles.safeArea} 
+      edges={["top", "left", "right"]}
+      >
         <View style={styles.container}>
           <View style={styles.content}>
             <Pressable
