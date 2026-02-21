@@ -101,9 +101,9 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: "Poppins_600SemiBold",
-    color: "#111827",
+    color: "#343235",
     textAlign: "center",
   },
   subtitle: {

@@ -1,12 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import {
-	Pressable,
-	ScrollView,
-	StatusBar,
-	StyleSheet,
-	Text,
-	View,
+    Pressable,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 
 export default function HowItWorks() {
@@ -29,7 +29,7 @@ export default function HowItWorks() {
             accessibilityLabel="Close"
             onPress={() => router.back()}
           >
-            <Ionicons name="close" size={20} color="#111827" />
+            <Ionicons name="close" size={20} color="#343235" />
           </Pressable>
         </View>
 
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    color: "#111827",
+    color: "#343235",
     fontFamily: "Poppins_600SemiBold",
   },
   closeButton: {
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 14,
     fontFamily: "Poppins_700Bold",
-    color: "#111827",
+    color: "#343235",
     marginBottom: 6,
   },
   cardBody: {

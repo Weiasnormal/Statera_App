@@ -96,8 +96,8 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontFamily: "Poppins_600SemiBold",
-    color: "#1a1a1a",
+    fontFamily: "Poppins_700Bold",
+    color: "#343235",
     marginBottom: 12,
   },
   sectionDescription: {

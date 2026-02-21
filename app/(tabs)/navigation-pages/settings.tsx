@@ -42,7 +42,7 @@ export default function Settings() {
             }
           >
             <View style={styles.menuLeft}>
-              <Ionicons name="timer-outline" size={22} color="#1a1a1a" />
+              <Ionicons name="timer-outline" size={22} color="#343235" />
               <Text style={styles.menuText}>Tracking Duration</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
@@ -56,7 +56,7 @@ export default function Settings() {
             }
           >
             <View style={styles.menuLeft}>
-              <Ionicons name="people-outline" size={22} color="#1a1a1a" />
+              <Ionicons name="people-outline" size={22} color="#343235" />
               <Text style={styles.menuText}>Meet the Team</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
@@ -73,7 +73,7 @@ export default function Settings() {
               <Ionicons
                 name="information-circle-outline"
                 size={22}
-                color="#1a1a1a"
+                color="#343235"
               />
               <Text style={styles.menuText}>About STATERA</Text>
             </View>
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   currentlyText: {
     fontSize: 24,
     fontFamily: "Poppins_700Bold",
-    color: "#1a1a1a",
+    color: "#343235",
     flexShrink: 1,
   },
   daysText: {
@@ -132,8 +132,8 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontFamily: "Poppins_600SemiBold",
-    color: "#1a1a1a",
+    fontFamily: "Poppins_700Bold",
+    color: "#343235",
     marginBottom: 16,
   },
   menuContainer: {
@@ -159,8 +159,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   menuText: {
-    fontSize: 16,
-    color: "#1a1a1a",
+    fontSize: 14,
+    color: "#343235",
     fontFamily: "Poppins_400Regular",
   },
 });

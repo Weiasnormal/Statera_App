@@ -25,7 +25,7 @@ export function ScreenHeader({ title, showBack = false, onBackPress, align = "ce
       >
         {showBack ? (
           <Pressable style={styles.backButton} onPress={onBackPress}>
-            <Ionicons name="arrow-back" size={22} color="#1a1a1a" />
+            <Ionicons name="arrow-back" size={22} color="#343235" />
           </Pressable>
         ) : !isLeft ? (
           <View style={styles.placeholder} />
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     fontFamily: "Poppins_600SemiBold",
-    color: "#1a1a1a",
+    color: "#343235",
   },
   titleLeft: {
     textAlign: "left",

@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   contactTitle: {
     fontSize: 20,
     fontFamily: "Poppins_600SemiBold",
-    color: "#1a1a1a",
+    color: "#343235",
     marginBottom: 20,
     textAlign: "center",
   },
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   contactName: {
     fontSize: 16,
     fontFamily: "Poppins_600SemiBold",
-    color: "#1a1a1a",
+    color: "#343235",
     marginBottom: 16,
     textAlign: "center",
   },

@@ -289,15 +289,15 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 14,
     fontFamily: "Poppins_600SemiBold",
-    color: "#555",
+    color: "#74767E",
     paddingTop: 40,
-    marginBottom: 16,
+    marginBottom: 6,
     textAlign: "center",
   },
   mainTitle: {
     fontSize: 32,
     fontFamily: "Poppins_700Bold",
-    color: "#1a1a1a",
+    color: "#343235",
     textAlign: "center",
     lineHeight: 42,
   },
@@ -317,13 +317,13 @@ const styles = StyleSheet.create({
   matchPercentage: {
     fontSize: 22,
     fontFamily: "Poppins_600SemiBold",
-    color: "#1a1a1a",
+    color: "#343235",
     marginBottom: 8,
   },
   matchDescription: {
     fontSize: 14,
     fontFamily: "Poppins_400Regular",
-    color: "#555",
+    color: "#74767E",
     textAlign: "center",
     lineHeight: 20,
   },
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
   usageTitle: {
     fontSize: 18,
     fontFamily: "Poppins_700Bold",
-    color: "#1F2937",
+    color: "#343235",
     marginBottom: 16,
   },
   usageBody: {
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
   balanceTitle: {
     fontSize: 18,
     fontFamily: "Poppins_700Bold",
-    color: "#1F2937",
+    color: "#343235",
     marginBottom: 14,
   },
   balanceList: {
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
     fontSize: 14,
     fontFamily: "Poppins_700Bold",
-    color: "#1F2937",
+    color: "#343235",
   },
   actionGroup: {
     width: "100%",

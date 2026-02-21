@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontFamily: "Poppins_700Bold",
-    color: "#1a1a1a",
+    color: "#343235",
     marginBottom: 8,
   },
   bodyText: {

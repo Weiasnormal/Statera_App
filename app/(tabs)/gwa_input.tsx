@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontFamily: "Poppins_700Bold",
-    color: "#111827",
+    color: "#343235",
     marginBottom: 10,
     lineHeight: 36,
   },
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontFamily: "Poppins_600SemiBold",
-    color: "#111827",
+    color: "#343235",
     marginBottom: 8,
   },
   input: {
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     fontSize: 14,
-    color: "#111827",
+    color: "#343235",
     backgroundColor: "#FFFFFF",
     fontFamily: "Poppins_400Regular",
   },

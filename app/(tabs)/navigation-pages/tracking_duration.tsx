@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontFamily: "Poppins_700Bold",
-    color: "#1a1a1a",
+    color: "#343235",
     marginBottom: 8,
   },
   subtitle: {
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
-    color: "#1a1a1a",
+    color: "#343235",
     textAlign: "center",
     fontFamily: "Poppins_600SemiBold",
   },
