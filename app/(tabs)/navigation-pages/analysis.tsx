@@ -4,11 +4,10 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function Analysis() {
   const distributionData = [
-    { label: "Academic Breakdown", percentage: 53, color: "#16B8C5" },
-    { label: "Productivity apps", percentage: 20, color: "#27B1A8" },
-    { label: "Social media apps", percentage: 33, color: "#16B8C5" },
-    { label: "Entertainment/leisure apps", percentage: 67, color: "#27B1A8" },
-    { label: "Overall app usage", percentage: 24, color: "#16B8C5" },
+    { label: "Checking Frequency", percentage: 53, color: "#16B8C5" },
+    { label: "Focus Stability", percentage: 20, color: "#27B1A8" },
+    { label: "Session Immersion", percentage: 33, color: "#16B8C5" },
+    { label: "Impulse Unlocking", percentage: 67, color: "#27B1A8" },
   ];
 
   return (
@@ -26,9 +25,9 @@ export default function Analysis() {
           </Text>
         </View>
 
-        {/* Digital Distribution Section */}
+        {/* Digital Behavior Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Digital Distribution</Text>
+          <Text style={styles.sectionTitle}>Digital Behavior</Text>
 
           <View style={styles.distributionContainer}>
             {distributionData.map((item, index) => (
@@ -111,6 +110,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 16,
     padding: 20,
+    justifyContent: "center",
+    gap: 24,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   distributionItem: {
-    marginBottom: 24,
+    justifyContent: "center",
   },
   progressBarContainer: {
     marginBottom: 8,
