@@ -3,61 +3,26 @@ import { PrimaryButton } from "@/components/ui/primary-button";
 import { ScreenHeader } from "@/components/ui/screen-header";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
-	KeyboardAvoidingView,
-	Platform,
-	Pressable,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TextInput,
-	View,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
 export default function TrackingDuration() {
+  const dayOptions = [1, 7, 30];
   const [savedDays, setSavedDays] = useState(7);
-  const [daysInput, setDaysInput] = useState("7");
+  const [selectedDays, setSelectedDays] = useState(7);
   const [showDiscardModal, setShowDiscardModal] = useState(false);
 
-  const parsedDays = useMemo(() => {
-    const value = parseInt(daysInput, 10);
-    if (Number.isNaN(value)) return NaN;
-    return value;
-  }, [daysInput]);
-
-  const isValidDays =
-    !Number.isNaN(parsedDays) && parsedDays >= 3 && parsedDays <= 30;
-  const hasChanges = isValidDays && parsedDays !== savedDays;
-
-  const clampDays = (value: number) => {
-    if (Number.isNaN(value)) return 3;
-    return Math.min(30, Math.max(3, value));
-  };
-
-  const handleChangeBy = (delta: number) => {
-    const current = Number.isNaN(parsedDays) ? savedDays : parsedDays;
-    const next = clampDays(current + delta);
-    setDaysInput(String(next));
-  };
-
-  const handleInputChange = (text: string) => {
-    const sanitized = text.replace(/[^0-9]/g, "");
-    setDaysInput(sanitized);
-  };
-
-  const handleInputBlur = () => {
-    if (Number.isNaN(parsedDays)) {
-      setDaysInput(String(savedDays));
-      return;
-    }
-    const clamped = clampDays(parsedDays);
-    setDaysInput(String(clamped));
-  };
+  const hasChanges = selectedDays !== savedDays;
 
   const handleSave = () => {
-    if (!isValidDays) return;
-    setSavedDays(parsedDays);
+    setSavedDays(selectedDays);
+    router.back();
   };
 
   const handleBackPress = () => {
@@ -74,15 +39,12 @@ export default function TrackingDuration() {
 
   const handleDiscard = () => {
     setShowDiscardModal(false);
-    setDaysInput(String(savedDays));
+    setSelectedDays(savedDays);
     router.back();
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
+    <View style={styles.container}>
       <ScreenHeader
         title="Tracking Duration"
         showBack
@@ -100,43 +62,29 @@ export default function TrackingDuration() {
           </Text>
         </View>
 
-        {/* Counter */}
-        <View style={styles.counterRow}>
-          <Pressable
-            style={[styles.counterButton, styles.counterButtonLeft]}
-            onPress={() => handleChangeBy(-1)}
-          >
-            <Text style={styles.counterButtonText}>-</Text>
-          </Pressable>
-
-          <View style={styles.inputContainer}>
-            <TextInput
-              value={daysInput}
-              onChangeText={handleInputChange}
-              onBlur={handleInputBlur}
-              keyboardType="number-pad"
-              maxLength={2}
-              style={styles.input}
-              textAlign="center"
-              returnKeyType="done"
-            />
-          </View>
-
-          <Pressable
-            style={[styles.counterButton, styles.counterButtonRight]}
-            onPress={() => handleChangeBy(1)}
-          >
-            <Text style={styles.counterButtonText}>+</Text>
-          </Pressable>
+        {/* Static Options */}
+        <View style={styles.optionsContainer}>
+          {dayOptions.map((option) => {
+            const isSelected = selectedDays === option;
+            return (
+              <Pressable
+                key={option}
+                style={[styles.optionButton, isSelected && styles.optionButtonActive]}
+                onPress={() => setSelectedDays(option)}
+              >
+                <Text style={[styles.optionText, isSelected && styles.optionTextActive]}>
+                  {option} {option === 1 ? "day" : "days"}
+                </Text>
+              </Pressable>
+            );
+          })}
         </View>
-
-        <Text style={styles.daysLabel}>DAYS</Text>
 
         {/* Divider */}
         <View style={styles.divider} />
 
         {/* Range Info */}
-        <Text style={styles.rangeText}>Range: 3–30 days</Text>
+        <Text style={styles.rangeText}>Available options: 1, 7, and 30 days</Text>
 
         <View style={styles.infoRow}>
           <Ionicons
@@ -169,7 +117,7 @@ export default function TrackingDuration() {
         onSecondaryPress={handleDiscard}
         onRequestClose={handleStay}
       />
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -198,55 +146,30 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontFamily: "Poppins_400Regular",
   },
-  counterRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  counterButton: {
-    backgroundColor: "#0a7ea4",
-    borderRadius: 12,
-    width: 72,
-    height: 72,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  counterButtonLeft: {
-    marginRight: 16,
-  },
-  counterButtonRight: {
-    marginLeft: 16,
-  },
-  counterButtonText: {
-    color: "#ffffff",
-    fontSize: 32,
-    fontWeight: "700",
-  },
-  inputContainer: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-    borderRadius: 12,
-    height: 72,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  input: {
-    fontSize: 28,
-    fontFamily: "Poppins_700Bold",
-    color: "#1a1a1a",
-    paddingVertical: 0,
-    paddingHorizontal: 0,
-    minWidth: 40,
-  },
-  daysLabel: {
-    textAlign: "center",
-    fontSize: 12,
-    letterSpacing: 2,
-    color: "#888888",
+  optionsContainer: {
+    gap: 12,
     marginBottom: 24,
-    fontFamily: "Poppins_400Regular",
+  },
+  optionButton: {
+    borderWidth: 1,
+    borderColor: "#d5d5d5",
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    backgroundColor: "#ffffff",
+  },
+  optionButtonActive: {
+    borderColor: "#0a7ea4",
+    backgroundColor: "#EAF7FB",
+  },
+  optionText: {
+    fontSize: 16,
+    color: "#1a1a1a",
+    textAlign: "center",
+    fontFamily: "Poppins_600SemiBold",
+  },
+  optionTextActive: {
+    color: "#0a7ea4",
   },
   divider: {
     height: 1,
