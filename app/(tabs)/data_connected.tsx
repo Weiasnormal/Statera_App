@@ -3,16 +3,19 @@ import { router } from "expo-router";
 import {
   Image,
   Pressable,
-  SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function DataConnectedScreen() {
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView 
+      style={styles.safeArea}
+      edges={["top", "left", "right"]}
+    >
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View style={styles.container}>
         <View style={styles.header}>

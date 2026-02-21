@@ -54,7 +54,7 @@ export default function InputScreen() {
   return (
     <>
       <Stack.Screen options={{ animation: screenAnimation }} />
-      <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      <SafeAreaView style={styles.safeArea} edges={["top", "left", "right", "bottom"]}>
         <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
         <View style={styles.container}>
           <View style={styles.content}>

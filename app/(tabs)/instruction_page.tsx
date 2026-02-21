@@ -3,16 +3,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
-    Animated,
-    Dimensions,
-    Image,
-    PanResponder,
-    Pressable,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    View,
+  Animated,
+  Dimensions,
+  Image,
+  PanResponder,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -75,7 +75,10 @@ export default function ViewResultsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView 
+      style={styles.safeArea}
+      edges={["top", "left", "right", "bottom"]}
+      >
       <View style={styles.container}>
         <Pressable
           style={styles.backButton}

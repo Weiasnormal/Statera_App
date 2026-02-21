@@ -1,27 +1,43 @@
+import { Ionicons } from "@expo/vector-icons";
 import {
-    getUsageStats,
-    hasUsageStatsPermission,
-    requestUsageStatsPermission,
+  getInstalledApps,
+  getUsageStats,
+  hasUsageStatsPermission,
+  requestUsageStatsPermission,
 } from "expo-android-usagestats";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    Pressable,
-    SafeAreaView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface UsageStatItem {
   packageName: string;
   totalTimeInForeground: number;
 }
 
+interface InstalledAppInfo {
+  packageName: string;
+  appName: string;
+  icon: string;
+  category?: string;
+}
+
+interface EnrichedUsageItem extends UsageStatItem {
+  appName: string;
+  icon?: string;
+}
+
 export default function DebugStatsPage() {
   const [usageStats, setUsageStats] = useState<UsageStatItem[]>([]);
+  const [installedApps, setInstalledApps] = useState<InstalledAppInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasPermission, setHasPermission] = useState(false);
   const [durationDays, setDurationDays] = useState(1);
@@ -34,6 +50,7 @@ export default function DebugStatsPage() {
   useEffect(() => {
     if (hasPermission) {
       fetchData();
+      loadInstalledApps();
     }
   }, [durationDays]);
 
@@ -43,9 +60,19 @@ export default function DebugStatsPage() {
       setHasPermission(permission);
       if (permission) {
         fetchData();
+        loadInstalledApps();
       }
     } catch (error) {
       console.error("Error checking permission:", error);
+    }
+  };
+
+  const loadInstalledApps = async () => {
+    try {
+      const apps = await getInstalledApps();
+      setInstalledApps(apps as InstalledAppInfo[]);
+    } catch (error) {
+      console.error("Error loading installed apps:", error);
     }
   };
 
@@ -101,26 +128,127 @@ export default function DebugStatsPage() {
     return `${hours}h ${remainingMins}m`;
   };
 
-  const renderItem = ({ item }: { item: UsageStatItem }) => (
-    <View style={styles.listItem}>
-      <Text style={styles.packageName}>{item.packageName}</Text>
-      <Text style={styles.usageTime}>
-        {formatTime(item.totalTimeInForeground)}
-      </Text>
+  const formatPackageAsName = (packageName: string): string => {
+    const packageParts = packageName.split(".");
+    const candidate = packageParts[packageParts.length - 1] ?? packageName;
+    return candidate
+      .replace(/[_-]+/g, " ")
+      .replace(/\b\w/g, (character) => character.toUpperCase());
+  };
+
+  const getInitials = (appName: string): string => {
+    const words = appName.trim().split(/\s+/).filter(Boolean);
+    if (words.length === 0) {
+      return "?";
+    }
+    if (words.length === 1) {
+      return words[0].slice(0, 2).toUpperCase();
+    }
+    return `${words[0][0] ?? ""}${words[1][0] ?? ""}`.toUpperCase();
+  };
+
+  const getColorFromPackage = (packageName: string): string => {
+    const palette = ["#0a7ea4", "#16B8C5", "#0F93B8", "#25AFA8", "#3B82F6", "#8B5CF6"];
+    const hashValue = packageName
+      .split("")
+      .reduce((total, character) => total + character.charCodeAt(0), 0);
+    return palette[hashValue % palette.length];
+  };
+
+  const appInfoByPackage = useMemo(() => {
+    return installedApps.reduce<Record<string, InstalledAppInfo>>((map, app) => {
+      map[app.packageName] = app;
+      return map;
+    }, {});
+  }, [installedApps]);
+
+  const enrichedUsageStats = useMemo<EnrichedUsageItem[]>(() => {
+    return usageStats.map((item) => {
+      const appInfo = appInfoByPackage[item.packageName];
+      return {
+        ...item,
+        appName: appInfo?.appName || formatPackageAsName(item.packageName),
+        icon: appInfo?.icon,
+      };
+    });
+  }, [usageStats, appInfoByPackage]);
+
+  const maxUsage = useMemo(() => {
+    return enrichedUsageStats.reduce((maximum, item) => {
+      return item.totalTimeInForeground > maximum ? item.totalTimeInForeground : maximum;
+    }, 0);
+  }, [enrichedUsageStats]);
+
+  const totalUsage = useMemo(() => {
+    return enrichedUsageStats.reduce((sum, item) => sum + item.totalTimeInForeground, 0);
+  }, [enrichedUsageStats]);
+
+  const renderItem = ({ item, index }: { item: EnrichedUsageItem; index: number }) => (
+    <View style={styles.listItemCard}>
+      <View style={styles.rankBadge}>
+        <Text style={styles.rankText}>#{index + 1}</Text>
+      </View>
+
+      <View style={styles.iconContainer}>
+        {item.icon ? (
+          <Image
+            source={{ uri: `data:image/png;base64,${item.icon}` }}
+            style={styles.appIcon}
+            resizeMode="contain"
+          />
+        ) : (
+          <View
+            style={[
+              styles.fallbackIcon,
+              { backgroundColor: getColorFromPackage(item.packageName) },
+            ]}
+          >
+            <Text style={styles.fallbackIconText}>{getInitials(item.appName)}</Text>
+          </View>
+        )}
+      </View>
+
+      <View style={styles.appInfoContainer}>
+        <View style={styles.appNameRow}>
+          <Text style={styles.appName} numberOfLines={1}>
+            {item.appName}
+          </Text>
+          <Text style={styles.usageTime}>
+            {formatTime(item.totalTimeInForeground)}
+          </Text>
+        </View>
+        <Text style={styles.packageName} numberOfLines={1}>
+          {item.packageName}
+        </Text>
+        <View style={styles.usageBarTrack}>
+          <View
+            style={[
+              styles.usageBarFill,
+              {
+                width: `${maxUsage > 0 ? (item.totalTimeInForeground / maxUsage) * 100 : 0}%`,
+              },
+            ]}
+          />
+        </View>
+      </View>
     </View>
   );
 
-  const renderSeparator = () => <View style={styles.separator} />;
-
   const renderHeader = () => (
     <View style={styles.headerContainer}>
-      <Text style={styles.title}>Usage Statistics</Text>
-      <Pressable
-        style={styles.refreshButton}
-        onPress={hasPermission ? fetchData : checkPermission}
-      >
-        <Text style={styles.refreshButtonText}>Refresh</Text>
-      </Pressable>
+      <View>
+        <Text style={styles.title}>Usage Statistics</Text>
+        <Text style={styles.subtitle}>Top apps by foreground usage</Text>
+      </View>
+      <View style={styles.headerActions}>
+        <Pressable
+          style={styles.refreshButton}
+          onPress={hasPermission ? fetchData : checkPermission}
+        >
+          <Ionicons name="refresh" size={16} color="#FFFFFF" />
+          <Text style={styles.refreshButtonText}>Refresh</Text>
+        </Pressable>
+      </View>
     </View>
   );
 
@@ -179,7 +307,8 @@ export default function DebugStatsPage() {
 
   if (!hasPermission) {
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView 
+        style={styles.safeArea} edges={["top", "left", "right", "bottom"]}>
         <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
         <View style={styles.centeredContainer}>
           <Text style={styles.permissionTitle}>Permission Required</Text>
@@ -207,6 +336,17 @@ export default function DebugStatsPage() {
       <View style={styles.container}>
         {renderHeader()}
         {renderDurationSelector()}
+        <View style={styles.summaryCard}>
+          <View style={styles.summaryItem}>
+            <Text style={styles.summaryLabel}>Total Usage</Text>
+            <Text style={styles.summaryValue}>{formatTime(totalUsage)}</Text>
+          </View>
+          <View style={styles.summaryDivider} />
+          <View style={styles.summaryItem}>
+            <Text style={styles.summaryLabel}>Apps Tracked</Text>
+            <Text style={styles.summaryValue}>{enrichedUsageStats.length}</Text>
+          </View>
+        </View>
         {loading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#0a7ea4" />
@@ -214,15 +354,14 @@ export default function DebugStatsPage() {
           </View>
         ) : (
           <FlatList
-            data={usageStats}
+            data={enrichedUsageStats}
             renderItem={renderItem}
             keyExtractor={(item, index) => `${item.packageName}-${index}`}
-            ItemSeparatorComponent={renderSeparator}
             contentContainerStyle={styles.listContent}
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
                 <Text style={styles.emptyText}>
-                  No usage data available for the last 24 hours.
+                  No usage data available for this range.
                 </Text>
               </View>
             }
@@ -262,7 +401,20 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#0F172A",
   },
+  subtitle: {
+    marginTop: 2,
+    fontSize: 13,
+    color: "#64748B",
+  },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
   refreshButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
     backgroundColor: "#0a7ea4",
     borderRadius: 8,
     paddingHorizontal: 16,
@@ -275,28 +427,124 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingHorizontal: 16,
+    paddingBottom: 24,
   },
-  listItem: {
+  summaryCard: {
+    marginHorizontal: 16,
+    marginVertical: 12,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 16,
+    paddingVertical: 12,
   },
-  packageName: {
-    fontSize: 14,
+  summaryItem: {
+    flex: 1,
+    alignItems: "center",
+  },
+  summaryDivider: {
+    width: 1,
+    alignSelf: "stretch",
+    backgroundColor: "#E2E8F0",
+  },
+  summaryLabel: {
+    fontSize: 12,
+    color: "#64748B",
+  },
+  summaryValue: {
+    marginTop: 4,
+    fontSize: 16,
     fontWeight: "700",
     color: "#0F172A",
+  },
+  listItemCard: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    padding: 12,
+    marginBottom: 10,
+  },
+  rankBadge: {
+    minWidth: 34,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "#E0F2FE",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 4,
+  },
+  rankText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#0369A1",
+  },
+  iconContainer: {
+    width: 42,
+    height: 42,
+    borderRadius: 10,
+    backgroundColor: "#F1F5F9",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    marginTop: 2,
+  },
+  appIcon: {
+    width: 32,
+    height: 32,
+  },
+  fallbackIcon: {
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  fallbackIconText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#FFFFFF",
+  },
+  appInfoContainer: {
     flex: 1,
-    marginRight: 12,
+  },
+  appNameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  appName: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#0F172A",
+  },
+  packageName: {
+    marginTop: 4,
+    fontSize: 12,
+    color: "#64748B",
   },
   usageTime: {
     fontSize: 14,
-    fontWeight: "500",
-    color: "#64748B",
+    fontWeight: "700",
+    color: "#0F172A",
   },
-  separator: {
-    height: 1,
-    backgroundColor: "#E5E7EB",
+  usageBarTrack: {
+    marginTop: 8,
+    height: 6,
+    borderRadius: 999,
+    backgroundColor: "#E2E8F0",
+    overflow: "hidden",
+  },
+  usageBarFill: {
+    height: "100%",
+    borderRadius: 999,
+    backgroundColor: "#0a7ea4",
   },
   loadingContainer: {
     flex: 1,

@@ -84,7 +84,7 @@ export default function AccessScreen() {
       <Stack.Screen options={{ animation: screenAnimation }} />
       <SafeAreaView 
       style={styles.safeArea} 
-      edges={["top", "left", "right"]}
+      edges={["top", "left", "right", "bottom"]}
       >
         <View style={styles.container}>
           <View style={styles.content}>
