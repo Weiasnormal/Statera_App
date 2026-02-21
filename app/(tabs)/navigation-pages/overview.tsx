@@ -306,8 +306,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   illustration: {
-    width: 280,
-    height: 382,
+    width: 650,
+    height: 320,
   },
   matchContainer: {
     alignItems: "center",
