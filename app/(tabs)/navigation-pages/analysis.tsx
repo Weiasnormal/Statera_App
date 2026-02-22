@@ -68,21 +68,22 @@ export default function Analysis() {
               </View>
             </View>
 
-            {/* Category Breakdown */}
+            {/* Top Apps List */}
             <View style={styles.categoryContainer}>
-              <Text style={styles.categoryTitle}>Category Breakdown</Text>
-              {Object.entries(collectedData.usageMetrics.categoryBreakdown).map(
-                ([category, time]) => {
+              <Text style={styles.categoryTitle}>Top Apps by Usage</Text>
+              {collectedData.usageMetrics.apps
+                .slice(0, 10)
+                .map((app, index) => {
                   const total = collectedData.usageMetrics.totalScreenTime;
-                  const percentage = total > 0 ? Math.round((time / total) * 100) : 0;
+                  const percentage = total > 0 ? Math.round((app.totalTimeInForeground / total) * 100) : 0;
                   return (
-                    <View key={category} style={styles.categoryItem}>
+                    <View key={app.packageName} style={styles.categoryItem}>
                       <View style={styles.categoryHeader}>
                         <Text style={styles.categoryLabel}>
-                          {category.charAt(0).toUpperCase() + category.slice(1)}
+                          {index + 1}. {app.packageName.split('.').pop()}
                         </Text>
                         <Text style={styles.categoryValue}>
-                          {formatMilliseconds(time)} ({percentage}%)
+                          {formatMilliseconds(app.totalTimeInForeground)} ({percentage}%)
                         </Text>
                       </View>
                       <View style={styles.categoryBar}>
@@ -95,8 +96,7 @@ export default function Analysis() {
                       </View>
                     </View>
                   );
-                }
-              )}
+                })}
             </View>
           </View>
         )}

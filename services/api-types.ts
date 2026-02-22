@@ -10,23 +10,16 @@ export type GetMLAnalysisRequest = {
 
 /**
  * Extended request with full usage data for ML analysis
- * This represents the complete data structure we want to send
+ * Send raw app data - backend will handle categorization and analysis
  */
 export interface UsageDataRequest {
   gwa: number;
   trackingDurationDays: number;
-  totalScreenTime: number; // milliseconds
+  totalScreenTime: number; // seconds
   totalAppsTracked: number;
-  categoryBreakdown: {
-    productivity: number;
-    social: number;
-    entertainment: number;
-    other: number;
-  };
-  topApps: Array<{
+  apps: Array<{
     packageName: string;
-    totalTimeInForeground: number;
-    category?: string;
+    totalTimeInForeground: number; // seconds
   }>;
   collectionTimestamp: string;
   platform: string;

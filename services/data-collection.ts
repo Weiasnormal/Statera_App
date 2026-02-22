@@ -14,19 +14,12 @@ export interface AppUsageData {
   packageName: string;
   appName?: string;
   totalTimeInForeground: number; // in milliseconds
-  category?: string;
 }
 
 export interface DeviceUsageMetrics {
   totalScreenTime: number; // Total time across all apps (milliseconds)
   totalAppsTracked: number; // Number of apps used
-  topApps: AppUsageData[]; // Top 10 most used apps
-  categoryBreakdown: {
-    productivity: number;
-    social: number;
-    entertainment: number;
-    other: number;
-  };
+  apps: AppUsageData[]; // All apps with usage data
 }
 
 export interface CollectedData {
@@ -38,65 +31,8 @@ export interface CollectedData {
 }
 
 /**
- * Categorize apps based on package names
- */
-function categorizeApp(packageName: string): string {
-  const pkg = packageName.toLowerCase();
-  
-  // Productivity apps
-  if (
-    pkg.includes("office") ||
-    pkg.includes("microsoft") ||
-    pkg.includes("google.drive") ||
-    pkg.includes("dropbox") ||
-    pkg.includes("notion") ||
-    pkg.includes("evernote") ||
-    pkg.includes("calendar") ||
-    pkg.includes("gmail") ||
-    pkg.includes("outlook") ||
-    pkg.includes("docs") ||
-    pkg.includes("sheets")
-  ) {
-    return "productivity";
-  }
-  
-  // Social media apps
-  if (
-    pkg.includes("facebook") ||
-    pkg.includes("instagram") ||
-    pkg.includes("twitter") ||
-    pkg.includes("tiktok") ||
-    pkg.includes("snapchat") ||
-    pkg.includes("whatsapp") ||
-    pkg.includes("messenger") ||
-    pkg.includes("telegram") ||
-    pkg.includes("discord") ||
-    pkg.includes("reddit")
-  ) {
-    return "social";
-  }
-  
-  // Entertainment apps
-  if (
-    pkg.includes("youtube") ||
-    pkg.includes("netflix") ||
-    pkg.includes("spotify") ||
-    pkg.includes("hulu") ||
-    pkg.includes("prime") ||
-    pkg.includes("disney") ||
-    pkg.includes("game") ||
-    pkg.includes("music") ||
-    pkg.includes("video") ||
-    pkg.includes("twitch")
-  ) {
-    return "entertainment";
-  }
-  
-  return "other";
-}
-
-/**
  * Get usage statistics for specified duration
+ * Returns raw app data without categorization
  */
 async function getUsageStatistics(durationDays: number): Promise<AppUsageData[]> {
   if (Platform.OS !== "android") {
@@ -115,7 +51,7 @@ async function getUsageStatistics(durationDays: number): Promise<AppUsageData[]>
 
     const stats = await getUsageStats(startTime, endTime);
 
-    // Filter and map usage data
+    // Filter and map usage data - send raw data to backend
     const usageData: AppUsageData[] = stats
       .filter((stat: any) => {
         const pkg = stat.packageName?.toLowerCase() || "";
@@ -129,7 +65,6 @@ async function getUsageStatistics(durationDays: number): Promise<AppUsageData[]>
       .map((stat: any) => ({
         packageName: stat.packageName,
         totalTimeInForeground: Number(stat.totalTimeInForeground || 0),
-        category: categorizeApp(stat.packageName),
       }))
       .sort((a: AppUsageData, b: AppUsageData) => 
         b.totalTimeInForeground - a.totalTimeInForeground
@@ -151,21 +86,10 @@ function calculateMetrics(usageData: AppUsageData[]): DeviceUsageMetrics {
     0
   );
 
-  const categoryBreakdown = usageData.reduce(
-    (acc, app) => {
-      const category = app.category || "other";
-      acc[category as keyof typeof acc] =
-        (acc[category as keyof typeof acc] || 0) + app.totalTimeInForeground;
-      return acc;
-    },
-    { productivity: 0, social: 0, entertainment: 0, other: 0 }
-  );
-
   return {
     totalScreenTime,
     totalAppsTracked: usageData.length,
-    topApps: usageData.slice(0, 10), // Top 10 apps
-    categoryBreakdown,
+    apps: usageData, // Send all app data to backend
   };
 }
 

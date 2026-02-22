@@ -2,8 +2,7 @@ import API_CONFIG from "./api-config";
 import type {
     GetMLAnalysisRequest,
     GetMLAnalysisResponse,
-    MLAnalysisResult,
-    UsageDataRequest,
+    UsageDataRequest
 } from "./api-types";
 import type { CollectedData } from "./data-collection";
 
@@ -85,8 +84,7 @@ class ApiClient {
 
   /**
    * Submit usage data for ML analysis
-   * Currently sends a simplified request (name) to match backend
-   * TODO: Update backend to accept full UsageDataRequest
+   * Sends raw app usage data to backend for categorization and ML analysis
    * 
    * @param collectedData Full collected user data
    * @returns ML Analysis result
@@ -95,66 +93,55 @@ class ApiClient {
     collectedData: CollectedData
   ): Promise<GetMLAnalysisResponse> {
     try {
-      // For now, send to the same endpoint with a simplified request
-      // Once backend is updated, send the full collectedData
-      const simplifiedRequest: GetMLAnalysisRequest = {
-        name: `User_GWA_${collectedData.gwa}`,
+      // Prepare full usage data request with raw app data
+      // Convert milliseconds to seconds for backend
+      const usageDataRequest: UsageDataRequest = {
+        gwa: collectedData.gwa,
+        trackingDurationDays: collectedData.trackingDurationDays,
+        totalScreenTime: Math.round(collectedData.usageMetrics.totalScreenTime / 1000),
+        totalAppsTracked: collectedData.usageMetrics.totalAppsTracked,
+        apps: collectedData.usageMetrics.apps.map(app => ({
+          packageName: app.packageName,
+          totalTimeInForeground: Math.round(app.totalTimeInForeground / 1000),
+        })),
+        collectionTimestamp: collectedData.collectionTimestamp,
+        platform: collectedData.platform,
       };
 
-      console.log("Submitting data to backend:", {
-        gwa: collectedData.gwa,
-        duration: collectedData.trackingDurationDays,
-        totalScreenTime: collectedData.usageMetrics.totalScreenTime,
-        appsTracked: collectedData.usageMetrics.totalAppsTracked,
+      console.log("Submitting raw usage data to backend (time in seconds):", {
+        gwa: usageDataRequest.gwa,
+        duration: usageDataRequest.trackingDurationDays,
+        totalScreenTimeSeconds: usageDataRequest.totalScreenTime,
+        appsTracked: usageDataRequest.totalAppsTracked,
+        totalApps: usageDataRequest.apps.length,
       });
 
-      // Call the existing endpoint
-      const result = await this.getMLAnalysis(simplifiedRequest);
+      const url = `${this.baseURL}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
 
-      console.log("Backend response:", result);
+      const response = await this.fetchWithTimeout(url, {
+        method: "POST",
+        body: JSON.stringify(usageDataRequest),
+      });
 
-      return result;
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.description || 
+          `API Error: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      
+      console.log("Backend response:", data);
+
+      return {
+        value: data,
+      };
     } catch (error) {
       console.error("Error submitting usage data:", error);
       throw error;
     }
-  }
-
-  /**
-   * Future method: Submit full usage data (when backend is ready)
-   * This is the structure we want to send eventually
-   */
-  async submitFullUsageData(
-    collectedData: CollectedData
-  ): Promise<MLAnalysisResult> {
-    const usageDataRequest: UsageDataRequest = {
-      gwa: collectedData.gwa,
-      trackingDurationDays: collectedData.trackingDurationDays,
-      totalScreenTime: collectedData.usageMetrics.totalScreenTime,
-      totalAppsTracked: collectedData.usageMetrics.totalAppsTracked,
-      categoryBreakdown: collectedData.usageMetrics.categoryBreakdown,
-      topApps: collectedData.usageMetrics.topApps,
-      collectionTimestamp: collectedData.collectionTimestamp,
-      platform: collectedData.platform,
-    };
-
-    const url = `${this.baseURL}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
-
-    const response = await this.fetchWithTimeout(url, {
-      method: "POST",
-      body: JSON.stringify(usageDataRequest),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.description || 
-        `API Error: ${response.status} ${response.statusText}`
-      );
-    }
-
-    const result = await response.json();
-    return result as MLAnalysisResult;
   }
 
   /**
