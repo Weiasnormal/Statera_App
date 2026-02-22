@@ -1,6 +1,11 @@
 import BottomWave from "@/assets/images/waves/bottom-wave.svg";
 import TopWave from "@/assets/images/waves/top-wave.svg";
 import { SecondaryButton } from "@/components/ui/secondary-button";
+import {
+  BEHAVIORAL_PROFILE_MAP,
+  getCurrentBehavioralProfile,
+  type BehavioralProfileKey,
+} from "@/services/behavioral-profile";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
@@ -14,11 +19,19 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { G, Path, Text as SvgText } from "react-native-svg";
 
-export default function Overview() {
+type OverviewProps = {
+  profileKey?: BehavioralProfileKey;
+};
+
+export default function Overview({ profileKey }: OverviewProps) {
+  const profile = profileKey
+    ? BEHAVIORAL_PROFILE_MAP[profileKey]
+    : getCurrentBehavioralProfile();
   const waveBaseColor = "#FFFFFF";
-  const waveTopColor = "#C5E6E8";
-  const waveBottomColor = "#EAF9FA";
+  const waveTopColor = profile.waveTopColor;
+  const waveBottomColor = profile.waveBottomColor;
   const actionColor = "#00838F";
+
   const usageData = [
     {
       label: "Productivity Apps",
@@ -71,7 +84,8 @@ export default function Overview() {
 
   return (
     <View style={[styles.container, { backgroundColor: waveBaseColor }]}>
-      <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      <SafeAreaView style={styles.safeArea} edges={["left", "right"]}>
+        <View style={[styles.statusBarHeader, { backgroundColor: waveTopColor }]} />
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -101,13 +115,13 @@ export default function Overview() {
             </Text>
 
             {/* Main Title */}
-            <Text style={styles.mainTitle}>Minimal Digital</Text>
-            <Text style={styles.mainTitle}>Engager</Text>
+            <Text style={styles.mainTitle}>{profile.titleLines[0]}</Text>
+            <Text style={styles.mainTitle}>{profile.titleLines[1]}</Text>
 
             {/* Illustration */}
             <View style={styles.illustrationContainer}>
               <Image
-                source={require("@/assets/images/state_characters/minimal_digital_engager.webp")}
+                source={profile.characterImage}
                 style={styles.illustration}
                 resizeMode="contain"
               />
@@ -117,8 +131,8 @@ export default function Overview() {
             <View style={styles.matchContainer}>
               <Text style={styles.matchPercentage}>72% Pattern Match</Text>
               <Text style={styles.matchDescription}>
-                This status reflects your current balance between academic
-                performance and digital usage duration.
+                This status reflects your current academic and digital 
+                engagement patterns based on multiple usage indicators.
               </Text>
             </View>
 
@@ -248,6 +262,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+  },
+  statusBarHeader: {
+    height: 30,
+    width: "100%",
   },
   safeArea: {
     flex: 1,

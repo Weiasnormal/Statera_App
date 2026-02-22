@@ -1,3 +1,11 @@
+import {
+  BEHAVIORAL_PROFILE_MAP,
+  getCurrentBehavioralProfile,
+  parseBehavioralProfileFromApi,
+  setCurrentBehavioralProfile,
+  type BehavioralProfileKey,
+} from "@/services/behavioral-profile";
+import { setLastActiveTab } from "@/services/last-active-tab";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -169,19 +177,39 @@ function BottomNavBar({
 
 // Main Component
 export default function Nav() {
-  const { tab } = useLocalSearchParams<{ tab?: string | string[] }>();
+  const { tab, profile } = useLocalSearchParams<{
+    tab?: string | string[];
+    profile?: string | string[];
+  }>();
   const [activeTab, setActiveTab] = useState<NavTab>(() => resolveTabFromParam(tab));
   const insets = useSafeAreaInsets();
+  const profileParam = Array.isArray(profile) ? profile[0] : profile;
+  const parsedProfile = parseBehavioralProfileFromApi(profileParam);
+  const resolvedProfile = parsedProfile
+    ? BEHAVIORAL_PROFILE_MAP[parsedProfile as BehavioralProfileKey]
+    : getCurrentBehavioralProfile();
 
   useEffect(() => {
     setActiveTab(resolveTabFromParam(tab));
   }, [tab]);
 
+  useEffect(() => {
+    setLastActiveTab(activeTab);
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (parsedProfile) {
+      setCurrentBehavioralProfile(parsedProfile);
+    }
+  }, [parsedProfile]);
+
   return (
     <View style={styles.container}>
       <StatusBar
         style="dark"
-        backgroundColor={activeTab === "overview" ? "#C5E6E8" : "#FFFFFF"}
+        backgroundColor={
+          activeTab === "overview" ? resolvedProfile.waveTopColor : "#FFFFFF"
+        }
       />
 
       {/* Content Section - Keep screens mounted to avoid remount flicker */}
@@ -193,7 +221,7 @@ export default function Nav() {
           ]}
           pointerEvents={activeTab === "overview" ? "auto" : "none"}
         >
-          <Overview />
+          <Overview profileKey={resolvedProfile.key} />
         </View>
 
         <View

@@ -1,20 +1,24 @@
 import { PrimaryButton } from "@/components/ui/primary-button";
+import { getLastActiveTab } from "@/services/last-active-tab";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
-  Keyboard,
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
+    Keyboard,
+    Pressable,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function InputScreen() {
-  const { animation } = useLocalSearchParams<{ animation?: string }>();
+  const { animation, returnTo } = useLocalSearchParams<{
+    animation?: string;
+    returnTo?: string;
+  }>();
   const screenAnimation =
     animation === "slide_from_left" ? "slide_from_left" : "slide_from_right";
 
@@ -51,6 +55,23 @@ export default function InputScreen() {
 
   const isButtonEnabled = isValidGwa(gwa);
 
+  const handleBackPress = () => {
+    if (returnTo === "instruction_page") {
+      router.push("./instruction_page");
+      return;
+    }
+
+    if (returnTo === "usage_request") {
+      router.push("./usage_request?animation=slide_from_left");
+      return;
+    }
+
+    router.push({
+      pathname: "/nav",
+      params: { tab: getLastActiveTab() },
+    });
+  };
+
   return (
     <>
       <Stack.Screen options={{ animation: screenAnimation }} />
@@ -61,7 +82,7 @@ export default function InputScreen() {
             <Pressable
               style={styles.backButton}
               accessibilityRole="button"
-              onPress={() => router.push("./get_started")}
+              onPress={handleBackPress}
             >
               <Ionicons name="arrow-back" size={20} color="#0F172A" />
             </Pressable>

@@ -3,14 +3,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  Animated,
-  Dimensions,
-  Image,
-  PanResponder,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
+    Animated,
+    Dimensions,
+    Image,
+    PanResponder,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -159,7 +159,15 @@ export default function ViewResultsScreen() {
 
         <PrimaryButton
           title="Continue"
-          onPress={() => router.push("./gwa_input?animation=slide_from_right")}
+          onPress={() =>
+            router.push({
+              pathname: "./gwa_input",
+              params: {
+                animation: "slide_from_right",
+                returnTo: "instruction_page",
+              },
+            })
+          }
           style={styles.continueButton}
         />
       </View>

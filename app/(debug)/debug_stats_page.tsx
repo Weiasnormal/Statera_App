@@ -148,7 +148,7 @@ export default function DebugStatsPage() {
   };
 
   const getColorFromPackage = (packageName: string): string => {
-    const palette = ["#0a7ea4", "#16B8C5", "#0F93B8", "#25AFA8", "#3B82F6", "#8B5CF6"];
+    const palette = ["#16B8C5", "#25AFA8", "#0F93B8", "#00838F", "#0A7EA4", "#006B8F"];
     const hashValue = packageName
       .split("")
       .reduce((total, character) => total + character.charCodeAt(0), 0);
@@ -303,7 +303,7 @@ export default function DebugStatsPage() {
               accessibilityLabel="Refresh statistics"
               hitSlop={10}
             >
-              <Ionicons name="refresh" size={18} color="#0a7ea4" />
+              <Ionicons name="refresh" size={18} color="#16B8C5" />
             </Pressable>
           }
         />
@@ -339,7 +339,7 @@ export default function DebugStatsPage() {
             accessibilityLabel="Refresh statistics"
             hitSlop={10}
           >
-            <Ionicons name="refresh" size={18} color="#0a7ea4" />
+            <Ionicons name="refresh" size={18} color="#16B8C5" />
           </Pressable>
         }
       />
@@ -358,7 +358,7 @@ export default function DebugStatsPage() {
         </View>
         {loading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0a7ea4" />
+            <ActivityIndicator size="large" color="#16B8C5" />
             <Text style={styles.loadingText}>Loading usage data...</Text>
           </View>
         ) : (
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#E0F2FE",
+    backgroundColor: "#EAF9FA",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
     minWidth: 34,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "#E0F2FE",
+    backgroundColor: "#EAF9FA",
     alignItems: "center",
     justifyContent: "center",
     marginTop: 4,
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
   rankText: {
     fontSize: 12,
     fontFamily: "Poppins_700Bold",
-    color: "#0369A1",
+    color: "#16B8C5",
   },
   iconContainer: {
     width: 42,
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
   usageBarFill: {
     height: "100%",
     borderRadius: 999,
-    backgroundColor: "#0a7ea4",
+    backgroundColor: "#16B8C5",
   },
   loadingContainer: {
     flex: 1,
@@ -562,7 +562,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_400Regular",
   },
   grantButton: {
-    backgroundColor: "#0a7ea4",
+    backgroundColor: "#16B8C5",
     borderRadius: 8,
     paddingHorizontal: 32,
     paddingVertical: 14,
@@ -600,8 +600,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   durationButtonActive: {
-    backgroundColor: "#0a7ea4",
-    borderColor: "#0a7ea4",
+    backgroundColor: "#16B8C5",
+    borderColor: "#16B8C5",
   },
   durationButtonText: {
     fontSize: 14,

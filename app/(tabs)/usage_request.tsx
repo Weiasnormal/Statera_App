@@ -3,18 +3,18 @@ import { SecondaryButton } from "@/components/ui/secondary-button";
 import { checkUsagePermission } from "@/services/usage-stats";
 import { Ionicons } from "@expo/vector-icons";
 import {
-  Stack,
-  router,
-  useFocusEffect,
-  useLocalSearchParams,
+    Stack,
+    router,
+    useFocusEffect,
+    useLocalSearchParams,
 } from "expo-router";
 import { useCallback, useState } from "react";
 import {
-  Alert,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
+    Alert,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -92,7 +92,13 @@ export default function AccessScreen() {
               style={styles.backButton}
               accessibilityRole="button"
               onPress={() =>
-                router.push("./gwa_input?animation=slide_from_left")
+                router.push({
+                  pathname: "./gwa_input",
+                  params: {
+                    animation: "slide_from_left",
+                    returnTo: "usage_request",
+                  },
+                })
               }
             >
               <Ionicons name="arrow-back" size={20} color="#0F172A" />
