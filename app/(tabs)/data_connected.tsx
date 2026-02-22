@@ -1,16 +1,88 @@
+import { useAnalysis } from "@/context/AnalysisContext";
+import { apiClient } from "@/services/api-client";
+import { collectDataForAnalysis } from "@/services/data-collection";
+import { getGwa } from "@/services/gwa-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useState } from "react";
 import {
-  Image,
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
+    ActivityIndicator,
+    Alert,
+    Image,
+    Pressable,
+    StatusBar,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function DataConnectedScreen() {
+  const {
+    setCollectedData,
+    setBackendResponse,
+    setIsLoading,
+    setError,
+  } = useAnalysis();
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleGenerateProfile = async () => {
+    try {
+      setIsGenerating(true);
+      setIsLoading(true);
+      setError(null);
+
+      // Get stored GWA
+      const gwa = getGwa();
+      if (!gwa) {
+        Alert.alert(
+          "Error",
+          "GWA not found. Please go back and enter your GWA.",
+          [{ text: "OK", onPress: () => router.push("./gwa_input") }]
+        );
+        return;
+      }
+
+      console.log("Collecting usage data for GWA:", gwa);
+
+      // Collect all data
+      const collectedData = await collectDataForAnalysis(gwa);
+      setCollectedData(collectedData);
+
+      console.log("Sending data to backend...");
+
+      // Submit to backend
+      const response = await apiClient.submitUsageData(collectedData);
+      setBackendResponse(response.value);
+
+      console.log("Analysis complete, navigating to results...");
+
+      // Navigate to results
+      router.push("/nav");
+    } catch (error) {
+      console.error("Error generating profile:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      setError(errorMessage);
+
+      Alert.alert(
+        "Error",
+        "Failed to generate profile. Please make sure you have granted usage permissions and try again.",
+        [
+          { text: "Try Again", onPress: () => handleGenerateProfile() },
+          {
+            text: "Go Back",
+            onPress: () => router.push("./usage_request"),
+            style: "cancel",
+          },
+        ]
+      );
+    } finally {
+      setIsGenerating(false);
+      setIsLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView 
       style={styles.safeArea}
@@ -45,11 +117,22 @@ export default function DataConnectedScreen() {
 
         <View style={styles.buttonContainer}>
           <Pressable
-            style={styles.generateButton}
+            style={[
+              styles.generateButton,
+              isGenerating && styles.generateButtonDisabled,
+            ]}
             accessibilityRole="button"
-            onPress={() => router.push("/nav")}
+            onPress={handleGenerateProfile}
+            disabled={isGenerating}
           >
-            <Text style={styles.generateText}>Generate My Profile</Text>
+            {isGenerating ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color="#FFFFFF" />
+                <Text style={styles.generateText}>Analyzing...</Text>
+              </View>
+            ) : (
+              <Text style={styles.generateText}>Generate My Profile</Text>
+            )}
           </Pressable>
         </View>
       </View>
@@ -119,9 +202,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  generateButtonDisabled: {
+    backgroundColor: "#9CA3AF",
+  },
   generateText: {
     color: "#FFFFFF",
     fontFamily: "Poppins_700Bold",
     fontSize: 16,
   },
+  loadingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
 });
+

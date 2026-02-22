@@ -1,15 +1,16 @@
 import { PrimaryButton } from "@/components/ui/primary-button";
+import { setGwa as storeGwa } from "@/services/gwa-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
-  Keyboard,
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
+    Keyboard,
+    Pressable,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -51,6 +52,14 @@ export default function InputScreen() {
 
   const isButtonEnabled = isValidGwa(gwa);
 
+  const handleContinue = () => {
+    if (isButtonEnabled) {
+      // Store GWA for later use
+      storeGwa(parseFloat(gwa));
+      router.push("./usage_request");
+    }
+  };
+
   return (
     <>
       <Stack.Screen options={{ animation: screenAnimation }} />
@@ -85,7 +94,7 @@ export default function InputScreen() {
               onChangeText={handleGwaChange}
               onSubmitEditing={Keyboard.dismiss}
               maxLength={4}
-            />
+            />handleContinue
             <Text style={styles.helperText}>
               Please enter a valid GWA between 1.00 and 5.00.
             </Text>
