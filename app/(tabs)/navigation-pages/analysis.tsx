@@ -1,8 +1,12 @@
 import { ScreenHeader } from "@/components/ui/screen-header";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useAnalysis } from "@/context/AnalysisContext";
+import { formatMilliseconds } from "@/services/data-collection";
 
 export default function Analysis() {
+  const { collectedData, backendResponse, analysisResult } = useAnalysis();
+
   const distributionData = [
     { label: "Checking Frequency", percentage: 53, color: "#16B8C5" },
     { label: "Focus Stability", percentage: 20, color: "#27B1A8" },
@@ -21,10 +25,95 @@ export default function Analysis() {
         {/* Academic Indicator Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Academic Indicator</Text>
-          <Text style={styles.sectionDescription}>
-            Your GWA suggests consistent academic engagement during this period.
-          </Text>
+          {collectedData ? (
+            <>
+              <Text style={styles.dataLabel}>Your GWA: {collectedData.gwa.toFixed(2)}</Text>
+              <Text style={styles.sectionDescription}>
+                {collectedData.gwa < 2.0
+                  ? "Your GWA suggests excellent academic engagement during this period."
+                  : collectedData.gwa < 3.0
+                  ? "Your GWA suggests consistent academic engagement during this period."
+                  : "Your GWA suggests room for improvement in academic engagement."}
+              </Text>
+            </>
+          ) : (
+            <Text style={styles.sectionDescription}>
+              Your GWA suggests consistent academic engagement during this period.
+            </Text>
+          )}
         </View>
+
+        {/* Usage Summary Section */}
+        {collectedData && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Usage Summary</Text>
+            <View style={styles.summaryGrid}>
+              <View style={styles.summaryItem}>
+                <Text style={styles.summaryLabel}>Total Screen Time</Text>
+                <Text style={styles.summaryValue}>
+                  {formatMilliseconds(collectedData.usageMetrics.totalScreenTime)}
+                </Text>
+              </View>
+              <View style={styles.summaryItem}>
+                <Text style={styles.summaryLabel}>Apps Tracked</Text>
+                <Text style={styles.summaryValue}>
+                  {collectedData.usageMetrics.totalAppsTracked}
+                </Text>
+              </View>
+              <View style={styles.summaryItem}>
+                <Text style={styles.summaryLabel}>Tracking Period</Text>
+                <Text style={styles.summaryValue}>
+                  {collectedData.trackingDurationDays} days
+                </Text>
+              </View>
+            </View>
+
+            {/* Top Apps List */}
+            <View style={styles.categoryContainer}>
+              <Text style={styles.categoryTitle}>Top Apps by Usage</Text>
+              {collectedData.usageMetrics.apps
+                .slice(0, 10)
+                .map((app, index) => {
+                  const total = collectedData.usageMetrics.totalScreenTime;
+                  const percentage = total > 0 ? Math.round((app.totalTimeInForeground / total) * 100) : 0;
+                  return (
+                    <View key={app.packageName} style={styles.categoryItem}>
+                      <View style={styles.categoryHeader}>
+                        <Text style={styles.categoryLabel}>
+                          {index + 1}. {app.packageName.split('.').pop()}
+                        </Text>
+                        <Text style={styles.categoryValue}>
+                          {formatMilliseconds(app.totalTimeInForeground)} ({percentage}%)
+                        </Text>
+                      </View>
+                      <View style={styles.categoryBar}>
+                        <View
+                          style={[
+                            styles.categoryBarFill,
+                            { width: `${percentage}%` },
+                          ]}
+                        />
+                      </View>
+                    </View>
+                  );
+                })}
+            </View>
+          </View>
+        )}
+
+        {/* Backend Response Section */}
+        {backendResponse && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>ML Analysis Result</Text>
+            <View style={styles.responseCard}>
+              <Text style={styles.responseText}>{backendResponse}</Text>
+            </View>
+            <Text style={styles.note}>
+              Note: The backend will be updated to return structured analysis data
+              including behavior scores and detailed recommendations.
+            </Text>
+          </View>
+        )}
 
         {/* Digital Behavior Section */}
         <View style={styles.section}>
@@ -78,6 +167,96 @@ export default function Analysis() {
   );
 }
 
+  summaryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 12,
+    marginBottom: 16,
+  },
+  summaryItem: {
+    flex: 1,
+    minWidth: "45%",
+    backgroundColor: "#F8F8F8",
+    padding: 12,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  summaryLabel: {
+    fontSize: 12,
+    color: "#666",
+    fontFamily: "Poppins_400Regular",
+    marginBottom: 4,
+  },
+  summaryValue: {
+    fontSize: 18,
+    fontFamily: "Poppins_700Bold",
+    color: "#343235",
+  },
+  dataLabel: {
+    fontSize: 16,
+    fontFamily: "Poppins_600SemiBold",
+    color: "#16B8C5",
+    marginBottom: 8,
+  },
+  categoryContainer: {
+    marginTop: 16,
+  },
+  categoryTitle: {
+    fontSize: 16,
+    fontFamily: "Poppins_600SemiBold",
+    color: "#343235",
+    marginBottom: 12,
+  },
+  categoryItem: {
+    marginBottom: 16,
+  },
+  categoryHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 6,
+  },
+  categoryLabel: {
+    fontSize: 14,
+    fontFamily: "Poppins_500Medium",
+    color: "#343235",
+  },
+  categoryValue: {
+    fontSize: 14,
+    fontFamily: "Poppins_400Regular",
+    color: "#666",
+  },
+  categoryBar: {
+    height: 8,
+    backgroundColor: "#E0E0E0",
+    borderRadius: 4,
+    overflow: "hidden",
+  },
+  categoryBarFill: {
+    height: "100%",
+    backgroundColor: "#16B8C5",
+    borderRadius: 4,
+  },
+  responseCard: {
+    backgroundColor: "#F0F9FF",
+    padding: 16,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: "#16B8C5",
+    marginBottom: 12,
+  },
+  responseText: {
+    fontSize: 16,
+    fontFamily: "Poppins_500Medium",
+    color: "#343235",
+    lineHeight: 24,
+  },
+  note: {
+    fontSize: 12,
+    fontFamily: "Poppins_400Regular",
+    color: "#9CA3AF",
+    fontStyle: "italic",
+    lineHeight: 18,
+  },
 const styles = StyleSheet.create({
   container: {
     flex: 1,

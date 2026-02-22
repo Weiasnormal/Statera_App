@@ -1,4 +1,5 @@
 import { PrimaryButton } from "@/components/ui/primary-button";
+import { setGwa as storeGwa } from "@/services/gwa-storage";
 import { getLastActiveTab } from "@/services/last-active-tab";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, router, useLocalSearchParams } from "expo-router";
@@ -55,6 +56,14 @@ export default function InputScreen() {
 
   const isButtonEnabled = isValidGwa(gwa);
 
+  const handleContinue = () => {
+    if (isButtonEnabled) {
+      // Store GWA for later use
+      storeGwa(parseFloat(gwa));
+      router.push("./usage_request");
+    }
+  };
+
   const handleBackPress = () => {
     if (returnTo === "instruction_page") {
       router.push("./instruction_page");
@@ -106,7 +115,7 @@ export default function InputScreen() {
               onChangeText={handleGwaChange}
               onSubmitEditing={Keyboard.dismiss}
               maxLength={4}
-            />
+            />handleContinue
             <Text style={styles.helperText}>
               Please enter a valid GWA between 1.00 and 5.00.
             </Text>
