@@ -66,6 +66,18 @@ export default function Analysis() {
                   {collectedData.trackingDurationDays} days
                 </Text>
               </View>
+              <View style={styles.summaryItem}>
+                <Text style={styles.summaryLabel}>Pickups</Text>
+                <Text style={styles.summaryValue}>
+                  {collectedData.usageMetrics.pickups}
+                </Text>
+              </View>
+              <View style={styles.summaryItem}>
+                <Text style={styles.summaryLabel}>Device Unlocks</Text>
+                <Text style={styles.summaryValue}>
+                  {collectedData.usageMetrics.deviceUnlocks}
+                </Text>
+              </View>
             </View>
 
             {/* Top Apps List */}
