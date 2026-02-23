@@ -96,8 +96,7 @@ export default function Analysis() {
                         {index + 1}. {app.packageName.split(".").pop()}
                       </Text>
                       <Text style={styles.categoryValue}>
-                        {formatMilliseconds(app.totalTimeInForeground)} ({percentage}
-                        %)
+                        {formatMilliseconds(app.totalTimeInForeground)} ({percentage}%)
                       </Text>
                     </View>
                     <View style={styles.categoryBar}>

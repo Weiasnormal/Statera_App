@@ -130,7 +130,11 @@ class ApiClient {
         totalApps: usageDataRequest.apps.length,
       });
 
+      //console.log("📤 Full API Payload being sent:", JSON.stringify(usageDataRequest, null, 2));
+
       const url = `${this.getBaseURLOrThrow()}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
+      
+      console.log("📍 API Endpoint:", url);
 
       const response = await this.fetchWithTimeout(url, {
         method: "POST",
@@ -147,7 +151,7 @@ class ApiClient {
 
       const data = await response.json();
       
-      console.log("Backend response:", data);
+      console.log("✅ Backend response received:", JSON.stringify(data, null, 2));
 
       return {
         value: data,

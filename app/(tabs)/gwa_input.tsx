@@ -5,13 +5,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
-    Keyboard,
-    Pressable,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Keyboard,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -57,11 +57,9 @@ export default function InputScreen() {
   const isButtonEnabled = isValidGwa(gwa);
 
   const handleContinue = () => {
-    if (isButtonEnabled) {
-      // Store GWA for later use
-      storeGwa(parseFloat(gwa));
-      router.push("./usage_request");
-    }
+    // Store GWA for later use
+    storeGwa(parseFloat(gwa));
+    router.push("./usage_request");
   };
 
   const handleBackPress = () => {
@@ -115,7 +113,7 @@ export default function InputScreen() {
               onChangeText={handleGwaChange}
               onSubmitEditing={Keyboard.dismiss}
               maxLength={4}
-            />handleContinue
+            />
             <Text style={styles.helperText}>
               Please enter a valid GWA between 1.00 and 5.00.
             </Text>
@@ -123,7 +121,7 @@ export default function InputScreen() {
 
           <PrimaryButton
             title="Continue"
-            onPress={() => router.push("./usage_request")}
+            onPress={handleContinue}
             disabled={!isButtonEnabled}
             style={styles.continueButton}
           />
