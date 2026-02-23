@@ -42,6 +42,28 @@ To learn more about developing your project with Expo, look at the following res
 - [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
 - [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
+## Android standalone APK (no cable required)
+
+If you install a **debug** APK, the app expects a Metro dev server and often only works while connected by USB.
+
+Build a standalone release APK instead:
+
+```bash
+npm run android:release:apk
+```
+
+APK output:
+
+- `android/app/build/outputs/apk/release/app-release.apk`
+
+For local testing, debug APK is still available:
+
+```bash
+npm run android:debug:apk
+```
+
+- `android/app/build/outputs/apk/debug/app-debug.apk`
+
 ## Join the community
 
 Join our community of developers creating universal apps.

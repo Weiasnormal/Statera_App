@@ -15,6 +15,16 @@ class ApiClient {
     this.timeout = API_CONFIG.TIMEOUT;
   }
 
+  private getBaseURLOrThrow(): string {
+    if (!this.baseURL) {
+      throw new Error(
+        "API base URL is not configured. Set EXPO_PUBLIC_API_URL for non-development builds."
+      );
+    }
+
+    return this.baseURL;
+  }
+
   /**
    * Generic fetch wrapper with timeout and error handling
    */
@@ -55,7 +65,7 @@ class ApiClient {
     request: GetMLAnalysisRequest
   ): Promise<GetMLAnalysisResponse> {
     try {
-      const url = `${this.baseURL}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
+      const url = `${this.getBaseURLOrThrow()}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
       
       const response = await this.fetchWithTimeout(url, {
         method: "POST",
@@ -116,7 +126,7 @@ class ApiClient {
         totalApps: usageDataRequest.apps.length,
       });
 
-      const url = `${this.baseURL}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
+      const url = `${this.getBaseURLOrThrow()}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
 
       const response = await this.fetchWithTimeout(url, {
         method: "POST",
