@@ -110,6 +110,8 @@ class ApiClient {
         trackingDurationDays: collectedData.trackingDurationDays,
         totalScreenTime: Math.round(collectedData.usageMetrics.totalScreenTime / 1000),
         totalAppsTracked: collectedData.usageMetrics.totalAppsTracked,
+        pickups: collectedData.usageMetrics.pickups,
+        deviceUnlocks: collectedData.usageMetrics.deviceUnlocks,
         apps: collectedData.usageMetrics.apps.map(app => ({
           packageName: app.packageName,
           totalTimeInForeground: Math.round(app.totalTimeInForeground / 1000),
@@ -123,6 +125,8 @@ class ApiClient {
         duration: usageDataRequest.trackingDurationDays,
         totalScreenTimeSeconds: usageDataRequest.totalScreenTime,
         appsTracked: usageDataRequest.totalAppsTracked,
+        pickups: usageDataRequest.pickups,
+        deviceUnlocks: usageDataRequest.deviceUnlocks,
         totalApps: usageDataRequest.apps.length,
       });
 

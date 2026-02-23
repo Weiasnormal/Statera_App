@@ -6,9 +6,13 @@
  * - Tracking duration
  */
 
-import { getUsageStats, hasUsageStatsPermission } from "expo-android-usagestats";
+import { getUsageEvents, getUsageStats, hasUsageStatsPermission } from "expo-android-usagestats";
 import { Platform } from "react-native";
 import { getTrackingDurationDays } from "./tracking-duration";
+
+// Android UsageEvents event types (raw Android system IDs)
+const EVENT_SCREEN_INTERACTIVE = 15; // Screen turned on (pickups)
+const EVENT_KEYGUARD_HIDDEN = 18;   // Lock screen bypassed (unlocks)
 
 export interface AppUsageData {
   packageName: string;
@@ -19,6 +23,8 @@ export interface AppUsageData {
 export interface DeviceUsageMetrics {
   totalScreenTime: number; // Total time across all apps (milliseconds)
   totalAppsTracked: number; // Number of apps used
+  pickups: number; // Number of screen activations
+  deviceUnlocks: number; // Number of lock screen bypasses
   apps: AppUsageData[]; // All apps with usage data
 }
 
@@ -78,9 +84,61 @@ async function getUsageStatistics(durationDays: number): Promise<AppUsageData[]>
 }
 
 /**
+ * Get pickups and device unlocks from system events
+ * @param durationDays Number of days to look back
+ * @returns Object with pickups and deviceUnlocks counts
+ */
+async function getDeviceInteractions(durationDays: number): Promise<{
+  pickups: number;
+  deviceUnlocks: number;
+}> {
+  if (Platform.OS !== "android") {
+    console.warn("Device interactions only available on Android");
+    return { pickups: 0, deviceUnlocks: 0 };
+  }
+
+  try {
+    const hasPermission = await hasUsageStatsPermission();
+    if (!hasPermission) {
+      throw new Error("Usage statistics permission not granted");
+    }
+
+    const endTime = Date.now();
+    const startTime = endTime - durationDays * 24 * 60 * 60 * 1000;
+
+    // Query system events using getUsageEvents
+    const events = await getUsageEvents(startTime, endTime);
+
+    // Count pickups (SCREEN_INTERACTIVE) and unlocks (KEYGUARD_HIDDEN)
+    let pickups = 0;
+    let deviceUnlocks = 0;
+
+    events.forEach((event: any) => {
+      if (event.eventType === EVENT_SCREEN_INTERACTIVE) {
+        pickups++;
+      } else if (event.eventType === EVENT_KEYGUARD_HIDDEN) {
+        deviceUnlocks++;
+      }
+    });
+
+    console.log(`Detected ${pickups} pickups and ${deviceUnlocks} unlocks over ${durationDays} days`);
+
+    return { pickups, deviceUnlocks };
+  } catch (error) {
+    console.error("Error getting device interactions:", error);
+    // Return 0 instead of throwing to not break the data collection
+    return { pickups: 0, deviceUnlocks: 0 };
+  }
+}
+
+/**
  * Calculate device usage metrics from raw usage data
  */
-function calculateMetrics(usageData: AppUsageData[]): DeviceUsageMetrics {
+function calculateMetrics(
+  usageData: AppUsageData[],
+  pickups: number,
+  deviceUnlocks: number
+): DeviceUsageMetrics {
   const totalScreenTime = usageData.reduce(
     (sum, app) => sum + app.totalTimeInForeground,
     0
@@ -89,6 +147,8 @@ function calculateMetrics(usageData: AppUsageData[]): DeviceUsageMetrics {
   return {
     totalScreenTime,
     totalAppsTracked: usageData.length,
+    pickups,
+    deviceUnlocks,
     apps: usageData, // Send all app data to backend
   };
 }
@@ -103,11 +163,18 @@ export async function collectDataForAnalysis(
     // Get tracking duration
     const trackingDurationDays = getTrackingDurationDays();
 
-    // Get usage statistics
-    const usageData = await getUsageStatistics(trackingDurationDays);
+    // Get usage statistics and device interactions in parallel
+    const [usageData, deviceInteractions] = await Promise.all([
+      getUsageStatistics(trackingDurationDays),
+      getDeviceInteractions(trackingDurationDays),
+    ]);
 
     // Calculate metrics
-    const usageMetrics = calculateMetrics(usageData);
+    const usageMetrics = calculateMetrics(
+      usageData,
+      deviceInteractions.pickups,
+      deviceInteractions.deviceUnlocks
+    );
 
     const collectedData: CollectedData = {
       gwa,
@@ -122,6 +189,8 @@ export async function collectDataForAnalysis(
       duration: collectedData.trackingDurationDays,
       totalScreenTime: collectedData.usageMetrics.totalScreenTime,
       appsTracked: collectedData.usageMetrics.totalAppsTracked,
+      pickups: collectedData.usageMetrics.pickups,
+      deviceUnlocks: collectedData.usageMetrics.deviceUnlocks,
     });
 
     return collectedData;

@@ -17,6 +17,8 @@ export interface UsageDataRequest {
   trackingDurationDays: number;
   totalScreenTime: number; // seconds
   totalAppsTracked: number;
+  pickups: number; // Number of screen activations
+  deviceUnlocks: number; // Number of lock screen bypasses
   apps: Array<{
     packageName: string;
     totalTimeInForeground: number; // seconds
