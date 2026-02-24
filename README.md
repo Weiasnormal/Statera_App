@@ -1,8 +1,70 @@
-# Welcome to your Expo app 👋
+# Statera
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Understanding Student Behavior Through Data**
 
-## Get started
+Statera is an Android mobile application designed to help students understand the relationship between their digital device usage patterns and academic performance. By tracking app usage and analyzing behavioral patterns using machine learning, Statera provides insights that empower students to make informed decisions about their digital habits.
+
+## What is Statera?
+
+Statera is a research-driven behavioral analysis tool that:
+
+- **Monitors device usage**: Tracks screen time, app usage, device pickups, and unlock frequency
+- **Analyzes behavioral patterns**: Uses ML to identify specific behavioral profiles
+- **Correlates with academic performance**: Links usage patterns with GWA (General Weighted Average)
+- **Provides actionable insights**: Offers personalized recommendations based on your digital behavior
+
+## How It Works
+
+### 1. Data Collection
+Statera collects device usage statistics over a customizable tracking period:
+- **App-level metrics**: Time spent in each application
+- **Device interaction**: Number of pickups (screen activations) and unlocks
+- **Total screen time**: Aggregate usage across all apps
+- **Academic data**: Your GWA for correlation analysis
+
+### 2. Behavioral Analysis
+The app sends your data to a machine learning backend that analyzes:
+- **Checking Frequency**: How often you check your device
+- **Focus Stability**: Your ability to maintain focus on tasks
+- **Session Immersion**: Depth of engagement with apps
+- **Impulse Unlocking**: Tendency for impulsive device checking
+
+### 3. Profile Classification
+Based on the analysis, you're classified into one of six behavioral profiles:
+- **Academic At-Risk**: High digital usage affecting academic performance
+- **Balanced Learner**: Healthy balance between digital usage and academics
+- **Digital Multitasker**: Frequent switching between apps and tasks
+- **Digital Self-Regulated**: Strong self-control in digital consumption
+- **High Functioning Academic**: Excellent academics despite digital usage
+- **Minimal Digital Engager**: Limited device usage
+
+### 4. Insights & Recommendations
+The app provides:
+- Visual representation of your behavior scores
+- Interpretation of usage patterns
+- Personalized recommendations for improvement
+- Academic performance correlation
+
+## Key Features
+
+- **Privacy-Focused**: All data processing respects Android's usage stats permissions
+- **Customizable Tracking**: Choose your tracking duration (days)
+- **Real-Time Analysis**: Get instant feedback on your digital behavior
+- **Cross-App Understanding**: See how different apps affect your patterns
+- **Academic Integration**: Connect usage with GWA for meaningful insights
+- **Visual Analytics**: Clear charts and behavioral character representations
+
+## Technical Stack
+
+- **Framework**: React Native with Expo
+- **Language**: TypeScript
+- **Navigation**: Expo Router (file-based routing)
+- **UI**: Custom components with Poppins typography
+- **Permissions**: Android PACKAGE_USAGE_STATS
+- **Data Collection**: expo-android-usagestats
+- **Analysis**: REST API integration with ML backend
+
+## Installation & Setup
 
 1. Install dependencies
 
@@ -10,63 +72,74 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-2. Start the app
+2. Start the development server
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+3. Run on Android
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   ```bash
+   npm run android
+   ```
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Building APK
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Android standalone APK (no cable required)
-
-If you install a **debug** APK, the app expects a Metro dev server and often only works while connected by USB.
-
-Build a standalone release APK instead:
+### Release APK (Standalone)
+Build a production-ready APK for distribution:
 
 ```bash
 npm run android:release:apk
 ```
 
-APK output:
+Output: `android/app/build/outputs/apk/release/app-release.apk`
 
-- `android/app/build/outputs/apk/release/app-release.apk`
-
-For local testing, debug APK is still available:
+### Debug APK
+For local testing and development:
 
 ```bash
 npm run android:debug:apk
 ```
 
-- `android/app/build/outputs/apk/debug/app-debug.apk`
+Output: `android/app/build/outputs/apk/debug/app-debug.apk`
 
-## Join the community
+## Project Structure
 
-Join our community of developers creating universal apps.
+```
+app/                    # Expo Router pages
+├── (tabs)/            # Tab navigation screens
+│   ├── get_started.tsx
+│   ├── gwa_input.tsx
+│   ├── data_connected.tsx
+│   └── navigation-pages/
+│       ├── analysis.tsx
+│       └── overview.tsx
+services/              # Business logic and API
+├── data-collection.ts # Usage stats collection
+├── usage-stats.ts     # Android usage API wrapper
+├── behavioral-profile.ts # Profile configurations
+└── api-client.ts      # Backend communication
+context/               # Global state management
+└── AnalysisContext.tsx
+components/ui/         # Reusable UI components
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Required Permissions
+
+- **PACKAGE_USAGE_STATS**: Required to access app usage data on Android
+  - Users must manually enable this in system settings
+  - The app guides users through this process
+
+## Development Notes
+
+- **Platform**: Android only (requires system-level usage stats APIs)
+- **Minimum SDK**: Check `android/build.gradle` for target SDK version
+- **File-based routing**: Uses Expo Router for navigation
+- **Type safety**: Full TypeScript implementation
+
+## Resources
+
+- [Expo Documentation](https://docs.expo.dev/)
+- [React Native Documentation](https://reactnative.dev/)
+- [Android UsageStatsManager](https://developer.android.com/reference/android/app/usage/UsageStatsManager)
