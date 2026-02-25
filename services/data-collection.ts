@@ -121,7 +121,9 @@ async function getDeviceInteractions(durationDays: number): Promise<{
       }
     });
 
-    console.log(`Detected ${pickups} pickups and ${deviceUnlocks} unlocks over ${durationDays} days`);
+    if (__DEV__) {
+      console.log(`Detected ${pickups} pickups and ${deviceUnlocks} unlocks over ${durationDays} days`);
+    }
 
     return { pickups, deviceUnlocks };
   } catch (error) {
@@ -184,14 +186,16 @@ export async function collectDataForAnalysis(
       platform: Platform.OS,
     };
 
-    console.log("Data collection summary:", {
-      gwa: collectedData.gwa,
-      duration: collectedData.trackingDurationDays,
-      totalScreenTime: collectedData.usageMetrics.totalScreenTime,
-      appsTracked: collectedData.usageMetrics.totalAppsTracked,
-      pickups: collectedData.usageMetrics.pickups,
-      deviceUnlocks: collectedData.usageMetrics.deviceUnlocks,
-    });
+    if (__DEV__) {
+      console.log("Data collection summary:", {
+        gwa: collectedData.gwa,
+        duration: collectedData.trackingDurationDays,
+        totalScreenTime: collectedData.usageMetrics.totalScreenTime,
+        appsTracked: collectedData.usageMetrics.totalAppsTracked,
+        pickups: collectedData.usageMetrics.pickups,
+        deviceUnlocks: collectedData.usageMetrics.deviceUnlocks,
+      });
+    }
 
     return collectedData;
   } catch (error) {

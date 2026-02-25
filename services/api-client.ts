@@ -1,8 +1,8 @@
 import API_CONFIG from "./api-config";
 import type {
-    GetMLAnalysisRequest,
-    GetMLAnalysisResponse,
-    UsageDataRequest
+  GetMLAnalysisRequest,
+  GetMLAnalysisResponse,
+  UsageDataRequest
 } from "./api-types";
 import type { CollectedData } from "./data-collection";
 
@@ -120,21 +120,25 @@ class ApiClient {
         platform: collectedData.platform,
       };
 
-      console.log("Submitting raw usage data to backend (time in seconds):", {
-        gwa: usageDataRequest.gwa,
-        duration: usageDataRequest.trackingDurationDays,
-        totalScreenTimeSeconds: usageDataRequest.totalScreenTime,
-        appsTracked: usageDataRequest.totalAppsTracked,
-        pickups: usageDataRequest.pickups,
-        deviceUnlocks: usageDataRequest.deviceUnlocks,
-        totalApps: usageDataRequest.apps.length,
-      });
-
-      //console.log("📤 Full API Payload being sent:", JSON.stringify(usageDataRequest, null, 2));
+      if (__DEV__) {
+        console.log("Submitting raw usage data to backend (time in seconds):", {
+          gwa: usageDataRequest.gwa,
+          duration: usageDataRequest.trackingDurationDays,
+          totalScreenTimeSeconds: usageDataRequest.totalScreenTime,
+          appsTracked: usageDataRequest.totalAppsTracked,
+          pickups: usageDataRequest.pickups,
+          deviceUnlocks: usageDataRequest.deviceUnlocks,
+          totalApps: usageDataRequest.apps.length,
+        });
+        // Uncomment for full payload debugging:
+        // console.log("📤 Full API Payload being sent:", JSON.stringify(usageDataRequest, null, 2));
+      }
 
       const url = `${this.getBaseURLOrThrow()}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
       
-      console.log("📍 API Endpoint:", url);
+      if (__DEV__) {
+        console.log("📍 API Endpoint:", url);
+      }
 
       const response = await this.fetchWithTimeout(url, {
         method: "POST",
@@ -151,7 +155,9 @@ class ApiClient {
 
       const data = await response.json();
       
-      console.log("✅ Backend response received:", JSON.stringify(data, null, 2));
+      if (__DEV__) {
+        console.log("✅ Backend response received:", JSON.stringify(data, null, 2));
+      }
 
       return {
         value: data,

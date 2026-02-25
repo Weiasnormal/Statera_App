@@ -1,17 +1,23 @@
 import { AnalysisProvider } from "@/context/AnalysisContext";
 import {
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_600SemiBold,
-    Poppins_700Bold,
-    useFonts,
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_600SemiBold,
+  Poppins_700Bold,
+  useFonts,
 } from "@expo-google-fonts/poppins";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { Text, type TextProps } from "react-native";
 
-SplashScreen.preventAutoHideAsync().catch(() => {});
+// Prevent auto-hiding splash screen until fonts are loaded
+SplashScreen.preventAutoHideAsync().catch((error) => {
+  // This can fail if splash screen is already hidden or not supported
+  if (__DEV__) {
+    console.warn("Failed to prevent splash screen auto-hide:", error);
+  }
+});
 
 const textWithDefaultProps = Text as typeof Text & {
   defaultProps?: TextProps;
