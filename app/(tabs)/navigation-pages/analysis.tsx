@@ -5,9 +5,14 @@ import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function Analysis() {
-  const { collectedData, backendResponse } = useAnalysis();
+  const { collectedData, analysisResult, backendResponse } = useAnalysis();
 
-  const distributionData = [
+  // Use real ML scores if available, otherwise show placeholder
+  const distributionData = analysisResult?.profileDistribution.map((item, index) => ({
+    label: item.profile,
+    percentage: item.percentage,
+    color: index % 2 === 0 ? "#16B8C5" : "#27B1A8",
+  })) || [
     { label: "Checking Frequency", percentage: 53, color: "#16B8C5" },
     { label: "Focus Stability", percentage: 20, color: "#27B1A8" },
     { label: "Session Immersion", percentage: 33, color: "#16B8C5" },
@@ -114,21 +119,43 @@ export default function Analysis() {
           </View>
         )}
 
-        {backendResponse && (
+        {analysisResult && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>ML Analysis Result</Text>
             <View style={styles.responseCard}>
-              <Text style={styles.responseText}>{backendResponse}</Text>
+              <Text style={styles.responseText}>
+                <Text style={styles.boldText}>Dominant Profile: </Text>
+                {analysisResult.dominantProfile}
+              </Text>
+              <Text style={styles.responseText}>
+                <Text style={styles.boldText}>Confidence: </Text>
+                {(analysisResult.dominantScore * 100).toFixed(1)}%
+              </Text>
+              <Text style={styles.responseText}>
+                <Text style={styles.boldText}>Analyzed: </Text>
+                {new Date(analysisResult.dateAnalyzed).toLocaleString()}
+              </Text>
             </View>
             <Text style={styles.note}>
-              Note: The backend will be updated to return structured analysis data
-              including behavior scores and detailed recommendations.
+              Your behavioral profile is based on machine learning analysis of your
+              app usage patterns, academic performance, and device interaction habits.
             </Text>
           </View>
         )}
 
+        {!analysisResult && backendResponse && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>ML Analysis Result (Raw)</Text>
+            <View style={styles.responseCard}>
+              <Text style={styles.responseText}>{backendResponse}</Text>
+            </View>
+          </View>
+        )}
+
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Digital Behavior</Text>
+          <Text style={styles.sectionTitle}>
+            {analysisResult ? "Behavioral Profile Distribution" : "Digital Behavior (Sample)"}
+          </Text>
 
           <View style={styles.distributionContainer}>
             {distributionData.map((item, index) => (
@@ -288,6 +315,11 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_500Medium",
     color: "#343235",
     lineHeight: 24,
+    marginBottom: 8,
+  },
+  boldText: {
+    fontFamily: "Poppins_700Bold",
+    color: "#16B8C5",
   },
   note: {
     fontSize: 12,

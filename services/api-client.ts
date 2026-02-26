@@ -1,8 +1,7 @@
 import API_CONFIG from "./api-config";
 import type {
-  GetMLAnalysisRequest,
-  GetMLAnalysisResponse,
-  UsageDataRequest
+    GetMLAnalysisResponse,
+    UsageDataRequest
 } from "./api-types";
 import type { CollectedData } from "./data-collection";
 
@@ -58,11 +57,12 @@ class ApiClient {
 
   /**
    * POST /getMl/ - Get ML Analysis
-   * @param request Request object with name
-   * @returns ML Analysis result
+   * Submits usage data and receives behavioral profile scores
+   * @param request Usage data request
+   * @returns ML Analysis result with 6 behavioral profile scores
    */
   async getMLAnalysis(
-    request: GetMLAnalysisRequest
+    request: UsageDataRequest
   ): Promise<GetMLAnalysisResponse> {
     try {
       const url = `${this.getBaseURLOrThrow()}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
@@ -80,11 +80,17 @@ class ApiClient {
         );
       }
 
-      // Backend returns the value directly on success
+      // Backend returns structured Response with behavioral profile scores
       const data = await response.json();
       
       return {
-        value: data,
+        academicAtRiskScore: data.academicAtRiskScore,
+        averageBalancedUserScore: data.averageBalancedUserScore,
+        digitalMultitaskerScore: data.digitalMultitaskerScore,
+        digitalSelfRegulatedScore: data.digitalSelfRegulatedScore,
+        highFunctioningAcademicScore: data.highFunctioningAcademicScore,
+        minimalDigitalengagerScore: data.minimalDigitalengagerScore,
+        dateAnalyzed: data.dateAnalyzed,
       };
     } catch (error) {
       console.error("Error calling getMLAnalysis:", error);
@@ -160,7 +166,13 @@ class ApiClient {
       }
 
       return {
-        value: data,
+        academicAtRiskScore: data.academicAtRiskScore,
+        averageBalancedUserScore: data.averageBalancedUserScore,
+        digitalMultitaskerScore: data.digitalMultitaskerScore,
+        digitalSelfRegulatedScore: data.digitalSelfRegulatedScore,
+        highFunctioningAcademicScore: data.highFunctioningAcademicScore,
+        minimalDigitalengagerScore: data.minimalDigitalengagerScore,
+        dateAnalyzed: data.dateAnalyzed,
       };
     } catch (error) {
       console.error("Error submitting usage data:", error);

@@ -1,4 +1,4 @@
-import { useAnalysis } from "@/context/AnalysisContext";
+import { computeEnhancedAnalysis, useAnalysis } from "@/context/AnalysisContext";
 import { apiClient } from "@/services/api-client";
 import { collectDataForAnalysis } from "@/services/data-collection";
 import { getGwa } from "@/services/gwa-storage";
@@ -20,6 +20,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function DataConnectedScreen() {
   const {
     setCollectedData,
+    setAnalysisResult,
     setBackendResponse,
     setIsLoading,
     setError,
@@ -53,7 +54,19 @@ export default function DataConnectedScreen() {
 
       // Submit to backend
       const response = await apiClient.submitUsageData(collectedData);
-      setBackendResponse(response.value);
+      
+      // Compute enhanced analysis with dominant profile and distribution
+      const enhancedAnalysis = computeEnhancedAnalysis(response);
+      setAnalysisResult(enhancedAnalysis);
+      
+      // Keep raw response for backward compatibility (deprecated)
+      setBackendResponse(JSON.stringify(response, null, 2));
+
+      if (__DEV__) {
+        console.log("ML Analysis Result:", enhancedAnalysis);
+        console.log("Dominant Profile:", enhancedAnalysis.dominantProfile);
+        console.log("Dominant Score:", (enhancedAnalysis.dominantScore * 100).toFixed(1) + "%");
+      }
 
       console.log("Analysis complete, navigating to results...");
 

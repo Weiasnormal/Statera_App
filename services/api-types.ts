@@ -1,14 +1,6 @@
 // API Request/Response Types matching the backend
 
 /**
- * Backend Request - Currently expects a name field
- * TODO: Backend should be updated to accept full usage data
- */
-export type GetMLAnalysisRequest = {
-  name: string;
-};
-
-/**
  * Extended request with full usage data for ML analysis
  * Send raw app data - backend will handle categorization and analysis
  */
@@ -28,26 +20,30 @@ export interface UsageDataRequest {
 }
 
 /**
- * Backend Response - Simple string value
+ * Backend ML Analysis Response - Matches C# Response record
+ * Returns probability scores for 6 behavioral profiles (0-1 range)
  */
-export type GetMLAnalysisResponse = {
-  value: string;
-};
+export interface GetMLAnalysisResponse {
+  academicAtRiskScore: number;
+  averageBalancedUserScore: number;
+  digitalMultitaskerScore: number;
+  digitalSelfRegulatedScore: number;
+  highFunctioningAcademicScore: number;
+  minimalDigitalengagerScore: number;
+  dateAnalyzed: string; // ISO 8601 DateTime string
+}
 
 /**
- * Expected ML Analysis Result (once backend is updated)
+ * Enhanced ML Analysis Result with computed insights
  */
-export interface MLAnalysisResult {
-  behaviorScore: {
-    checkingFrequency: number; // 0-100
-    focusStability: number; // 0-100
-    sessionImmersion: number; // 0-100
-    impulseUnlocking: number; // 0-100
-  };
-  academicIndicator: string; // Description based on GWA
-  patternInterpretation: string; // ML-generated insights
-  recommendations?: string[];
-  timestamp: string;
+export interface MLAnalysisResult extends GetMLAnalysisResponse {
+  dominantProfile: string; // Profile with highest score
+  dominantScore: number; // Highest probability score
+  profileDistribution: Array<{
+    profile: string;
+    score: number;
+    percentage: number; // Score as percentage (0-100)
+  }>;
 }
 
 /**

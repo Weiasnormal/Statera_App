@@ -2,20 +2,64 @@
  * Analysis Context - Store and share ML analysis results across the app
  */
 
-import type { MLAnalysisResult } from "@/services/api-types";
+import type { GetMLAnalysisResponse, MLAnalysisResult } from "@/services/api-types";
 import type { CollectedData } from "@/services/data-collection";
 import React, { createContext, ReactNode, useContext, useState } from "react";
+
+/**
+ * Profile names matching the backend response fields
+ */
+const PROFILE_NAMES = {
+  academicAtRiskScore: "Academic at Risk",
+  averageBalancedUserScore: "Average Balanced User",
+  digitalMultitaskerScore: "Digital Multitasker",
+  digitalSelfRegulatedScore: "Digital Self-Regulated",
+  highFunctioningAcademicScore: "High-Functioning Academic",
+  minimalDigitalengagerScore: "Minimal Digital Engager",
+} as const;
+
+/**
+ * Compute enhanced ML analysis with dominant profile and distribution
+ */
+export function computeEnhancedAnalysis(response: GetMLAnalysisResponse): MLAnalysisResult {
+  const profiles = [
+    { key: "academicAtRiskScore", score: response.academicAtRiskScore },
+    { key: "averageBalancedUserScore", score: response.averageBalancedUserScore },
+    { key: "digitalMultitaskerScore", score: response.digitalMultitaskerScore },
+    { key: "digitalSelfRegulatedScore", score: response.digitalSelfRegulatedScore },
+    { key: "highFunctioningAcademicScore", score: response.highFunctioningAcademicScore },
+    { key: "minimalDigitalengagerScore", score: response.minimalDigitalengagerScore },
+  ];
+
+  // Find dominant profile (highest score)
+  const dominant = profiles.reduce((max, current) => 
+    current.score > max.score ? current : max
+  );
+
+  const profileDistribution = profiles.map(p => ({
+    profile: PROFILE_NAMES[p.key as keyof typeof PROFILE_NAMES],
+    score: p.score,
+    percentage: Math.round(p.score * 100),
+  }));
+
+  return {
+    ...response,
+    dominantProfile: PROFILE_NAMES[dominant.key as keyof typeof PROFILE_NAMES],
+    dominantScore: dominant.score,
+    profileDistribution,
+  };
+}
 
 interface AnalysisContextType {
   // Collected user data
   collectedData: CollectedData | null;
   setCollectedData: (data: CollectedData | null) => void;
 
-  // ML analysis result from backend
+  // ML analysis result from backend with enhanced computed insights
   analysisResult: MLAnalysisResult | null;
   setAnalysisResult: (result: MLAnalysisResult | null) => void;
 
-  // Backend response (temporary, until backend returns structured data)
+  // Raw backend response (deprecated, use analysisResult instead)
   backendResponse: string | null;
   setBackendResponse: (response: string | null) => void;
 
