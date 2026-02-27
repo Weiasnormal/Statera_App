@@ -2,7 +2,10 @@
  * Analysis Context - Store and share ML analysis results across the app
  */
 
-import type { GetMLAnalysisResponse, MLAnalysisResult } from "@/services/api-types";
+import type {
+    GetMLAnalysisResponse,
+    MLAnalysisResult,
+} from "@/services/api-types";
 import { PROFILE_LABELS } from "@/services/api-types";
 import type { CollectedData } from "@/services/data-collection";
 import React, { createContext, ReactNode, useContext, useState } from "react";
@@ -10,7 +13,9 @@ import React, { createContext, ReactNode, useContext, useState } from "react";
 /**
  * Compute enhanced ML analysis with formatted data for UI
  */
-export function computeEnhancedAnalysis(response: GetMLAnalysisResponse): MLAnalysisResult {
+export function computeEnhancedAnalysis(
+  response: GetMLAnalysisResponse,
+): MLAnalysisResult {
   // Convert categoryScores object to sorted array
   const topCategories = Object.entries(response.categoryScores)
     .map(([category, percentage]) => ({
@@ -55,15 +60,15 @@ interface AnalysisContextType {
 }
 
 const AnalysisContext = createContext<AnalysisContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export function AnalysisProvider({ children }: { children: ReactNode }) {
   const [collectedData, setCollectedData] = useState<CollectedData | null>(
-    null
+    null,
   );
   const [analysisResult, setAnalysisResult] = useState<MLAnalysisResult | null>(
-    null
+    null,
   );
   const [backendResponse, setBackendResponse] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);

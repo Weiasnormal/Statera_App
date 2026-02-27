@@ -45,7 +45,8 @@ export default function Analysis() {
             </>
           ) : (
             <Text style={styles.sectionDescription}>
-              Your GWA suggests consistent academic engagement during this period.
+              Your GWA suggests consistent academic engagement during this
+              period.
             </Text>
           )}
         </View>
@@ -57,7 +58,9 @@ export default function Analysis() {
               <View style={styles.summaryItem}>
                 <Text style={styles.summaryLabel}>Total Screen Time</Text>
                 <Text style={styles.summaryValue}>
-                  {formatMilliseconds(collectedData.usageMetrics.totalScreenTime)}
+                  {formatMilliseconds(
+                    collectedData.usageMetrics.totalScreenTime,
+                  )}
                 </Text>
               </View>
               <View style={styles.summaryItem}>
@@ -88,34 +91,37 @@ export default function Analysis() {
 
             <View style={styles.categoryContainer}>
               <Text style={styles.categoryTitle}>Top Apps by Usage</Text>
-              {collectedData.usageMetrics.apps.slice(0, 10).map((app, index) => {
-                const total = collectedData.usageMetrics.totalScreenTime;
-                const percentage =
-                  total > 0
-                    ? Math.round((app.totalTimeInForeground / total) * 100)
-                    : 0;
+              {collectedData.usageMetrics.apps
+                .slice(0, 10)
+                .map((app, index) => {
+                  const total = collectedData.usageMetrics.totalScreenTime;
+                  const percentage =
+                    total > 0
+                      ? Math.round((app.totalTimeInForeground / total) * 100)
+                      : 0;
 
-                return (
-                  <View key={app.packageName} style={styles.categoryItem}>
-                    <View style={styles.categoryHeader}>
-                      <Text style={styles.categoryLabel}>
-                        {index + 1}. {app.packageName.split(".").pop()}
-                      </Text>
-                      <Text style={styles.categoryValue}>
-                        {formatMilliseconds(app.totalTimeInForeground)} ({percentage}%)
-                      </Text>
+                  return (
+                    <View key={app.packageName} style={styles.categoryItem}>
+                      <View style={styles.categoryHeader}>
+                        <Text style={styles.categoryLabel}>
+                          {index + 1}. {app.packageName.split(".").pop()}
+                        </Text>
+                        <Text style={styles.categoryValue}>
+                          {formatMilliseconds(app.totalTimeInForeground)} (
+                          {percentage}%)
+                        </Text>
+                      </View>
+                      <View style={styles.categoryBar}>
+                        <View
+                          style={[
+                            styles.categoryBarFill,
+                            { width: `${percentage}%` },
+                          ]}
+                        />
+                      </View>
                     </View>
-                    <View style={styles.categoryBar}>
-                      <View
-                        style={[
-                          styles.categoryBarFill,
-                          { width: `${percentage}%` },
-                        ]}
-                      />
-                    </View>
-                  </View>
-                );
-              })}
+                  );
+                })}
             </View>
           </View>
         )}
@@ -138,8 +144,9 @@ export default function Analysis() {
               </Text>
             </View>
             <Text style={styles.note}>
-              Your behavioral profile is based on machine learning analysis of your
-              app usage patterns, academic performance, and device interaction habits.
+              Your behavioral profile is based on machine learning analysis of
+              your app usage patterns, academic performance, and device
+              interaction habits.
             </Text>
           </View>
         )}
@@ -155,7 +162,9 @@ export default function Analysis() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>
-            {analysisResult ? "App Category Usage Breakdown" : "Digital Behavior (Sample)"}
+            {analysisResult
+              ? "App Category Usage Breakdown"
+              : "Digital Behavior (Sample)"}
           </Text>
 
           <View style={styles.distributionContainer}>

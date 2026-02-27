@@ -1,8 +1,5 @@
 import API_CONFIG from "./api-config";
-import type {
-    GetMLAnalysisResponse,
-    UsageDataRequest
-} from "./api-types";
+import type { GetMLAnalysisResponse, UsageDataRequest } from "./api-types";
 import type { CollectedData } from "./data-collection";
 
 class ApiClient {
@@ -17,7 +14,7 @@ class ApiClient {
   private getBaseURLOrThrow(): string {
     if (!this.baseURL) {
       throw new Error(
-        "API base URL is not configured. Set EXPO_PUBLIC_API_URL for non-development builds."
+        "API base URL is not configured. Set EXPO_PUBLIC_API_URL for non-development builds.",
       );
     }
 
@@ -29,7 +26,7 @@ class ApiClient {
    */
   private async fetchWithTimeout(
     url: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<Response> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
@@ -62,11 +59,11 @@ class ApiClient {
    * @returns ML Analysis result with 6 behavioral profile scores
    */
   async getMLAnalysis(
-    request: UsageDataRequest
+    request: UsageDataRequest,
   ): Promise<GetMLAnalysisResponse> {
     try {
       const url = `${this.getBaseURLOrThrow()}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
-      
+
       const response = await this.fetchWithTimeout(url, {
         method: "POST",
         body: JSON.stringify(request),
@@ -75,14 +72,14 @@ class ApiClient {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
-          errorData.description || 
-          `API Error: ${response.status} ${response.statusText}`
+          errorData.description ||
+            `API Error: ${response.status} ${response.statusText}`,
         );
       }
 
       // Backend returns structured Response with dominant profile + category scores
       const data = await response.json();
-      
+
       return {
         score: data.score,
         label: data.label,
@@ -98,12 +95,12 @@ class ApiClient {
   /**
    * Submit usage data for ML analysis
    * Sends raw app usage data to backend for categorization and ML analysis
-   * 
+   *
    * @param collectedData Full collected user data
    * @returns ML Analysis result
    */
   async submitUsageData(
-    collectedData: CollectedData
+    collectedData: CollectedData,
   ): Promise<GetMLAnalysisResponse> {
     try {
       // Prepare full usage data request with raw app data
@@ -111,11 +108,13 @@ class ApiClient {
       const usageDataRequest: UsageDataRequest = {
         gwa: collectedData.gwa,
         trackingDurationDays: collectedData.trackingDurationDays,
-        totalScreenTime: Math.round(collectedData.usageMetrics.totalScreenTime / 1000),
+        totalScreenTime: Math.round(
+          collectedData.usageMetrics.totalScreenTime / 1000,
+        ),
         totalAppsTracked: collectedData.usageMetrics.totalAppsTracked,
         pickups: collectedData.usageMetrics.pickups,
         deviceUnlocks: collectedData.usageMetrics.deviceUnlocks,
-        apps: collectedData.usageMetrics.apps.map(app => ({
+        apps: collectedData.usageMetrics.apps.map((app) => ({
           packageName: app.packageName,
           totalTimeInForeground: Math.round(app.totalTimeInForeground / 1000),
         })),
@@ -138,7 +137,7 @@ class ApiClient {
       }
 
       const url = `${this.getBaseURLOrThrow()}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
-      
+
       if (__DEV__) {
         console.log("📍 API Endpoint:", url);
       }
@@ -151,15 +150,18 @@ class ApiClient {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
-          errorData.description || 
-          `API Error: ${response.status} ${response.statusText}`
+          errorData.description ||
+            `API Error: ${response.status} ${response.statusText}`,
         );
       }
 
       const data = await response.json();
-      
+
       if (__DEV__) {
-        console.log("✅ Backend response received:", JSON.stringify(data, null, 2));
+        console.log(
+          "✅ Backend response received:",
+          JSON.stringify(data, null, 2),
+        );
       }
 
       return {

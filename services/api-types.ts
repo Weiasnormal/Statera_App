@@ -73,6 +73,6 @@ export enum ErrorType {
   Problem = 6,
 }
 
-export type ApiResult<T> = 
+export type ApiResult<T> =
   | { isSuccess: true; value: T }
   | { isSuccess: false; error: ApiError };

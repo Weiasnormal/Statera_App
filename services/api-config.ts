@@ -8,17 +8,15 @@ const API_CONFIG = {
   BASE_URL:
     configuredApiUrl && configuredApiUrl.length > 0
       ? configuredApiUrl
-      : __DEV__
-        ? "http://localhost:5189" // Dev
-        : "https://statera-api.onrender.com", // Production 
-  
+      : "https://statera-api.onrender.com", // Production API
+
   // Alternative HTTPS endpoint for development
   BASE_URL_HTTPS: "https://localhost:7120",
-  
+
   ENDPOINTS: {
     GET_ML_ANALYSIS: "/getMl/",
   },
-  
+
   TIMEOUT: 30000, // 30 seconds
 };
 

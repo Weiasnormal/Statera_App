@@ -1,21 +1,16 @@
 import BottomWave from "@/assets/images/waves/bottom-wave.svg";
 import TopWave from "@/assets/images/waves/top-wave.svg";
 import { SecondaryButton } from "@/components/ui/secondary-button";
+import { useAnalysis } from "@/context/AnalysisContext";
 import {
   BEHAVIORAL_PROFILE_MAP,
-  getCurrentBehavioralProfile,
+  parseBehavioralProfileFromApi,
   type BehavioralProfileKey,
 } from "@/services/behavioral-profile";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React from "react";
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import React, { useMemo } from "react";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { G, Path, Text as SvgText } from "react-native-svg";
 
@@ -24,34 +19,57 @@ type OverviewProps = {
 };
 
 export default function Overview({ profileKey }: OverviewProps) {
-  const profile = profileKey
-    ? BEHAVIORAL_PROFILE_MAP[profileKey]
-    : getCurrentBehavioralProfile();
-  const waveBaseColor = "#FFFFFF";
-  const waveTopColor = profile.waveTopColor;
-  const waveBottomColor = profile.waveBottomColor;
-  const actionColor = "#00838F";
+  const { analysisResult } = useAnalysis();
 
-  const usageData = [
-    {
-      label: "Productivity Apps",
-      time: "3h 40m",
-      value: 53,
-      color: "#25AFA8",
-    },
-    {
-      label: "Social Media Apps",
-      time: "2h 15m",
-      value: 27,
-      color: "#F3C23C",
-    },
-    {
-      label: "Entertainment Apps",
-      time: "45m",
-      value: 20,
-      color: "#0F93B8",
-    },
-  ];
+  // Determine which profile to display
+  const profileKeyToUse = useMemo(() => {
+    if (analysisResult?.label) {
+      const parsedKey = parseBehavioralProfileFromApi(analysisResult.label);
+      return parsedKey || ("minimal_digital_engager" as BehavioralProfileKey);
+    }
+    return profileKey || ("minimal_digital_engager" as BehavioralProfileKey);
+  }, [analysisResult?.label, profileKey]);
+
+  const profile = BEHAVIORAL_PROFILE_MAP[profileKeyToUse];
+
+  // Convert top categories to usage data for display
+  const usageData = useMemo(() => {
+    if (
+      !analysisResult?.topCategories ||
+      analysisResult.topCategories.length === 0
+    ) {
+      return [
+        {
+          label: "Productivity Apps",
+          percentage: 53,
+          value: 53,
+          color: "#25AFA8",
+        },
+        {
+          label: "Social Media Apps",
+          percentage: 27,
+          value: 27,
+          color: "#F3C23C",
+        },
+        {
+          label: "Entertainment Apps",
+          percentage: 20,
+          value: 20,
+          color: "#0F93B8",
+        },
+      ];
+    }
+
+    // Use top 5 categories from analysis result
+    const colors = ["#25AFA8", "#F3C23C", "#0F93B8", "#E08A5D", "#BD8FA8"];
+    return analysisResult.topCategories.slice(0, 5).map((cat, idx) => ({
+      label: cat.category,
+      percentage: cat.percentage,
+      value: cat.percentage,
+      color: colors[idx % colors.length],
+    }));
+  }, [analysisResult?.topCategories]);
+
   const academicBalanceData = [
     { label: "Academic", value: 40, color: "#25AFA8" },
     { label: "Leisure", value: 50, color: "#F3C23C" },
@@ -60,6 +78,11 @@ export default function Overview({ profileKey }: OverviewProps) {
   const totalUsage = usageData.reduce((sum, item) => sum + item.value, 0);
   const chartSize = 140;
   const chartRadius = chartSize / 2;
+
+  // Get match percentage from API score
+  const matchPercentage = analysisResult
+    ? Math.round(analysisResult.score * 100)
+    : 72;
 
   const polarToCartesian = (center: number, radius: number, angle: number) => {
     const angleInRadians = ((angle - 90) * Math.PI) / 180;
@@ -82,10 +105,17 @@ export default function Overview({ profileKey }: OverviewProps) {
     ].join(" ");
   };
 
+  const waveBaseColor = "#FFFFFF";
+  const waveTopColor = profile.waveTopColor;
+  const waveBottomColor = profile.waveBottomColor;
+  const actionColor = "#00838F";
+
   return (
     <View style={[styles.container, { backgroundColor: waveBaseColor }]}>
       <SafeAreaView style={styles.safeArea} edges={["left", "right"]}>
-        <View style={[styles.statusBarHeader, { backgroundColor: waveTopColor }]} />
+        <View
+          style={[styles.statusBarHeader, { backgroundColor: waveTopColor }]}
+        />
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -129,9 +159,11 @@ export default function Overview({ profileKey }: OverviewProps) {
 
             {/* Pattern Match */}
             <View style={styles.matchContainer}>
-              <Text style={styles.matchPercentage}>72% Pattern Match</Text>
+              <Text style={styles.matchPercentage}>
+                {matchPercentage}% Pattern Match
+              </Text>
               <Text style={styles.matchDescription}>
-                This status reflects your current academic and digital 
+                This status reflects your current academic and digital
                 engagement patterns based on multiple usage indicators.
               </Text>
             </View>
@@ -143,13 +175,11 @@ export default function Overview({ profileKey }: OverviewProps) {
                   {usageData.map((item) => (
                     <View key={item.label} style={styles.usageRow}>
                       <Text style={styles.usageLabel}>{item.label}</Text>
-                      <Text style={styles.usageTime}>{item.time}</Text>
+                      <Text style={styles.usageTime}>
+                        {item.percentage.toFixed(1)}%
+                      </Text>
                     </View>
                   ))}
-                  <View style={styles.usageRow}>
-                    <Text style={styles.usageLabel}>Total Screen Time</Text>
-                    <Text style={styles.usageTime}>6h 10m</Text>
-                  </View>
                 </View>
                 <View style={styles.chartWrap}>
                   <Svg width={chartSize} height={chartSize}>
@@ -224,7 +254,12 @@ export default function Overview({ profileKey }: OverviewProps) {
             <View style={styles.actionGroup}>
               <SecondaryButton
                 title="View Statistics"
-                onPress={() => router.push({ pathname: "/nav", params: { tab: "statistics" } })}
+                onPress={() =>
+                  router.push({
+                    pathname: "/nav",
+                    params: { tab: "statistics" },
+                  })
+                }
                 style={styles.secondaryAction}
                 textStyle={styles.secondaryActionText}
                 icon={
