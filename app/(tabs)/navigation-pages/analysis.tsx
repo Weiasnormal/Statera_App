@@ -7,16 +7,17 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 export default function Analysis() {
   const { collectedData, analysisResult, backendResponse } = useAnalysis();
 
-  // Use real ML scores if available, otherwise show placeholder
-  const distributionData = analysisResult?.profileDistribution.map((item, index) => ({
-    label: item.profile,
+  // Use real ML category scores if available, otherwise show placeholder
+  const distributionData = analysisResult?.topCategories.map((item, index) => ({
+    label: item.category,
     percentage: item.percentage,
     color: index % 2 === 0 ? "#16B8C5" : "#27B1A8",
   })) || [
-    { label: "Checking Frequency", percentage: 53, color: "#16B8C5" },
-    { label: "Focus Stability", percentage: 20, color: "#27B1A8" },
-    { label: "Session Immersion", percentage: 33, color: "#16B8C5" },
-    { label: "Impulse Unlocking", percentage: 67, color: "#27B1A8" },
+    { label: "Social", percentage: 35, color: "#16B8C5" },
+    { label: "Productivity", percentage: 25, color: "#27B1A8" },
+    { label: "Entertainment", percentage: 20, color: "#16B8C5" },
+    { label: "Academic", percentage: 15, color: "#27B1A8" },
+    { label: "Other", percentage: 5, color: "#16B8C5" },
   ];
 
   return (
@@ -154,7 +155,7 @@ export default function Analysis() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>
-            {analysisResult ? "Behavioral Profile Distribution" : "Digital Behavior (Sample)"}
+            {analysisResult ? "App Category Usage Breakdown" : "Digital Behavior (Sample)"}
           </Text>
 
           <View style={styles.distributionContainer}>

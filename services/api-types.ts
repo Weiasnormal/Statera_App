@@ -21,28 +21,36 @@ export interface UsageDataRequest {
 
 /**
  * Backend ML Analysis Response - Matches C# Response record
- * Returns probability scores for 6 behavioral profiles (0-1 range)
+ * Backend returns the dominant profile + category usage breakdown
  */
 export interface GetMLAnalysisResponse {
-  academicAtRiskScore: number;
-  averageBalancedUserScore: number;
-  digitalMultitaskerScore: number;
-  digitalSelfRegulatedScore: number;
-  highFunctioningAcademicScore: number;
-  minimalDigitalengagerScore: number;
+  score: number; // Highest probability score (0-1 range)
+  label: string; // Profile name with highest score (e.g., "AcademicAtRisk", "DigitalMultitasker")
+  categoryScores: Record<string, number>; // Top 5 app categories with usage percentages
   dateAnalyzed: string; // ISO 8601 DateTime string
 }
 
 /**
- * Enhanced ML Analysis Result with computed insights
+ * Profile label mapping from backend labels to display names
+ */
+export const PROFILE_LABELS: Record<string, string> = {
+  AcademicAtRisk: "Academic at Risk",
+  AverageBalancedUser: "Average Balanced User",
+  DigitalMultitasker: "Digital Multitasker",
+  DigitalSelfRegulated: "Digital Self-Regulated",
+  HighFunctioningAcademic: "High-Functioning Academic",
+  MinimalDigitalengager: "Minimal Digital Engager",
+};
+
+/**
+ * Enhanced ML Analysis Result with formatted data for UI
  */
 export interface MLAnalysisResult extends GetMLAnalysisResponse {
-  dominantProfile: string; // Profile with highest score
-  dominantScore: number; // Highest probability score
-  profileDistribution: Array<{
-    profile: string;
-    score: number;
-    percentage: number; // Score as percentage (0-100)
+  dominantProfile: string; // Friendly profile name
+  dominantScore: number; // Same as score, for consistency
+  topCategories: Array<{
+    category: string;
+    percentage: number;
   }>;
 }
 

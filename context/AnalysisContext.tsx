@@ -3,50 +3,30 @@
  */
 
 import type { GetMLAnalysisResponse, MLAnalysisResult } from "@/services/api-types";
+import { PROFILE_LABELS } from "@/services/api-types";
 import type { CollectedData } from "@/services/data-collection";
 import React, { createContext, ReactNode, useContext, useState } from "react";
 
 /**
- * Profile names matching the backend response fields
- */
-const PROFILE_NAMES = {
-  academicAtRiskScore: "Academic at Risk",
-  averageBalancedUserScore: "Average Balanced User",
-  digitalMultitaskerScore: "Digital Multitasker",
-  digitalSelfRegulatedScore: "Digital Self-Regulated",
-  highFunctioningAcademicScore: "High-Functioning Academic",
-  minimalDigitalengagerScore: "Minimal Digital Engager",
-} as const;
-
-/**
- * Compute enhanced ML analysis with dominant profile and distribution
+ * Compute enhanced ML analysis with formatted data for UI
  */
 export function computeEnhancedAnalysis(response: GetMLAnalysisResponse): MLAnalysisResult {
-  const profiles = [
-    { key: "academicAtRiskScore", score: response.academicAtRiskScore },
-    { key: "averageBalancedUserScore", score: response.averageBalancedUserScore },
-    { key: "digitalMultitaskerScore", score: response.digitalMultitaskerScore },
-    { key: "digitalSelfRegulatedScore", score: response.digitalSelfRegulatedScore },
-    { key: "highFunctioningAcademicScore", score: response.highFunctioningAcademicScore },
-    { key: "minimalDigitalengagerScore", score: response.minimalDigitalengagerScore },
-  ];
+  // Convert categoryScores object to sorted array
+  const topCategories = Object.entries(response.categoryScores)
+    .map(([category, percentage]) => ({
+      category,
+      percentage: Math.round(percentage * 10) / 10, // Round to 1 decimal
+    }))
+    .sort((a, b) => b.percentage - a.percentage);
 
-  // Find dominant profile (highest score)
-  const dominant = profiles.reduce((max, current) => 
-    current.score > max.score ? current : max
-  );
-
-  const profileDistribution = profiles.map(p => ({
-    profile: PROFILE_NAMES[p.key as keyof typeof PROFILE_NAMES],
-    score: p.score,
-    percentage: Math.round(p.score * 100),
-  }));
+  // Get friendly profile name from label
+  const dominantProfile = PROFILE_LABELS[response.label] || response.label;
 
   return {
     ...response,
-    dominantProfile: PROFILE_NAMES[dominant.key as keyof typeof PROFILE_NAMES],
-    dominantScore: dominant.score,
-    profileDistribution,
+    dominantProfile,
+    dominantScore: response.score,
+    topCategories,
   };
 }
 

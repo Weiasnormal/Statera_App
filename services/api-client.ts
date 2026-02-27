@@ -80,16 +80,13 @@ class ApiClient {
         );
       }
 
-      // Backend returns structured Response with behavioral profile scores
+      // Backend returns structured Response with dominant profile + category scores
       const data = await response.json();
       
       return {
-        academicAtRiskScore: data.academicAtRiskScore,
-        averageBalancedUserScore: data.averageBalancedUserScore,
-        digitalMultitaskerScore: data.digitalMultitaskerScore,
-        digitalSelfRegulatedScore: data.digitalSelfRegulatedScore,
-        highFunctioningAcademicScore: data.highFunctioningAcademicScore,
-        minimalDigitalengagerScore: data.minimalDigitalengagerScore,
+        score: data.score,
+        label: data.label,
+        categoryScores: data.categoryScores,
         dateAnalyzed: data.dateAnalyzed,
       };
     } catch (error) {
@@ -166,12 +163,9 @@ class ApiClient {
       }
 
       return {
-        academicAtRiskScore: data.academicAtRiskScore,
-        averageBalancedUserScore: data.averageBalancedUserScore,
-        digitalMultitaskerScore: data.digitalMultitaskerScore,
-        digitalSelfRegulatedScore: data.digitalSelfRegulatedScore,
-        highFunctioningAcademicScore: data.highFunctioningAcademicScore,
-        minimalDigitalengagerScore: data.minimalDigitalengagerScore,
+        score: data.score,
+        label: data.label,
+        categoryScores: data.categoryScores,
         dateAnalyzed: data.dateAnalyzed,
       };
     } catch (error) {
