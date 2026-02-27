@@ -1,8 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
-
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+import { useEffect, useRef } from "react";
+import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import Svg, { Circle } from "react-native-svg";
 
 export default function LoadingPage() {
   const rotateAnim = useRef(new Animated.Value(0)).current;
@@ -14,20 +12,22 @@ export default function LoadingPage() {
         duration: 1500,
         easing: Easing.linear,
         useNativeDriver: true,
-      })
+      }),
     );
     animation.start();
     return () => animation.stop();
-  }, []);
+  }, [rotateAnim]);
 
   const rotate = rotateAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
+    outputRange: ["0deg", "360deg"],
   });
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.spinnerContainer, { transform: [{ rotate }] }]}>
+      <Animated.View
+        style={[styles.spinnerContainer, { transform: [{ rotate }] }]}
+      >
         <Svg width="120" height="120" viewBox="0 0 120 120">
           {/* Outer blue arc */}
           <Circle
@@ -68,7 +68,7 @@ export default function LoadingPage() {
           />
         </Svg>
       </Animated.View>
-      
+
       <Text style={styles.title}>Processing your results</Text>
       <Text style={styles.subtitle}>This may take a few seconds.</Text>
     </View>
@@ -78,9 +78,9 @@ export default function LoadingPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 24,
   },
   spinnerContainer: {
@@ -88,15 +88,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#2C3E50',
+    fontFamily: "Poppins_600SemiBold",
+    color: "#2C3E50",
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   subtitle: {
     fontSize: 14,
-    fontFamily: 'Poppins_400Regular',
-    color: '#7F8C8D',
-    textAlign: 'center',
+    fontFamily: "Poppins_400Regular",
+    color: "#7F8C8D",
+    textAlign: "center",
   },
 });

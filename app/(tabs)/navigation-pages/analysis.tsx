@@ -101,7 +101,10 @@ export default function Analysis() {
                       : 0;
 
                   return (
-                    <View key={app.packageName} style={styles.categoryItem}>
+                    <View
+                      key={`${app.packageName}-${index}`}
+                      style={styles.categoryItem}
+                    >
                       <View style={styles.categoryHeader}>
                         <Text style={styles.categoryLabel}>
                           {index + 1}. {app.packageName.split(".").pop()}
@@ -169,7 +172,7 @@ export default function Analysis() {
 
           <View style={styles.distributionContainer}>
             {distributionData.map((item, index) => (
-              <View key={index} style={styles.distributionItem}>
+              <View key={item.label} style={styles.distributionItem}>
                 <View style={styles.progressBarContainer}>
                   <View style={styles.progressBarBackground}>
                     <View

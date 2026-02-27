@@ -1,4 +1,7 @@
-import { computeEnhancedAnalysis, useAnalysis } from "@/context/AnalysisContext";
+import {
+    computeEnhancedAnalysis,
+    useAnalysis,
+} from "@/context/AnalysisContext";
 import { apiClient } from "@/services/api-client";
 import { collectDataForAnalysis } from "@/services/data-collection";
 import { getGwa } from "@/services/gwa-storage";
@@ -6,7 +9,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-    ActivityIndicator,
     Alert,
     Image,
     Pressable,
@@ -39,10 +41,15 @@ export default function DataConnectedScreen() {
         Alert.alert(
           "Error",
           "GWA not found. Please go back and enter your GWA.",
-          [{ text: "OK", onPress: () => router.push("./gwa_input") }]
+          [{ text: "OK", onPress: () => router.push("./gwa_input") }],
         );
+        setIsGenerating(false);
+        setIsLoading(false);
         return;
       }
+
+      // Navigate to loading page immediately
+      router.push("./loading_page");
 
       console.log("Collecting usage data for GWA:", gwa);
 
@@ -54,24 +61,32 @@ export default function DataConnectedScreen() {
 
       // Submit to backend
       const response = await apiClient.submitUsageData(collectedData);
-      
+
       // Compute enhanced analysis with dominant profile and distribution
       const enhancedAnalysis = computeEnhancedAnalysis(response);
       setAnalysisResult(enhancedAnalysis);
-      
+
       // Keep raw response for backward compatibility (deprecated)
       setBackendResponse(JSON.stringify(response, null, 2));
 
       if (__DEV__) {
         console.log("ML Analysis Result:", enhancedAnalysis);
         console.log("Dominant Profile:", enhancedAnalysis.dominantProfile);
-        console.log("Dominant Score:", (enhancedAnalysis.dominantScore * 100).toFixed(1) + "%");
+        console.log(
+          "Dominant Score:",
+          (enhancedAnalysis.dominantScore * 100).toFixed(1) + "%",
+        );
       }
 
-      console.log("Analysis complete, navigating to results...");
+      if (__DEV__) {
+        console.log("Analysis complete, navigating to results...");
+      }
 
-      // Navigate to results
-      router.push("/nav");
+      // Navigate to overview from loading page
+      router.replace({
+        pathname: "./navigation-pages/overview",
+        params: { showAnimation: true },
+      });
     } catch (error) {
       console.error("Error generating profile:", error);
       const errorMessage =
@@ -88,7 +103,7 @@ export default function DataConnectedScreen() {
             onPress: () => router.push("./usage_request"),
             style: "cancel",
           },
-        ]
+        ],
       );
     } finally {
       setIsGenerating(false);
@@ -97,10 +112,7 @@ export default function DataConnectedScreen() {
   };
 
   return (
-    <SafeAreaView 
-      style={styles.safeArea}
-      edges={["top", "left", "right"]}
-    >
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View style={styles.container}>
         <View style={styles.header}>
@@ -130,22 +142,12 @@ export default function DataConnectedScreen() {
 
         <View style={styles.buttonContainer}>
           <Pressable
-            style={[
-              styles.generateButton,
-              isGenerating && styles.generateButtonDisabled,
-            ]}
+            style={styles.generateButton}
             accessibilityRole="button"
             onPress={handleGenerateProfile}
             disabled={isGenerating}
           >
-            {isGenerating ? (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator size="small" color="#FFFFFF" />
-                <Text style={styles.generateText}>Analyzing...</Text>
-              </View>
-            ) : (
-              <Text style={styles.generateText}>Generate My Profile</Text>
-            )}
+            <Text style={styles.generateText}>Generate My Profile</Text>
           </Pressable>
         </View>
       </View>
@@ -229,4 +231,3 @@ const styles = StyleSheet.create({
     gap: 8,
   },
 });
-

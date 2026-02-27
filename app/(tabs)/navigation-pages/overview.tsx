@@ -63,18 +63,18 @@ export default function Overview({ profileKey }: OverviewProps) {
     // Use top 5 categories from analysis result
     const colors = ["#25AFA8", "#F3C23C", "#0F93B8", "#E08A5D", "#BD8FA8"];
     return analysisResult.topCategories.slice(0, 5).map((cat, idx) => ({
-      label: cat.category,
+      label: cat.category.replace(/_/g, " "),
       percentage: cat.percentage,
       value: cat.percentage,
       color: colors[idx % colors.length],
     }));
   }, [analysisResult?.topCategories]);
 
-  const academicBalanceData = [
-    { label: "Academic", value: 40, color: "#25AFA8" },
-    { label: "Leisure", value: 50, color: "#F3C23C" },
-    { label: "Utility", value: 20, color: "#0F93B8" },
-  ];
+  // const academicBalanceData = [
+  //   { label: "Academic", value: 40, color: "#25AFA8" },
+  //   { label: "Leisure", value: 50, color: "#F3C23C" },
+  //   { label: "Utility", value: 20, color: "#0F93B8" },
+  // ];
   const totalUsage = usageData.reduce((sum, item) => sum + item.value, 0);
   const chartSize = 140;
   const chartRadius = chartSize / 2;
@@ -226,7 +226,7 @@ export default function Overview({ profileKey }: OverviewProps) {
               </View>
             </View>
 
-            <View style={styles.balanceCard}>
+            {/* <View style={styles.balanceCard}>
               <Text style={styles.balanceTitle}>Academic Balance</Text>
               <View style={styles.balanceList}>
                 {academicBalanceData.map((item) => (
@@ -249,7 +249,7 @@ export default function Overview({ profileKey }: OverviewProps) {
                   </View>
                 ))}
               </View>
-            </View>
+            </View> */}
 
             <View style={styles.actionGroup}>
               <SecondaryButton
@@ -273,7 +273,7 @@ export default function Overview({ profileKey }: OverviewProps) {
               />
               <SecondaryButton
                 title="Run New Analysis"
-                onPress={() => router.push("./(tabs)/gwa_input")}
+                onPress={() => router.push("/(tabs)/gwa_input")}
                 style={{ ...styles.secondaryAction, marginTop: 12 }}
                 textStyle={styles.secondaryActionText}
                 icon={

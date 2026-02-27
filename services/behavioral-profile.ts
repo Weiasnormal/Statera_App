@@ -63,13 +63,15 @@ export const BEHAVIORAL_PROFILE_MAP: Record<
 };
 
 // Default profile, can be updated based on user input or API data
-let currentBehavioralProfile: BehavioralProfileKey = "minimal_digital_engager"; 
+let currentBehavioralProfile: BehavioralProfileKey = "minimal_digital_engager";
 
 export function getCurrentBehavioralProfile(): BehavioralProfileConfig {
   return BEHAVIORAL_PROFILE_MAP[currentBehavioralProfile];
 }
 
-export function setCurrentBehavioralProfile(profileKey: BehavioralProfileKey): void {
+export function setCurrentBehavioralProfile(
+  profileKey: BehavioralProfileKey,
+): void {
   currentBehavioralProfile = profileKey;
 }
 
@@ -80,7 +82,34 @@ export function parseBehavioralProfileFromApi(
     return null;
   }
 
-  const normalized = apiValue.trim().toLowerCase().replace(/[-\s]+/g, "_");
+  const trimmed = apiValue.trim();
+  const directMap: Record<string, BehavioralProfileKey> = {
+    AcademicAtRisk: "academic_at_risk",
+    "Academic At Risk": "academic_at_risk",
+    AverageBalancedUser: "balanced",
+    "Average Balanced User": "balanced",
+    DigitalMultitasker: "digital_multitasker",
+    "Digital Multitasker": "digital_multitasker",
+    DigitalSelfRegulated: "digital_self_regulated",
+    "Digital Self-Regulated": "digital_self_regulated",
+    HighFunctioningAcademic: "high_functioning_academic",
+    "High-Functioning Academic": "high_functioning_academic",
+    MinimalDigitalengager: "minimal_digital_engager",
+    MinimalDigitalEngager: "minimal_digital_engager",
+    "Minimal Digital Engager": "minimal_digital_engager",
+  };
+
+  if (trimmed in directMap) {
+    return directMap[trimmed];
+  }
+
+  const camelToSnake = trimmed.replace(/([a-z0-9])([A-Z])/g, "$1_$2");
+  const normalized = camelToSnake.toLowerCase().replace(/[-\s]+/g, "_");
+
+  if (normalized in directMap) {
+    return directMap[normalized];
+  }
+
   if (normalized in BEHAVIORAL_PROFILE_MAP) {
     return normalized as BehavioralProfileKey;
   }
