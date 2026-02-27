@@ -1,6 +1,9 @@
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { SecondaryButton } from "@/components/ui/secondary-button";
-import { checkUsagePermission } from "@/services/usage-stats";
+import {
+    checkUsagePermission,
+    requestUsagePermission,
+} from "@/services/usage-stats";
 import { Ionicons } from "@expo/vector-icons";
 import {
     Stack,
@@ -9,13 +12,7 @@ import {
     useLocalSearchParams,
 } from "expo-router";
 import { useCallback, useState } from "react";
-import {
-    Alert,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
-} from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AccessScreen() {
@@ -47,26 +44,25 @@ export default function AccessScreen() {
   const handleAllowAccess = async () => {
     setIsRequesting(true);
     try {
-      // const granted = await requestUsagePermission();
-      // if (granted) {
-      //   router.push("./data_connected");
-      // } else {
-      //   // Permission not granted, show alert with instructions
-      //   Alert.alert(
-      //     "Enable Usage Access",
-      //     "Please enable usage access for STATERA in the Settings screen that will open. After enabling, return to this app.",
-      //     [
-      //       {
-      //         text: "OK",
-      //         onPress: () => {
-      //           // User will be taken to settings when requestUsagePermission was called
-      //           // When they return, useFocusEffect will check the permission again
-      //         }
-      //       }
-      //     ]
-      //   );
-      // }
-      router.push("./data_connected");
+      const granted = await requestUsagePermission();
+      if (granted) {
+        router.push("./data_connected");
+      } else {
+        // Permission not granted, show alert with instructions
+        Alert.alert(
+          "Enable Usage Access",
+          "Please enable usage access for STATERA in the Settings screen that will open. After enabling, return to this app.",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                // User will be taken to settings when requestUsagePermission was called
+                // When they return, useFocusEffect will check the permission again
+              },
+            },
+          ],
+        );
+      }
     } catch (error) {
       console.error("Error requesting usage permission:", error);
       Alert.alert(
@@ -82,9 +78,9 @@ export default function AccessScreen() {
   return (
     <>
       <Stack.Screen options={{ animation: screenAnimation }} />
-      <SafeAreaView 
-      style={styles.safeArea} 
-      edges={["top", "left", "right", "bottom"]}
+      <SafeAreaView
+        style={styles.safeArea}
+        edges={["top", "left", "right", "bottom"]}
       >
         <View style={styles.container}>
           <View style={styles.content}>
