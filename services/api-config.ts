@@ -17,7 +17,8 @@ const API_CONFIG = {
     GET_ML_ANALYSIS: "/getMl/",
   },
 
-  TIMEOUT: 30000, // 30 seconds
+  TIMEOUT: 90000, // 90 seconds (allows for backend cold starts)
+  MAX_TIMEOUT_RETRIES: 1, // Retry once when a request times out
 };
 
 export default API_CONFIG;

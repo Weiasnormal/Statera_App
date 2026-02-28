@@ -1,6 +1,6 @@
 import {
-    computeEnhancedAnalysis,
-    useAnalysis,
+  computeEnhancedAnalysis,
+  useAnalysis,
 } from "@/context/AnalysisContext";
 import { apiClient } from "@/services/api-client";
 import { collectDataForAnalysis } from "@/services/data-collection";
@@ -9,13 +9,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-    Alert,
-    Image,
-    Pressable,
-    StatusBar,
-    StyleSheet,
-    Text,
-    View,
+  Alert,
+  Image,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -84,8 +84,8 @@ export default function DataConnectedScreen() {
 
       // Navigate to overview from loading page
       router.replace({
-        pathname: "./navigation-pages/overview",
-        params: { showAnimation: true },
+        pathname: "/nav",
+        params: { tab: "overview" },
       });
     } catch (error) {
       console.error("Error generating profile:", error);
@@ -93,9 +93,14 @@ export default function DataConnectedScreen() {
         error instanceof Error ? error.message : "Unknown error occurred";
       setError(errorMessage);
 
+      const isTimeoutError =
+        error instanceof Error && error.message === "Request timeout";
+
       Alert.alert(
         "Error",
-        "Failed to generate profile. Please make sure you have granted usage permissions and try again.",
+        isTimeoutError
+          ? "The server took too long to respond. This can happen when the backend is waking up. Please try again in a few moments."
+          : "Failed to generate profile. Please make sure you have granted usage permissions and try again.",
         [
           { text: "Try Again", onPress: () => handleGenerateProfile() },
           {

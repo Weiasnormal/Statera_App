@@ -5,10 +5,12 @@ import type { CollectedData } from "./data-collection";
 class ApiClient {
   private baseURL: string;
   private timeout: number;
+  private maxTimeoutRetries: number;
 
   constructor() {
     this.baseURL = API_CONFIG.BASE_URL;
     this.timeout = API_CONFIG.TIMEOUT;
+    this.maxTimeoutRetries = API_CONFIG.MAX_TIMEOUT_RETRIES;
   }
 
   private getBaseURLOrThrow(): string {
@@ -27,9 +29,11 @@ class ApiClient {
   private async fetchWithTimeout(
     url: string,
     options: RequestInit = {},
+    timeoutMs?: number,
   ): Promise<Response> {
+    const requestTimeout = timeoutMs ?? this.timeout;
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+    const timeoutId = setTimeout(() => controller.abort(), requestTimeout);
 
     try {
       const response = await fetch(url, {
@@ -52,6 +56,37 @@ class ApiClient {
     }
   }
 
+  private async fetchWithTimeoutRetry(
+    url: string,
+    options: RequestInit = {},
+    timeoutMs?: number,
+  ): Promise<Response> {
+    let attempt = 0;
+
+    while (attempt <= this.maxTimeoutRetries) {
+      try {
+        return await this.fetchWithTimeout(url, options, timeoutMs);
+      } catch (error) {
+        const isTimeoutError =
+          error instanceof Error && error.message === "Request timeout";
+
+        if (!isTimeoutError || attempt === this.maxTimeoutRetries) {
+          throw error;
+        }
+
+        attempt += 1;
+
+        if (__DEV__) {
+          console.warn(
+            `Request timed out. Retrying (${attempt}/${this.maxTimeoutRetries})...`,
+          );
+        }
+      }
+    }
+
+    throw new Error("Request timeout");
+  }
+
   /**
    * POST /getMl/ - Get ML Analysis
    * Submits usage data and receives behavioral profile scores
@@ -64,7 +99,7 @@ class ApiClient {
     try {
       const url = `${this.getBaseURLOrThrow()}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
 
-      const response = await this.fetchWithTimeout(url, {
+      const response = await this.fetchWithTimeoutRetry(url, {
         method: "POST",
         body: JSON.stringify(request),
       });
@@ -142,7 +177,7 @@ class ApiClient {
         console.log("📍 API Endpoint:", url);
       }
 
-      const response = await this.fetchWithTimeout(url, {
+      const response = await this.fetchWithTimeoutRetry(url, {
         method: "POST",
         body: JSON.stringify(usageDataRequest),
       });
