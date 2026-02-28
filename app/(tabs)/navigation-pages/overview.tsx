@@ -12,11 +12,59 @@ import { router } from "expo-router";
 import React, { useMemo } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Svg, { G, Path, Text as SvgText } from "react-native-svg";
+import Svg, { Circle, G } from "react-native-svg";
 
 type OverviewProps = {
   profileKey?: BehavioralProfileKey;
 };
+
+type UsageSlice = {
+  label: string;
+  percentage: number;
+  value: number;
+  color: string;
+  markerBackground: string;
+  badgeBackground: string;
+  iconName: React.ComponentProps<typeof Ionicons>["name"];
+  isOther?: boolean;
+};
+
+function getCategoryIconName(
+  categoryLabel: string,
+): React.ComponentProps<typeof Ionicons>["name"] {
+  const normalized = categoryLabel.toLowerCase();
+
+  if (normalized.includes("social") || normalized.includes("chat")) {
+    return "chatbubbles-outline";
+  }
+  if (normalized.includes("product") || normalized.includes("work")) {
+    return "briefcase-outline";
+  }
+  if (
+    normalized.includes("entertain") ||
+    normalized.includes("game") ||
+    normalized.includes("video")
+  ) {
+    return "game-controller-outline";
+  }
+  if (normalized.includes("education") || normalized.includes("learn")) {
+    return "school-outline";
+  }
+  if (normalized.includes("music") || normalized.includes("audio")) {
+    return "musical-notes-outline";
+  }
+  if (normalized.includes("news") || normalized.includes("read")) {
+    return "newspaper-outline";
+  }
+  if (normalized.includes("health") || normalized.includes("fitness")) {
+    return "fitness-outline";
+  }
+  if (normalized.includes("utility") || normalized.includes("tools")) {
+    return "construct-outline";
+  }
+
+  return "apps-outline";
+}
 
 export default function Overview({ profileKey }: OverviewProps) {
   const { analysisResult } = useAnalysis();
@@ -33,7 +81,7 @@ export default function Overview({ profileKey }: OverviewProps) {
   const profile = BEHAVIORAL_PROFILE_MAP[profileKeyToUse];
 
   // Convert top categories to usage data for display
-  const usageData = useMemo(() => {
+  const usageData = useMemo<UsageSlice[]>(() => {
     if (
       !analysisResult?.topCategories ||
       analysisResult.topCategories.length === 0
@@ -44,29 +92,50 @@ export default function Overview({ profileKey }: OverviewProps) {
           percentage: 53,
           value: 53,
           color: "#25AFA8",
+          markerBackground: "#DDF5F3",
+          badgeBackground: "#EAF9F7",
+          iconName: "briefcase-outline",
         },
         {
           label: "Social Media Apps",
           percentage: 27,
           value: 27,
           color: "#F3C23C",
+          markerBackground: "#FDF4D8",
+          badgeBackground: "#FFF8E8",
+          iconName: "chatbubbles-outline",
         },
         {
           label: "Entertainment Apps",
           percentage: 20,
           value: 20,
           color: "#0F93B8",
+          markerBackground: "#DFF1F7",
+          badgeBackground: "#EBF8FC",
+          iconName: "game-controller-outline",
         },
       ];
     }
 
     // Use top 5 categories from analysis result
-    const colors = ["#25AFA8", "#F3C23C", "#0F93B8", "#E08A5D", "#BD8FA8"];
+    const categoryStyleScale = [
+      { color: "#0F93B8", markerBackground: "#DFF1F7", badgeBackground: "#EBF8FC" },
+      { color: "#25AFA8", markerBackground: "#DDF5F3", badgeBackground: "#EAF9F7" },
+      { color: "#E2596F", markerBackground: "#F9E1E6", badgeBackground: "#FDECEF" },
+      { color: "#6B8AFD", markerBackground: "#E7ECFF", badgeBackground: "#EEF1FF" },
+      { color: "#F3C23C", markerBackground: "#FDF4D8", badgeBackground: "#FFF8E8" },
+    ];
+
     return analysisResult.topCategories.slice(0, 5).map((cat, idx) => ({
       label: cat.category.replace(/_/g, " "),
       percentage: cat.percentage,
       value: cat.percentage,
-      color: colors[idx % colors.length],
+      color: categoryStyleScale[idx % categoryStyleScale.length].color,
+      markerBackground:
+        categoryStyleScale[idx % categoryStyleScale.length].markerBackground,
+      badgeBackground:
+        categoryStyleScale[idx % categoryStyleScale.length].badgeBackground,
+      iconName: getCategoryIconName(cat.category.replace(/_/g, " ")),
     }));
   }, [analysisResult?.topCategories]);
 
@@ -75,35 +144,54 @@ export default function Overview({ profileKey }: OverviewProps) {
   //   { label: "Leisure", value: 50, color: "#F3C23C" },
   //   { label: "Utility", value: 20, color: "#0F93B8" },
   // ];
-  const totalUsage = usageData.reduce((sum, item) => sum + item.value, 0);
-  const chartSize = 140;
+  const chartData = useMemo<UsageSlice[]>(() => {
+    const topCategoryTotal = usageData.reduce((sum, item) => sum + item.value, 0);
+    const remainder = Math.max(0, 100 - topCategoryTotal);
+
+    if (remainder >= 0.1) {
+      return [
+        ...usageData,
+        {
+          label: "Other Apps",
+          percentage: remainder,
+          value: remainder,
+          color: "#D6E7EE",
+          markerBackground: "#EEF4F7",
+          badgeBackground: "#F5F8FA",
+          iconName: "apps-outline",
+          isOther: true,
+        },
+      ];
+    }
+
+    return usageData;
+  }, [usageData]);
+
+  const totalUsage = chartData.reduce((sum, item) => sum + item.value, 0);
+  const chartSize = 184;
   const chartRadius = chartSize / 2;
+  const donutStrokeWidth = 32;
+  const donutRadius = chartRadius - donutStrokeWidth / 2 - 2;
+  const donutCircumference = 2 * Math.PI * donutRadius;
+  const segmentGapAngle = 2.4;
+  const minimumVisualPercent = 4;
+
+  const chartVisualData = useMemo(() => {
+    const visualWeights = chartData.map((slice) =>
+      Math.max(slice.value, minimumVisualPercent),
+    );
+    const visualTotal = visualWeights.reduce((sum, weight) => sum + weight, 0);
+
+    return chartData.map((slice, index) => ({
+      ...slice,
+      visualShare: visualWeights[index] / visualTotal,
+    }));
+  }, [chartData]);
 
   // Get match percentage from API score
   const matchPercentage = analysisResult
     ? Math.round(analysisResult.score * 100)
     : 72;
-
-  const polarToCartesian = (center: number, radius: number, angle: number) => {
-    const angleInRadians = ((angle - 90) * Math.PI) / 180;
-    return {
-      x: center + radius * Math.cos(angleInRadians),
-      y: center + radius * Math.sin(angleInRadians),
-    };
-  };
-
-  const createArcPath = (startAngle: number, endAngle: number) => {
-    const start = polarToCartesian(chartRadius, chartRadius, endAngle);
-    const end = polarToCartesian(chartRadius, chartRadius, startAngle);
-    const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-
-    return [
-      `M ${chartRadius} ${chartRadius}`,
-      `L ${start.x} ${start.y}`,
-      `A ${chartRadius} ${chartRadius} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`,
-      "Z",
-    ].join(" ");
-  };
 
   const waveBaseColor = "#FFFFFF";
   const waveTopColor = profile.waveTopColor;
@@ -170,58 +258,95 @@ export default function Overview({ profileKey }: OverviewProps) {
 
             <View style={styles.usageCard}>
               <Text style={styles.usageTitle}>Usage Summary</Text>
+              <Text style={styles.usageDescription}>
+                Percentages are based on total screen time.
+              </Text>
               <View style={styles.usageBody}>
-                <View style={styles.usageList}>
-                  {usageData.map((item) => (
-                    <View key={item.label} style={styles.usageRow}>
-                      <Text style={styles.usageLabel}>{item.label}</Text>
-                      <Text style={styles.usageTime}>
-                        {item.percentage.toFixed(1)}%
-                      </Text>
-                    </View>
-                  ))}
-                </View>
                 <View style={styles.chartWrap}>
                   <Svg width={chartSize} height={chartSize}>
                     <G>
+                      <Circle
+                        cx={chartRadius}
+                        cy={chartRadius}
+                        r={donutRadius}
+                        stroke="#EEF4F8"
+                        strokeWidth={donutStrokeWidth}
+                        fill="none"
+                      />
                       {(() => {
-                        let currentAngle = 0;
-                        return usageData.map((slice) => {
-                          const sliceAngle = (slice.value / totalUsage) * 360;
-                          const startAngle = currentAngle;
-                          const endAngle = currentAngle + sliceAngle;
-                          currentAngle = endAngle;
+                        const gapLength =
+                          (segmentGapAngle / 360) * donutCircumference;
+                        let accumulatedLength = 0;
 
-                          const midAngle = startAngle + sliceAngle / 2;
-                          const labelPoint = polarToCartesian(
-                            chartRadius,
-                            chartRadius * 0.6,
-                            midAngle,
+                        return chartVisualData.map((slice) => {
+                          const sliceLength =
+                            slice.visualShare * donutCircumference;
+                          const visibleLength = Math.max(
+                            sliceLength - gapLength,
+                            0,
                           );
+                          const offset = -(accumulatedLength + gapLength / 2);
+                          accumulatedLength += sliceLength;
+
+                          if (visibleLength <= 0) {
+                            return null;
+                          }
 
                           return (
                             <G key={slice.label}>
-                              <Path
-                                d={createArcPath(startAngle, endAngle)}
-                                fill={slice.color}
+                              <Circle
+                                cx={chartRadius}
+                                cy={chartRadius}
+                                r={donutRadius}
+                                stroke={slice.color}
+                                strokeWidth={donutStrokeWidth}
+                                fill="none"
+                                strokeLinecap="butt"
+                                strokeDasharray={`${visibleLength} ${donutCircumference}`}
+                                strokeDashoffset={offset}
+                                transform={`rotate(-90 ${chartRadius} ${chartRadius})`}
                               />
-                              <SvgText
-                                x={labelPoint.x}
-                                y={labelPoint.y}
-                                fontSize={12}
-                                fontWeight="600"
-                                fill="#ffffff"
-                                textAnchor="middle"
-                                alignmentBaseline="middle"
-                              >
-                                {Math.round((slice.value / totalUsage) * 100)}%
-                              </SvgText>
                             </G>
                           );
                         });
                       })()}
                     </G>
                   </Svg>
+                </View>
+                <View style={styles.usageList}>
+                  {chartData.map((item) => (
+                    <View key={item.label} style={styles.usageSummaryRow}>
+                      <View
+                        style={[
+                          styles.summaryMarkerBox,
+                          { backgroundColor: item.markerBackground },
+                        ]}
+                      >
+                        <Ionicons
+                          name={item.iconName}
+                          size={18}
+                          color={item.color}
+                        />
+                      </View>
+
+                      <View style={styles.summaryTextWrap}>
+                        <Text style={styles.usageLabel} numberOfLines={1}>
+                          {item.label}
+                        </Text>
+                      </View>
+
+                      <View
+                        style={[
+                          styles.summaryBadge,
+                          { backgroundColor: item.badgeBackground },
+                        ]}
+                      >
+                        <Text style={[styles.usageTime, { color: item.color }]}>
+                          {item.percentage.toFixed(1)}%
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
                 </View>
               </View>
             </View>
@@ -393,36 +518,62 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "Poppins_700Bold",
     color: "#343235",
-    marginBottom: 16,
+    marginBottom: 4,
   },
-  usageBody: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 16,
-  },
-  usageList: {
-    flex: 1,
-    gap: 12,
-  },
-  usageRow: {
-    gap: 4,
-  },
-  usageLabel: {
-    fontSize: 13,
+  usageDescription: {
+    fontSize: 12,
+    lineHeight: 18,
     color: "#6B7280",
     fontFamily: "Poppins_400Regular",
+    marginBottom: 14,
+  },
+  usageBody: {
+    flexDirection: "column",
+    alignItems: "stretch",
+    gap: 18,
+  },
+  chartWrap: {
+    width: "100%",
+    height: 196,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  usageList: {
+    gap: 14,
+  },
+  usageSummaryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  summaryMarkerBox: {
+    width: 42,
+    height: 42,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  summaryTextWrap: {
+    flex: 1,
+    minWidth: 0,
+  },
+  usageLabel: {
+    fontSize: 14,
+    color: "#343235",
+    fontFamily: "Poppins_500Medium",
+  },
+  summaryBadge: {
+    minWidth: 54,
+    height: 28,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 8,
   },
   usageTime: {
     fontSize: 14,
     fontFamily: "Poppins_700Bold",
-    color: "#0F8BA0",
-  },
-  chartWrap: {
-    width: 140,
-    height: 140,
-    alignItems: "center",
-    justifyContent: "center",
+    color: "#0F93B8",
   },
   balanceCard: {
     width: "100%",
