@@ -16,28 +16,49 @@ import React, { createContext, ReactNode, useContext, useState } from "react";
 export function computeEnhancedAnalysis(
   response: GetMLAnalysisResponse,
 ): MLAnalysisResult {
-  // Convert categoryScores object to sorted array
+  const toTitleCase = (value: string): string =>
+    value
+      .toLowerCase()
+      .replace(/\b\w/g, (character) => character.toUpperCase());
+
+  // Convert categoryScores object to normalized array
   const categoryArray = Object.entries(response.categoryScores).map(
-    ([category, percentage]) => ({
-      category: category.replace(/_/g, " "), // Normalize category names
-      percentage: percentage,
-    }),
+    ([category, percentage]) => {
+      const normalized = category
+        .replace(/_/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      return {
+        category: normalized,
+        key: normalized.toLowerCase(),
+        percentage,
+      };
+    },
   );
 
-  // Merge categories with the same name (after normalization)
-  const mergedCategories = new Map<string, number>();
-  categoryArray.forEach(({ category, percentage }) => {
-    const existing = mergedCategories.get(category);
+  // Merge categories with the same normalized key
+  const mergedCategories = new Map<
+    string,
+    { category: string; percentage: number }
+  >();
+  categoryArray.forEach(({ category, key, percentage }) => {
+    const existing = mergedCategories.get(key);
     if (existing) {
-      mergedCategories.set(category, existing + percentage);
+      mergedCategories.set(key, {
+        category: existing.category,
+        percentage: existing.percentage + percentage,
+      });
     } else {
-      mergedCategories.set(category, percentage);
+      mergedCategories.set(key, {
+        category: toTitleCase(category),
+        percentage,
+      });
     }
   });
 
   // Convert back to array, round percentages, and sort
-  const topCategories = Array.from(mergedCategories.entries())
-    .map(([category, percentage]) => ({
+  const topCategories = Array.from(mergedCategories.values())
+    .map(({ category, percentage }) => ({
       category,
       percentage: Math.round(percentage * 10) / 10, // Round to 1 decimal
     }))

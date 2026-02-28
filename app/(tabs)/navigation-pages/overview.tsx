@@ -219,6 +219,15 @@ function getCategoryIconName(
   return "apps-outline";
 }
 
+function formatCategoryLabel(categoryLabel: string): string {
+  return categoryLabel
+    .replace(/_/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase()
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
 export default function Overview({ profileKey }: OverviewProps) {
   const { analysisResult } = useAnalysis();
 
@@ -299,17 +308,21 @@ export default function Overview({ profileKey }: OverviewProps) {
       },
     ];
 
-    return analysisResult.topCategories.slice(0, 5).map((cat, idx) => ({
-      label: cat.category.replace(/_/g, " "),
-      percentage: cat.percentage,
-      value: cat.percentage,
-      color: categoryStyleScale[idx % categoryStyleScale.length].color,
-      markerBackground:
-        categoryStyleScale[idx % categoryStyleScale.length].markerBackground,
-      badgeBackground:
-        categoryStyleScale[idx % categoryStyleScale.length].badgeBackground,
-      iconName: getCategoryIconName(cat.category.replace(/_/g, " ")),
-    }));
+    return analysisResult.topCategories.slice(0, 5).map((cat, idx) => {
+      const formattedLabel = formatCategoryLabel(cat.category);
+
+      return {
+        label: formattedLabel,
+        percentage: cat.percentage,
+        value: cat.percentage,
+        color: categoryStyleScale[idx % categoryStyleScale.length].color,
+        markerBackground:
+          categoryStyleScale[idx % categoryStyleScale.length].markerBackground,
+        badgeBackground:
+          categoryStyleScale[idx % categoryStyleScale.length].badgeBackground,
+        iconName: getCategoryIconName(formattedLabel),
+      };
+    });
   }, [analysisResult?.topCategories]);
 
   // const academicBalanceData = [

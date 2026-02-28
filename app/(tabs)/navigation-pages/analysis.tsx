@@ -40,17 +40,46 @@ export default function Analysis() {
   }, [collectedData?.usageMetrics.apps]);
 
   // Use real ML category scores if available, otherwise show placeholder
-  const distributionData = analysisResult?.topCategories.map((item, index) => ({
-    label: item.category,
-    percentage: item.percentage,
-    color: index % 2 === 0 ? "#16B8C5" : "#27B1A8",
-  })) || [
-    { label: "Social", percentage: 35, color: "#16B8C5" },
-    { label: "Productivity", percentage: 25, color: "#27B1A8" },
-    { label: "Entertainment", percentage: 20, color: "#16B8C5" },
-    { label: "Academic", percentage: 15, color: "#27B1A8" },
-    { label: "Other", percentage: 5, color: "#16B8C5" },
-  ];
+  // Apply same category-name rules as Overview Usage Summary:
+  // - replace underscores with spaces
+  // - normalize whitespace
+  // - merge duplicated names by normalized label
+  const distributionData = useMemo(() => {
+    if (!analysisResult?.topCategories?.length) {
+      return [
+        { label: "Social", percentage: 35, color: "#16B8C5" },
+        { label: "Productivity", percentage: 25, color: "#27B1A8" },
+        { label: "Entertainment", percentage: 20, color: "#16B8C5" },
+        { label: "Academic", percentage: 15, color: "#27B1A8" },
+        { label: "Other", percentage: 5, color: "#16B8C5" },
+      ];
+    }
+
+    const mergedMap = new Map<string, { label: string; percentage: number }>();
+
+    analysisResult.topCategories.forEach((item) => {
+      const label = item.category
+        .replace(/_/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      const key = label.toLowerCase();
+      const existing = mergedMap.get(key);
+
+      if (existing) {
+        existing.percentage += item.percentage;
+      } else {
+        mergedMap.set(key, { label, percentage: item.percentage });
+      }
+    });
+
+    return Array.from(mergedMap.values())
+      .sort((a, b) => b.percentage - a.percentage)
+      .map((item, index) => ({
+        label: item.label,
+        percentage: Number(item.percentage.toFixed(1)),
+        color: index % 2 === 0 ? "#16B8C5" : "#27B1A8",
+      }));
+  }, [analysisResult?.topCategories]);
 
   return (
     <View style={styles.container}>
