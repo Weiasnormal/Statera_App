@@ -1,20 +1,20 @@
 import { ScreenHeader } from "@/components/ui/screen-header";
 import { Ionicons } from "@expo/vector-icons";
 import {
-  getInstalledApps,
-  getUsageStats,
-  hasUsageStatsPermission,
-  requestUsageStatsPermission,
+    getInstalledApps,
+    getUsageStats,
+    hasUsageStatsPermission,
+    requestUsageStatsPermission,
 } from "expo-android-usagestats";
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
+    ActivityIndicator,
+    FlatList,
+    Image,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -90,7 +90,7 @@ export default function DebugStatsPage() {
     setLoading(true);
     try {
       const endTime = Date.now();
-      const startTime = endTime - (durationDays * 24 * 60 * 60 * 1000);
+      const startTime = endTime - durationDays * 24 * 60 * 60 * 1000;
 
       const stats = await getUsageStats(startTime, endTime);
 
@@ -107,7 +107,7 @@ export default function DebugStatsPage() {
       // Sort by usage time (descending)
       const sortedStats = filteredStats.sort(
         (a: UsageStatItem, b: UsageStatItem) =>
-          b.totalTimeInForeground - a.totalTimeInForeground
+          b.totalTimeInForeground - a.totalTimeInForeground,
       );
 
       setUsageStats(sortedStats);
@@ -148,7 +148,14 @@ export default function DebugStatsPage() {
   };
 
   const getColorFromPackage = (packageName: string): string => {
-    const palette = ["#16B8C5", "#25AFA8", "#0F93B8", "#00838F", "#0A7EA4", "#006B8F"];
+    const palette = [
+      "#16B8C5",
+      "#25AFA8",
+      "#0F93B8",
+      "#00838F",
+      "#0A7EA4",
+      "#006B8F",
+    ];
     const hashValue = packageName
       .split("")
       .reduce((total, character) => total + character.charCodeAt(0), 0);
@@ -156,14 +163,18 @@ export default function DebugStatsPage() {
   };
 
   const appInfoByPackage = useMemo(() => {
-    return installedApps.reduce<Record<string, InstalledAppInfo>>((map, app) => {
-      map[app.packageName] = app;
-      return map;
-    }, {});
+    return installedApps.reduce<Record<string, InstalledAppInfo>>(
+      (map, app) => {
+        map[app.packageName] = app;
+        return map;
+      },
+      {},
+    );
   }, [installedApps]);
 
   const enrichedUsageStats = useMemo<EnrichedUsageItem[]>(() => {
-    return usageStats.map((item) => {
+    // First, enrich all stats with app info
+    const enriched = usageStats.map((item) => {
       const appInfo = appInfoByPackage[item.packageName];
       return {
         ...item,
@@ -171,19 +182,49 @@ export default function DebugStatsPage() {
         icon: appInfo?.icon,
       };
     });
-  }, [usageStats, appInfoByPackage]);
+
+    // Group by appName and merge
+    const mergedMap = new Map<string, EnrichedUsageItem>();
+    enriched.forEach((item) => {
+      const existing = mergedMap.get(item.appName);
+      if (existing) {
+        // Merge: sum the usage time
+        existing.totalTimeInForeground += item.totalTimeInForeground;
+      } else {
+        mergedMap.set(item.appName, { ...item });
+      }
+    });
+
+    // Convert back to array and sort by usage time
+    const merged = Array.from(mergedMap.values()).sort(
+      (a, b) => b.totalTimeInForeground - a.totalTimeInForeground,
+    );
+
+    return merged;
+  }, [usageStats, appInfoByPackage, formatPackageAsName]);
 
   const maxUsage = useMemo(() => {
     return enrichedUsageStats.reduce((maximum, item) => {
-      return item.totalTimeInForeground > maximum ? item.totalTimeInForeground : maximum;
+      return item.totalTimeInForeground > maximum
+        ? item.totalTimeInForeground
+        : maximum;
     }, 0);
   }, [enrichedUsageStats]);
 
   const totalUsage = useMemo(() => {
-    return enrichedUsageStats.reduce((sum, item) => sum + item.totalTimeInForeground, 0);
+    return enrichedUsageStats.reduce(
+      (sum, item) => sum + item.totalTimeInForeground,
+      0,
+    );
   }, [enrichedUsageStats]);
 
-  const renderItem = ({ item, index }: { item: EnrichedUsageItem; index: number }) => (
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: EnrichedUsageItem;
+    index: number;
+  }) => (
     <View style={styles.listItemCard}>
       <View style={styles.rankBadge}>
         <Text style={styles.rankText}>#{index + 1}</Text>
@@ -203,7 +244,9 @@ export default function DebugStatsPage() {
               { backgroundColor: getColorFromPackage(item.packageName) },
             ]}
           >
-            <Text style={styles.fallbackIconText}>{getInitials(item.appName)}</Text>
+            <Text style={styles.fallbackIconText}>
+              {getInitials(item.appName)}
+            </Text>
           </View>
         )}
       </View>
@@ -289,10 +332,7 @@ export default function DebugStatsPage() {
 
   if (!hasPermission) {
     return (
-      <SafeAreaView
-        style={styles.safeArea}
-        edges={["left", "right", "top"]}
-      >
+      <SafeAreaView style={styles.safeArea} edges={["left", "right", "top"]}>
         <ScreenHeader
           title="Statistics"
           align="left"
