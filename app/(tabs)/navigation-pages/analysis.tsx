@@ -1,11 +1,43 @@
 import { ScreenHeader } from "@/components/ui/screen-header";
 import { useAnalysis } from "@/context/AnalysisContext";
 import { formatMilliseconds } from "@/services/data-collection";
-import React from "react";
+import React, { useMemo } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function Analysis() {
   const { collectedData, analysisResult, backendResponse } = useAnalysis();
+
+  // Merge apps with similar names (normalize for consistent merging)
+  const mergedApps = useMemo(() => {
+    if (!collectedData?.usageMetrics.apps) return [];
+
+    const mergedMap = new Map<
+      string,
+      { packageName: string; totalTimeInForeground: number }
+    >();
+
+    collectedData.usageMetrics.apps.forEach((app) => {
+      const appName = app.packageName.split(".").pop() || app.packageName;
+      // Normalize: lowercase, trim whitespace, remove extra spaces
+      const normalizedKey = appName.toLowerCase().trim().replace(/\s+/g, " ");
+
+      const existing = mergedMap.get(normalizedKey);
+      if (existing) {
+        // Merge: sum the usage time
+        existing.totalTimeInForeground += app.totalTimeInForeground;
+      } else {
+        mergedMap.set(normalizedKey, {
+          packageName: appName,
+          totalTimeInForeground: app.totalTimeInForeground,
+        });
+      }
+    });
+
+    // Convert back to array and sort by usage time
+    return Array.from(mergedMap.values()).sort(
+      (a, b) => b.totalTimeInForeground - a.totalTimeInForeground,
+    );
+  }, [collectedData?.usageMetrics.apps]);
 
   // Use real ML category scores if available, otherwise show placeholder
   const distributionData = analysisResult?.topCategories.map((item, index) => ({
@@ -91,40 +123,38 @@ export default function Analysis() {
 
             <View style={styles.categoryContainer}>
               <Text style={styles.categoryTitle}>Top Apps by Usage</Text>
-              {collectedData.usageMetrics.apps
-                .slice(0, 10)
-                .map((app, index) => {
-                  const total = collectedData.usageMetrics.totalScreenTime;
-                  const percentage =
-                    total > 0
-                      ? Math.round((app.totalTimeInForeground / total) * 100)
-                      : 0;
+              {mergedApps.slice(0, 10).map((app, index) => {
+                const total = collectedData.usageMetrics.totalScreenTime;
+                const percentage =
+                  total > 0
+                    ? Math.round((app.totalTimeInForeground / total) * 100)
+                    : 0;
 
-                  return (
-                    <View
-                      key={`${app.packageName}-${index}`}
-                      style={styles.categoryItem}
-                    >
-                      <View style={styles.categoryHeader}>
-                        <Text style={styles.categoryLabel}>
-                          {index + 1}. {app.packageName.split(".").pop()}
-                        </Text>
-                        <Text style={styles.categoryValue}>
-                          {formatMilliseconds(app.totalTimeInForeground)} (
-                          {percentage}%)
-                        </Text>
-                      </View>
-                      <View style={styles.categoryBar}>
-                        <View
-                          style={[
-                            styles.categoryBarFill,
-                            { width: `${percentage}%` },
-                          ]}
-                        />
-                      </View>
+                return (
+                  <View
+                    key={`${app.packageName}-${index}`}
+                    style={styles.categoryItem}
+                  >
+                    <View style={styles.categoryHeader}>
+                      <Text style={styles.categoryLabel}>
+                        {index + 1}. {app.packageName}
+                      </Text>
+                      <Text style={styles.categoryValue}>
+                        {formatMilliseconds(app.totalTimeInForeground)} (
+                        {percentage}%)
+                      </Text>
                     </View>
-                  );
-                })}
+                    <View style={styles.categoryBar}>
+                      <View
+                        style={[
+                          styles.categoryBarFill,
+                          { width: `${percentage}%` },
+                        ]}
+                      />
+                    </View>
+                  </View>
+                );
+              })}
             </View>
           </View>
         )}

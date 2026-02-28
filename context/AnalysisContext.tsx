@@ -17,7 +17,26 @@ export function computeEnhancedAnalysis(
   response: GetMLAnalysisResponse,
 ): MLAnalysisResult {
   // Convert categoryScores object to sorted array
-  const topCategories = Object.entries(response.categoryScores)
+  const categoryArray = Object.entries(response.categoryScores).map(
+    ([category, percentage]) => ({
+      category: category.replace(/_/g, " "), // Normalize category names
+      percentage: percentage,
+    }),
+  );
+
+  // Merge categories with the same name (after normalization)
+  const mergedCategories = new Map<string, number>();
+  categoryArray.forEach(({ category, percentage }) => {
+    const existing = mergedCategories.get(category);
+    if (existing) {
+      mergedCategories.set(category, existing + percentage);
+    } else {
+      mergedCategories.set(category, percentage);
+    }
+  });
+
+  // Convert back to array, round percentages, and sort
+  const topCategories = Array.from(mergedCategories.entries())
     .map(([category, percentage]) => ({
       category,
       percentage: Math.round(percentage * 10) / 10, // Round to 1 decimal

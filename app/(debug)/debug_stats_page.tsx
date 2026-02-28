@@ -183,17 +183,22 @@ export default function DebugStatsPage() {
       };
     });
 
-    // Group by appName and merge
+    // Group by appName and merge (normalize names for consistent merging)
     const mergedMap = new Map<string, EnrichedUsageItem>();
     enriched.forEach((item) => {
-      const existing = mergedMap.get(item.appName);
+      // Normalize: lowercase, trim whitespace, remove extra spaces
+      const normalizedKey = item.appName
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, " ");
+      const existing = mergedMap.get(normalizedKey);
       if (existing) {
         // Merge: sum the usage time
         existing.totalTimeInForeground += item.totalTimeInForeground;
         // Prefer icon if available
         if (!existing.icon && item.icon) existing.icon = item.icon;
       } else {
-        mergedMap.set(item.appName, { ...item });
+        mergedMap.set(normalizedKey, { ...item });
       }
     });
 
