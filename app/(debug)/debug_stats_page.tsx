@@ -1,20 +1,20 @@
 import { ScreenHeader } from "@/components/ui/screen-header";
 import { Ionicons } from "@expo/vector-icons";
 import {
-    getInstalledApps,
-    getUsageStats,
-    hasUsageStatsPermission,
-    requestUsageStatsPermission,
+  getInstalledApps,
+  getUsageStats,
+  hasUsageStatsPermission,
+  requestUsageStatsPermission,
 } from "expo-android-usagestats";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    Image,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -42,51 +42,16 @@ export default function DebugStatsPage() {
   const [hasPermission, setHasPermission] = useState(false);
   const [durationDays, setDurationDays] = useState(1);
 
-  useEffect(() => {
-    checkPermission();
-  }, []);
-
-  // Auto-refresh when duration changes
-  useEffect(() => {
-    if (hasPermission) {
-      fetchData();
-      loadInstalledApps();
-    }
-  }, [durationDays]);
-
-  const checkPermission = async () => {
-    try {
-      const permission = await hasUsageStatsPermission();
-      setHasPermission(permission);
-      if (permission) {
-        fetchData();
-        loadInstalledApps();
-      }
-    } catch (error) {
-      console.error("Error checking permission:", error);
-    }
-  };
-
-  const loadInstalledApps = async () => {
+  const loadInstalledApps = useCallback(async () => {
     try {
       const apps = await getInstalledApps();
       setInstalledApps(apps as InstalledAppInfo[]);
     } catch (error) {
       console.error("Error loading installed apps:", error);
     }
-  };
+  }, []);
 
-  const handleRequestPermission = async () => {
-    try {
-      await requestUsageStatsPermission();
-      // After requesting, user needs to manually enable in settings
-      // They'll need to come back and press refresh
-    } catch (error) {
-      console.error("Error requesting permission:", error);
-    }
-  };
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const endTime = Date.now();
@@ -116,6 +81,41 @@ export default function DebugStatsPage() {
     } finally {
       setLoading(false);
     }
+  }, [durationDays]);
+
+  const checkPermission = useCallback(async () => {
+    try {
+      const permission = await hasUsageStatsPermission();
+      setHasPermission(permission);
+      if (permission) {
+        fetchData();
+        loadInstalledApps();
+      }
+    } catch (error) {
+      console.error("Error checking permission:", error);
+    }
+  }, [fetchData, loadInstalledApps]);
+
+  useEffect(() => {
+    checkPermission();
+  }, [checkPermission]);
+
+  // Auto-refresh when duration changes
+  useEffect(() => {
+    if (hasPermission) {
+      fetchData();
+      loadInstalledApps();
+    }
+  }, [durationDays, hasPermission, fetchData, loadInstalledApps]);
+
+  const handleRequestPermission = async () => {
+    try {
+      await requestUsageStatsPermission();
+      // After requesting, user needs to manually enable in settings
+      // They'll need to come back and press refresh
+    } catch (error) {
+      console.error("Error requesting permission:", error);
+    }
   };
 
   const formatTime = (milliseconds: number): string => {
@@ -126,14 +126,6 @@ export default function DebugStatsPage() {
     const hours = Math.floor(minutes / 60);
     const remainingMins = minutes % 60;
     return `${hours}h ${remainingMins}m`;
-  };
-
-  const formatPackageAsName = (packageName: string): string => {
-    const packageParts = packageName.split(".");
-    const candidate = packageParts[packageParts.length - 1] ?? packageName;
-    return candidate
-      .replace(/[_-]+/g, " ")
-      .replace(/\b\w/g, (character) => character.toUpperCase());
   };
 
   const getInitials = (appName: string): string => {
@@ -173,6 +165,14 @@ export default function DebugStatsPage() {
   }, [installedApps]);
 
   const enrichedUsageStats = useMemo<EnrichedUsageItem[]>(() => {
+    const formatPackageAsName = (packageName: string): string => {
+      const packageParts = packageName.split(".");
+      const candidate = packageParts[packageParts.length - 1] ?? packageName;
+      return candidate
+        .replace(/[_-]+/g, " ")
+        .replace(/\b\w/g, (character) => character.toUpperCase());
+    };
+
     // First, enrich all stats with app info
     const enriched = usageStats.map((item) => {
       const appInfo = appInfoByPackage[item.packageName];
@@ -190,6 +190,8 @@ export default function DebugStatsPage() {
       if (existing) {
         // Merge: sum the usage time
         existing.totalTimeInForeground += item.totalTimeInForeground;
+        // Prefer icon if available
+        if (!existing.icon && item.icon) existing.icon = item.icon;
       } else {
         mergedMap.set(item.appName, { ...item });
       }
@@ -201,7 +203,7 @@ export default function DebugStatsPage() {
     );
 
     return merged;
-  }, [usageStats, appInfoByPackage, formatPackageAsName]);
+  }, [usageStats, appInfoByPackage]);
 
   const maxUsage = useMemo(() => {
     return enrichedUsageStats.reduce((maximum, item) => {
