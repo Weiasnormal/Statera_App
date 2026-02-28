@@ -366,8 +366,8 @@ export default function Overview({ profileKey }: OverviewProps) {
 
   // Get match percentage from API score
   const matchPercentage = analysisResult
-    ? Math.round(analysisResult.score * 100)
-    : 72;
+    ? (analysisResult.score * 100).toFixed(1)
+    : "72.0";
 
   const waveBaseColor = "#FFFFFF";
   const waveTopColor = profile.waveTopColor;
