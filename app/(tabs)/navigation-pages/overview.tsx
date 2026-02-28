@@ -34,33 +34,186 @@ function getCategoryIconName(
 ): React.ComponentProps<typeof Ionicons>["name"] {
   const normalized = categoryLabel.toLowerCase();
 
-  if (normalized.includes("social") || normalized.includes("chat")) {
-    return "chatbubbles-outline";
+  // Audio / Music
+  if (normalized.includes("audio") || normalized.includes("music")) {
+    return "musical-notes-outline";
   }
-  if (normalized.includes("product") || normalized.includes("work")) {
+
+  // Career / Work / Professional
+  if (
+    normalized.includes("career") ||
+    normalized.includes("product") ||
+    normalized.includes("work") ||
+    normalized.includes("professional")
+  ) {
     return "briefcase-outline";
   }
+
+  // Communication / Chat / Messaging
+  if (normalized.includes("communication") || normalized.includes("chat")) {
+    return "chatbubbles-outline";
+  }
+
+  // Creativity / Art
+  if (normalized.includes("creativity") || normalized.includes("creative")) {
+    return "brush-outline";
+  }
+
+  // Dating / Romance
+  if (normalized.includes("dating") || normalized.includes("romance")) {
+    return "heart-outline";
+  }
+
+  // Finance / Banking / Payments
   if (
-    normalized.includes("entertain") ||
+    normalized.includes("finance") ||
+    normalized.includes("banking") ||
+    normalized.includes("payment")
+  ) {
+    return "wallet-outline";
+  }
+
+  // Food / Dining / Restaurants
+  if (normalized.includes("food") || normalized.includes("restaurant")) {
+    return "fast-food-outline";
+  }
+
+  // Gaming / Games / Entertainment
+  if (
+    normalized.includes("gaming") ||
     normalized.includes("game") ||
     normalized.includes("video")
   ) {
     return "game-controller-outline";
   }
-  if (normalized.includes("education") || normalized.includes("learn")) {
-    return "school-outline";
-  }
-  if (normalized.includes("music") || normalized.includes("audio")) {
-    return "musical-notes-outline";
-  }
-  if (normalized.includes("news") || normalized.includes("read")) {
-    return "newspaper-outline";
-  }
-  if (normalized.includes("health") || normalized.includes("fitness")) {
+
+  // Health / Fitness / Wellness
+  if (
+    normalized.includes("health") ||
+    normalized.includes("fitness") ||
+    normalized.includes("wellness")
+  ) {
     return "fitness-outline";
   }
-  if (normalized.includes("utility") || normalized.includes("tools")) {
+
+  // Internet / Browser / Web
+  if (normalized.includes("internet") || normalized.includes("browser")) {
+    return "globe-outline";
+  }
+
+  // Knowledge / Learning / Education
+  if (
+    normalized.includes("knowledge") ||
+    normalized.includes("education") ||
+    normalized.includes("learn")
+  ) {
+    return "book-outline";
+  }
+
+  // News / Journalism
+  if (normalized.includes("news")) {
+    return "newspaper-outline";
+  }
+
+  // Orientation / Navigation / Maps
+  if (
+    normalized.includes("orientation") ||
+    normalized.includes("navigation") ||
+    normalized.includes("map")
+  ) {
+    return "compass-outline";
+  }
+
+  // Photo / Photography / Images / Gallery
+  if (
+    normalized.includes("photo") ||
+    normalized.includes("photography") ||
+    normalized.includes("image") ||
+    normalized.includes("gallery")
+  ) {
+    return "images-outline";
+  }
+
+  // Reading / Books
+  if (normalized.includes("reading") || normalized.includes("book")) {
+    return "book-outline";
+  }
+
+  // Security / Privacy / Safety / Antivirus
+  if (
+    normalized.includes("security") ||
+    normalized.includes("privacy") ||
+    normalized.includes("antivirus")
+  ) {
+    return "shield-checkmark-outline";
+  }
+
+  // Settings / Configuration / System Settings
+  if (normalized.includes("settings") || normalized.includes("configuration")) {
+    return "settings-outline";
+  }
+
+  // Shopping / E-commerce / Shopping Apps
+  if (normalized.includes("shopping") || normalized.includes("retail")) {
+    return "bag-outline";
+  }
+
+  // Social Media / Social Networks
+  if (normalized.includes("social")) {
+    return "chatbubbles-outline";
+  }
+
+  // Spirituality / Religion / Meditation
+  if (
+    normalized.includes("spirituality") ||
+    normalized.includes("spiritual") ||
+    normalized.includes("meditation")
+  ) {
+    return "leaf-outline";
+  }
+
+  // System / OS / Platform
+  if (normalized.includes("system")) {
+    return "cog-outline";
+  }
+
+  // Time / Clock / Timer / Alarms
+  if (
+    normalized.includes("time") ||
+    normalized.includes("clock") ||
+    normalized.includes("timer") ||
+    normalized.includes("alarm")
+  ) {
+    return "timer-outline";
+  }
+
+  // Tools / Utilities / Productivity
+  if (normalized.includes("tools") || normalized.includes("utility")) {
     return "construct-outline";
+  }
+
+  // Transportation / Travel / Traffic / Navigation
+  if (
+    normalized.includes("transportation") ||
+    normalized.includes("travel") ||
+    normalized.includes("traffic")
+  ) {
+    return "car-outline";
+  }
+
+  // Visual Entertainment / Movies / TV / Videos
+  if (
+    normalized.includes("visual") ||
+    normalized.includes("entertainment") ||
+    normalized.includes("movie") ||
+    normalized.includes("tv")
+  ) {
+    return "play-circle-outline";
+  }
+
+  // Weather
+  if (normalized.includes("weather")) {
+    return "cloud-outline";
   }
 
   return "apps-outline";
@@ -119,11 +272,31 @@ export default function Overview({ profileKey }: OverviewProps) {
 
     // Use top 5 categories from analysis result
     const categoryStyleScale = [
-      { color: "#0F93B8", markerBackground: "#DFF1F7", badgeBackground: "#EBF8FC" },
-      { color: "#25AFA8", markerBackground: "#DDF5F3", badgeBackground: "#EAF9F7" },
-      { color: "#E2596F", markerBackground: "#F9E1E6", badgeBackground: "#FDECEF" },
-      { color: "#6B8AFD", markerBackground: "#E7ECFF", badgeBackground: "#EEF1FF" },
-      { color: "#F3C23C", markerBackground: "#FDF4D8", badgeBackground: "#FFF8E8" },
+      {
+        color: "#0F93B8",
+        markerBackground: "#DFF1F7",
+        badgeBackground: "#EBF8FC",
+      },
+      {
+        color: "#25AFA8",
+        markerBackground: "#DDF5F3",
+        badgeBackground: "#EAF9F7",
+      },
+      {
+        color: "#E2596F",
+        markerBackground: "#F9E1E6",
+        badgeBackground: "#FDECEF",
+      },
+      {
+        color: "#6B8AFD",
+        markerBackground: "#E7ECFF",
+        badgeBackground: "#EEF1FF",
+      },
+      {
+        color: "#F3C23C",
+        markerBackground: "#FDF4D8",
+        badgeBackground: "#FFF8E8",
+      },
     ];
 
     return analysisResult.topCategories.slice(0, 5).map((cat, idx) => ({
@@ -145,7 +318,10 @@ export default function Overview({ profileKey }: OverviewProps) {
   //   { label: "Utility", value: 20, color: "#0F93B8" },
   // ];
   const chartData = useMemo<UsageSlice[]>(() => {
-    const topCategoryTotal = usageData.reduce((sum, item) => sum + item.value, 0);
+    const topCategoryTotal = usageData.reduce(
+      (sum, item) => sum + item.value,
+      0,
+    );
     const remainder = Math.max(0, 100 - topCategoryTotal);
 
     if (remainder >= 0.1) {
@@ -167,7 +343,7 @@ export default function Overview({ profileKey }: OverviewProps) {
     return usageData;
   }, [usageData]);
 
-  const totalUsage = chartData.reduce((sum, item) => sum + item.value, 0);
+  //const totalUsage = chartData.reduce((sum, item) => sum + item.value, 0);
   const chartSize = 184;
   const chartRadius = chartSize / 2;
   const donutStrokeWidth = 32;
