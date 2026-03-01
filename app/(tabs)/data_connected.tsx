@@ -1,21 +1,22 @@
 import {
-  computeEnhancedAnalysis,
-  useAnalysis,
+    computeEnhancedAnalysis,
+    useAnalysis,
 } from "@/context/AnalysisContext";
 import { apiClient } from "@/services/api-client";
 import { collectDataForAnalysis } from "@/services/data-collection";
 import { getGwa } from "@/services/gwa-storage";
+import { getAnalysisWindowStatus } from "@/services/tracking-duration";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-  Alert,
-  Image,
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
+    Alert,
+    Image,
+    Pressable,
+    StatusBar,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -28,6 +29,13 @@ export default function DataConnectedScreen() {
     setError,
   } = useAnalysis();
   const [isGenerating, setIsGenerating] = useState(false);
+
+  const formatDate = (date: Date) =>
+    date.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
 
   const handleGenerateProfile = async () => {
     try {
@@ -42,6 +50,25 @@ export default function DataConnectedScreen() {
           "Error",
           "GWA not found. Please go back and enter your GWA.",
           [{ text: "OK", onPress: () => router.push("./gwa_input") }],
+        );
+        setIsGenerating(false);
+        setIsLoading(false);
+        return;
+      }
+
+      const analysisWindow = getAnalysisWindowStatus();
+      if (!analysisWindow.isReady) {
+        Alert.alert(
+          "7-Day Data Not Ready",
+          `You can run analysis after ${formatDate(analysisWindow.readyDate)}. ${analysisWindow.remainingDays} day(s) remaining for your selected start date.`,
+          [
+            {
+              text: "Go to Settings",
+              onPress: () =>
+                router.push("/(tabs)/navigation-pages/settings"),
+            },
+            { text: "OK", style: "cancel" },
+          ],
         );
         setIsGenerating(false);
         setIsLoading(false);

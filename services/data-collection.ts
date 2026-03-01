@@ -8,7 +8,7 @@
 
 import { getUsageEvents, getUsageStats, hasUsageStatsPermission } from "expo-android-usagestats";
 import { Platform } from "react-native";
-import { getTrackingDurationDays } from "./tracking-duration";
+import { getAnalysisWindowStatus } from "./tracking-duration";
 
 // Android UsageEvents event types (raw Android system IDs)
 const EVENT_SCREEN_INTERACTIVE = 15; // Screen turned on (pickups)
@@ -37,10 +37,14 @@ export interface CollectedData {
 }
 
 /**
- * Get usage statistics for specified duration
+ * Get usage statistics for specified time range
  * Returns raw app data without categorization
  */
-async function getUsageStatistics(durationDays: number): Promise<AppUsageData[]> {
+async function getUsageStatisticsForRange(
+  startTime: number,
+  endTime: number,
+  durationDays: number,
+): Promise<AppUsageData[]> {
   if (Platform.OS !== "android") {
     console.warn("Usage statistics only available on Android");
     return [];
@@ -52,12 +56,8 @@ async function getUsageStatistics(durationDays: number): Promise<AppUsageData[]>
       throw new Error("Usage statistics permission not granted");
     }
 
-    const endTime = Date.now();
-    const startTime = endTime - durationDays * 24 * 60 * 60 * 1000;
-
     const stats = await getUsageStats(startTime, endTime);
 
-    // Filter and map usage data - send raw data to backend
     const usageData: AppUsageData[] = stats
       .filter((stat: any) => {
         const pkg = stat.packageName?.toLowerCase() || "";
@@ -72,9 +72,13 @@ async function getUsageStatistics(durationDays: number): Promise<AppUsageData[]>
         packageName: stat.packageName,
         totalTimeInForeground: Number(stat.totalTimeInForeground || 0),
       }))
-      .sort((a: AppUsageData, b: AppUsageData) => 
-        b.totalTimeInForeground - a.totalTimeInForeground
+      .sort((a: AppUsageData, b: AppUsageData) =>
+        b.totalTimeInForeground - a.totalTimeInForeground,
       );
+
+    if (__DEV__) {
+      console.log(`Collected usage stats for custom ${durationDays}-day window`);
+    }
 
     return usageData;
   } catch (error) {
@@ -84,11 +88,13 @@ async function getUsageStatistics(durationDays: number): Promise<AppUsageData[]>
 }
 
 /**
- * Get pickups and device unlocks from system events
- * @param durationDays Number of days to look back
- * @returns Object with pickups and deviceUnlocks counts
+ * Get pickups and device unlocks from system events in a time range
  */
-async function getDeviceInteractions(durationDays: number): Promise<{
+async function getDeviceInteractionsForRange(
+  startTime: number,
+  endTime: number,
+  durationDays: number,
+): Promise<{
   pickups: number;
   deviceUnlocks: number;
 }> {
@@ -103,13 +109,8 @@ async function getDeviceInteractions(durationDays: number): Promise<{
       throw new Error("Usage statistics permission not granted");
     }
 
-    const endTime = Date.now();
-    const startTime = endTime - durationDays * 24 * 60 * 60 * 1000;
-
-    // Query system events using getUsageEvents
     const events = await getUsageEvents(startTime, endTime);
 
-    // Count pickups (SCREEN_INTERACTIVE) and unlocks (KEYGUARD_HIDDEN)
     let pickups = 0;
     let deviceUnlocks = 0;
 
@@ -122,13 +123,14 @@ async function getDeviceInteractions(durationDays: number): Promise<{
     });
 
     if (__DEV__) {
-      console.log(`Detected ${pickups} pickups and ${deviceUnlocks} unlocks over ${durationDays} days`);
+      console.log(
+        `Detected ${pickups} pickups and ${deviceUnlocks} unlocks over custom ${durationDays}-day window`,
+      );
     }
 
     return { pickups, deviceUnlocks };
   } catch (error) {
     console.error("Error getting device interactions:", error);
-    // Return 0 instead of throwing to not break the data collection
     return { pickups: 0, deviceUnlocks: 0 };
   }
 }
@@ -162,13 +164,24 @@ export async function collectDataForAnalysis(
   gwa: number
 ): Promise<CollectedData> {
   try {
-    // Get tracking duration
-    const trackingDurationDays = getTrackingDurationDays();
+    const analysisWindow = getAnalysisWindowStatus();
+    if (!analysisWindow.isReady) {
+      throw new Error(
+        `Analysis data period is not ready yet. ${analysisWindow.remainingDays} day(s) remaining.`,
+      );
+    }
+
+    const trackingDurationDays = analysisWindow.trackingDurationDays;
+    const windowStartTime = analysisWindow.startDate.getTime();
+    const windowEndTime = Math.min(
+      Date.now(),
+      analysisWindow.readyDate.getTime() + 24 * 60 * 60 * 1000,
+    );
 
     // Get usage statistics and device interactions in parallel
     const [usageData, deviceInteractions] = await Promise.all([
-      getUsageStatistics(trackingDurationDays),
-      getDeviceInteractions(trackingDurationDays),
+      getUsageStatisticsForRange(windowStartTime, windowEndTime, trackingDurationDays),
+      getDeviceInteractionsForRange(windowStartTime, windowEndTime, trackingDurationDays),
     ]);
 
     // Calculate metrics

@@ -7,10 +7,11 @@ import {
   parseBehavioralProfileFromApi,
   type BehavioralProfileKey,
 } from "@/services/behavioral-profile";
+import { getAnalysisWindowStatus } from "@/services/tracking-duration";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Circle, G } from "react-native-svg";
 
@@ -230,6 +231,7 @@ function formatCategoryLabel(categoryLabel: string): string {
 
 export default function Overview({ profileKey }: OverviewProps) {
   const { analysisResult } = useAnalysis();
+  const analysisWindow = getAnalysisWindowStatus();
 
   // Determine which profile to display
   const profileKeyToUse = useMemo(() => {
@@ -386,6 +388,25 @@ export default function Overview({ profileKey }: OverviewProps) {
   const waveTopColor = profile.waveTopColor;
   const waveBottomColor = profile.waveBottomColor;
   const actionColor = "#00838F";
+
+  const formatDate = (date: Date) =>
+    date.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+
+  const handleRunNewAnalysis = () => {
+    if (!analysisWindow.isReady) {
+      Alert.alert(
+        "7-Day Data Not Ready",
+        `You can run analysis after ${formatDate(analysisWindow.readyDate)}. ${analysisWindow.remainingDays} day(s) remaining for your selected start date.`,
+      );
+      return;
+    }
+
+    router.push("/(tabs)/gwa_input");
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: waveBaseColor }]}>
@@ -587,8 +608,13 @@ export default function Overview({ profileKey }: OverviewProps) {
               />
               <SecondaryButton
                 title="Run New Analysis"
-                onPress={() => router.push("/(tabs)/gwa_input")}
-                style={{ ...styles.secondaryAction, marginTop: 12 }}
+                onPress={handleRunNewAnalysis}
+                disabled={!analysisWindow.isReady}
+                style={{
+                  ...styles.secondaryAction,
+                  marginTop: 12,
+                  ...(analysisWindow.isReady ? null : { opacity: 0.5 }),
+                }}
                 textStyle={styles.secondaryActionText}
                 icon={
                   <Ionicons

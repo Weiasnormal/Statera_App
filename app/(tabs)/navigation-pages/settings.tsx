@@ -1,16 +1,14 @@
 import { ScreenHeader } from "@/components/ui/screen-header";
 import {
-  getAnalysisStartDate,
-  resetAnalysisStartDate,
-  setAnalysisStartDate,
+  getAnalysisWindowStatus,
+  setAnalysisStartDate
 } from "@/services/tracking-duration";
 import { Ionicons } from "@expo/vector-icons";
-import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useState } from "react";
+import { router } from "expo-router";
+import React, { useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 const ANALYSIS_PERIOD_DAYS = 7;
-const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 function normalizeDate(date: Date): Date {
   const normalized = new Date(date);
@@ -33,21 +31,29 @@ function formatDate(date: Date): string {
 }
 
 export default function Settings() {
-  const [analysisStart, setAnalysisStart] = useState(getAnalysisStartDate());
   const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [draftStartDate, setDraftStartDate] = useState<Date | null>(null);
 
-  const today = normalizeDate(new Date());
-  const startDate = normalizeDate(analysisStart);
-  const isStartInFuture = startDate.getTime() > today.getTime();
-  const daysSinceStart = Math.floor((today.getTime() - startDate.getTime()) / DAY_IN_MS);
-  const collectedDays = isStartInFuture
-    ? 0
-    : Math.max(0, Math.min(daysSinceStart + 1, ANALYSIS_PERIOD_DAYS));
-  const remainingDays = Math.max(ANALYSIS_PERIOD_DAYS - collectedDays, 0);
-  const readyDate = addDays(startDate, ANALYSIS_PERIOD_DAYS - 1);
-  const pastWindowStart = addDays(today, -(ANALYSIS_PERIOD_DAYS - 1));
+  const analysisWindow = getAnalysisWindowStatus();
+  const today = analysisWindow.today;
+  const startDate = analysisWindow.startDate;
+  const isStartInFuture = analysisWindow.isStartInFuture;
+  const remainingDays = analysisWindow.remainingDays;
+  const readyDate = analysisWindow.readyDate;
+  const trackingDurationDays = analysisWindow.trackingDurationDays;
+  const isAnalysisReady = analysisWindow.isReady;
+  const daysUntilStart = isStartInFuture
+    ? Math.max(
+        Math.floor((startDate.getTime() - today.getTime()) / (24 * 60 * 60 * 1000)),
+        0,
+      )
+    : 0;
+  const pastWindowStart = addDays(today, -(trackingDurationDays - 1));
   const isPastWindowSelected =
     startDate.getTime() === normalizeDate(pastWindowStart).getTime();
+  const modalSelectedStartDate = normalizeDate(draftStartDate ?? startDate);
+  const isPastWindowSelectedModal =
+    modalSelectedStartDate.getTime() === normalizeDate(pastWindowStart).getTime();
   const selectableDates = Array.from({ length: 29 }, (_, index) =>
     addDays(today, index - 14),
   ).filter(
@@ -55,30 +61,37 @@ export default function Settings() {
       normalizeDate(date).getTime() !== normalizeDate(pastWindowStart).getTime(),
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      setAnalysisStart(getAnalysisStartDate());
-    }, []),
-  );
-
   const handleSetStartDate = (date: Date) => {
-    setAnalysisStartDate(date);
-    setAnalysisStart(normalizeDate(date));
+    setDraftStartDate(normalizeDate(date));
+  };
+
+  const handleOpenScheduleModal = () => {
+    setDraftStartDate(normalizeDate(startDate));
+    setShowScheduleModal(true);
+  };
+
+  const handleCloseScheduleModal = () => {
+    setDraftStartDate(null);
     setShowScheduleModal(false);
   };
 
   const handleResetDefault = () => {
-    resetAnalysisStartDate();
-    setAnalysisStart(getAnalysisStartDate());
-    setShowScheduleModal(false);
+    setDraftStartDate(normalizeDate(today));
   };
 
   const handleUsePast7Days = () => {
-    const pastWindowStart = addDays(today, -(ANALYSIS_PERIOD_DAYS - 1));
-    setAnalysisStartDate(pastWindowStart);
-    setAnalysisStart(pastWindowStart);
+    const pastWindowStart = addDays(today, -(trackingDurationDays - 1));
+    setDraftStartDate(normalizeDate(pastWindowStart));
+  };
+
+  const handleDoneScheduleModal = () => {
+    const nextStartDate = normalizeDate(draftStartDate ?? startDate);
+    setAnalysisStartDate(nextStartDate);
+    setDraftStartDate(null);
     setShowScheduleModal(false);
   };
+
+  const runAnalysisIconColor = isAnalysisReady ? "#FFFFFF" : "#6B7280";
 
   return (
     <View style={styles.container}>
@@ -110,7 +123,7 @@ export default function Settings() {
                 </>
               ) : isStartInFuture ? (
                 <>
-                  Starts in <Text style={styles.daysHighlight}>{Math.max(daysSinceStart * -1, 0)} day{Math.max(daysSinceStart * -1, 0) !== 1 ? "s" : ""}</Text>
+                  Starts in <Text style={styles.daysHighlight}>{daysUntilStart} day{daysUntilStart !== 1 ? "s" : ""}</Text>
                 </>
               ) : remainingDays > 0 ? (
                 <>
@@ -125,15 +138,26 @@ export default function Settings() {
             <Text style={styles.analysisMetaText}>Start date: {formatDate(startDate)}</Text>
             <Text style={styles.analysisMetaText}>Target ready date: {formatDate(readyDate)}</Text>
             <Pressable
-              style={styles.runAnalysisButton}
+              style={[
+                styles.runAnalysisButton,
+                !isAnalysisReady && styles.runAnalysisButtonDisabled,
+              ]}
               onPress={() => router.push("./(tabs)/gwa_input")}
+              disabled={!isAnalysisReady}
             >
-              <Text style={styles.runAnalysisButtonText}>Run New Analysis</Text>
-              <Ionicons name="arrow-forward" size={16} color="#FFFFFF" />
+              <Text
+                style={[
+                  styles.runAnalysisButtonText,
+                  !isAnalysisReady && styles.runAnalysisButtonTextDisabled,
+                ]}
+              >
+                Run New Analysis
+              </Text>
+              <Ionicons name="arrow-forward" size={16} color={runAnalysisIconColor} />
             </Pressable>
             <Pressable
               style={styles.configureWindowButton}
-              onPress={() => setShowScheduleModal(true)}
+              onPress={handleOpenScheduleModal}
             >
               <Text style={styles.configureWindowButtonText}>Choose 7-Day Start</Text>
             </Pressable>
@@ -196,7 +220,7 @@ export default function Settings() {
         visible={showScheduleModal}
         transparent
         animationType="fade"
-        onRequestClose={() => setShowScheduleModal(false)}
+        onRequestClose={handleCloseScheduleModal}
       >
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
@@ -204,29 +228,29 @@ export default function Settings() {
             <Text style={styles.modalSubtitle}>Select when your next 7-day analysis window begins.</Text>
             <ScrollView style={styles.dateOptionsList} showsVerticalScrollIndicator={false}>
               <Pressable
-                style={[styles.dateOption, isPastWindowSelected && styles.dateOptionSelected]}
+                style={[styles.dateOption, isPastWindowSelectedModal && styles.dateOptionSelected]}
                 onPress={handleUsePast7Days}
               >
                 <View style={styles.pastOptionContent}>
                   <Ionicons
                     name="time-outline"
                     size={16}
-                    color={isPastWindowSelected ? "#16B8C5" : "#343235"}
+                    color={isPastWindowSelectedModal ? "#16B8C5" : "#343235"}
                   />
                   <Text
                     style={[
                       styles.dateOptionText,
-                      isPastWindowSelected && styles.dateOptionTextSelected,
+                      isPastWindowSelectedModal && styles.dateOptionTextSelected,
                     ]}
                   >
-                    Use Past 7 Days Records
+                    {`Use Past ${trackingDurationDays} Days Records`}
                   </Text>
                 </View>
               </Pressable>
 
               {selectableDates.map((date) => {
                 const isSelected =
-                  normalizeDate(date).getTime() === normalizeDate(startDate).getTime();
+                  normalizeDate(date).getTime() === normalizeDate(modalSelectedStartDate).getTime();
 
                 return (
                   <Pressable
@@ -248,7 +272,7 @@ export default function Settings() {
               </Pressable>
               <Pressable
                 style={styles.modalActionPrimary}
-                onPress={() => setShowScheduleModal(false)}
+                onPress={handleDoneScheduleModal}
               >
                 <Text style={styles.modalActionPrimaryText}>Done</Text>
               </Pressable>
@@ -325,10 +349,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
   },
+  runAnalysisButtonDisabled: {
+    backgroundColor: "#D1D5DB",
+  },
   runAnalysisButtonText: {
     fontSize: 14,
     fontFamily: "Poppins_600SemiBold",
     color: "#FFFFFF",
+  },
+  runAnalysisButtonTextDisabled: {
+    color: "#6B7280",
   },
   configureWindowButton: {
     borderWidth: 1,
