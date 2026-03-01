@@ -225,18 +225,8 @@ export default function DebugStatsPage() {
     );
   }, [enrichedUsageStats]);
 
-  const renderItem = ({
-    item,
-    index,
-  }: {
-    item: EnrichedUsageItem;
-    index: number;
-  }) => (
+  const renderItem = ({ item }: { item: EnrichedUsageItem }) => (
     <View style={styles.listItemCard}>
-      <View style={styles.rankBadge}>
-        <Text style={styles.rankText}>#{index + 1}</Text>
-      </View>
-
       <View style={styles.iconContainer}>
         {item.icon ? (
           <Image
@@ -263,13 +253,18 @@ export default function DebugStatsPage() {
           <Text style={styles.appName} numberOfLines={1}>
             {item.appName}
           </Text>
-          <Text style={styles.usageTime}>
-            {formatTime(item.totalTimeInForeground)}
-          </Text>
+          <View style={styles.usageMetaRow}>
+            <Text style={styles.usagePercent}>
+              {totalUsage > 0
+                ? `${Math.round((item.totalTimeInForeground / totalUsage) * 100)}%`
+                : "0%"}
+            </Text>
+            <Text style={styles.usageTime}>
+              {formatTime(item.totalTimeInForeground)}
+            </Text>
+          </View>
         </View>
-        <Text style={styles.packageName} numberOfLines={1}>
-          {item.packageName}
-        </Text>
+
         <View style={styles.usageBarTrack}>
           <View
             style={[
@@ -458,11 +453,13 @@ const styles = StyleSheet.create({
   summaryCard: {
     marginHorizontal: 20,
     marginVertical: 12,
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
   },
   summaryItem: {
     flex: 1,
@@ -487,37 +484,23 @@ const styles = StyleSheet.create({
   listItemCard: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 10,
+    gap: 12,
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#f0f0f0",
+    borderColor: "#E5E7EB",
     padding: 12,
     marginBottom: 10,
   },
-  rankBadge: {
-    minWidth: 34,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: "#EAF9FA",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 4,
-  },
-  rankText: {
-    fontSize: 12,
-    fontFamily: "Poppins_700Bold",
-    color: "#16B8C5",
-  },
   iconContainer: {
-    width: 42,
-    height: 42,
+    width: 44,
+    height: 44,
     borderRadius: 10,
     backgroundColor: "#F1F5F9",
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    marginTop: 2,
+    marginTop: 1,
   },
   appIcon: {
     width: 32,
@@ -539,7 +522,7 @@ const styles = StyleSheet.create({
   },
   appNameRow: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     gap: 8,
   },
@@ -549,11 +532,14 @@ const styles = StyleSheet.create({
     color: "#343235",
     fontFamily: "Poppins_600SemiBold",
   },
-  packageName: {
-    marginTop: 4,
-    fontSize: 12,
+  usageMetaRow: {
+    alignItems: "flex-end",
+    gap: 2,
+  },
+  usagePercent: {
+    fontSize: 11,
     color: "#64748B",
-    fontFamily: "Poppins_400Regular",
+    fontFamily: "Poppins_500Medium",
   },
   usageTime: {
     fontSize: 14,
@@ -561,7 +547,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_600SemiBold",
   },
   usageBarTrack: {
-    marginTop: 8,
+    marginTop: 10,
     height: 6,
     borderRadius: 999,
     backgroundColor: "#E2E8F0",
@@ -633,7 +619,7 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 10,
     gap: 8,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F8FAFC",
   },
   durationButton: {
     flex: 1,

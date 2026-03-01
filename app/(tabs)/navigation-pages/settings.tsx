@@ -91,7 +91,7 @@ export default function Settings() {
     setShowScheduleModal(false);
   };
 
-  const runAnalysisIconColor = isAnalysisReady ? "#FFFFFF" : "#6B7280";
+  const runAnalysisIconColor = isAnalysisReady ? "#FFFFFF" : "#888d96";
 
   return (
     <View style={styles.container}>
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   runAnalysisButtonDisabled: {
-    backgroundColor: "#D1D5DB",
+    backgroundColor: "#e7e9ec",
   },
   runAnalysisButtonText: {
     fontSize: 14,
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   runAnalysisButtonTextDisabled: {
-    color: "#6B7280",
+    color: "#888d96",
   },
   configureWindowButton: {
     borderWidth: 1,
