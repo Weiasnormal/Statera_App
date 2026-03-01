@@ -1,11 +1,53 @@
 import { ScreenHeader } from "@/components/ui/screen-header";
 import { useAnalysis } from "@/context/AnalysisContext";
 import { formatMilliseconds } from "@/services/data-collection";
+import { Ionicons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function Analysis() {
   const { collectedData, analysisResult, backendResponse } = useAnalysis();
+
+  const getKnownAppName = (packageName: string): string | null => {
+    const knownNames: Record<string, string> = {
+      "com.facebook.orca": "Messenger",
+      "com.facebook.katana": "Facebook",
+      "com.instagram.android": "Instagram",
+      "com.zhiliaoapp.musically": "TikTok",
+      "com.whatsapp": "WhatsApp",
+      "com.facebook.lite": "Facebook Lite",
+      "com.google.android.youtube": "YouTube",
+      "com.google.android.gm": "Gmail",
+      "com.spotify.music": "Spotify",
+      "com.twitter.android": "X",
+      "com.netflix.mediaclient": "Netflix",
+      "com.google.android.apps.maps": "Google Maps",
+      "com.android.chrome": "Chrome",
+    };
+
+    return knownNames[packageName.toLowerCase()] ?? null;
+  };
+
+  const formatAppName = (packageName: string): string => {
+    const knownAppName = getKnownAppName(packageName);
+    if (knownAppName) {
+      return knownAppName;
+    }
+
+    const tail = packageName.split(".").pop() || packageName;
+    const cleaned = tail
+      .replace(/[._-]+/g, " ")
+      .replace(/([a-z])([A-Z])/g, "$1 $2")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if (!cleaned) return packageName;
+
+    return cleaned
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
 
   // Merge apps with similar names (normalize for consistent merging)
   const mergedApps = useMemo(() => {
@@ -17,7 +59,7 @@ export default function Analysis() {
     >();
 
     collectedData.usageMetrics.apps.forEach((app) => {
-      const appName = app.packageName.split(".").pop() || app.packageName;
+      const appName = formatAppName(app.packageName);
       // Normalize: lowercase, trim whitespace, remove extra spaces
       const normalizedKey = appName.toLowerCase().trim().replace(/\s+/g, " ");
 
@@ -39,47 +81,38 @@ export default function Analysis() {
     );
   }, [collectedData?.usageMetrics.apps]);
 
-  // Use real ML category scores if available, otherwise show placeholder
-  // Apply same category-name rules as Overview Usage Summary:
-  // - replace underscores with spaces
-  // - normalize whitespace
-  // - merge duplicated names by normalized label
-  const distributionData = useMemo(() => {
-    if (!analysisResult?.topCategories?.length) {
-      return [
-        { label: "Social", percentage: 35, color: "#16B8C5" },
-        { label: "Productivity", percentage: 25, color: "#27B1A8" },
-        { label: "Entertainment", percentage: 20, color: "#16B8C5" },
-        { label: "Academic", percentage: 15, color: "#27B1A8" },
-        { label: "Other", percentage: 5, color: "#16B8C5" },
-      ];
-    }
-
-    const mergedMap = new Map<string, { label: string; percentage: number }>();
-
-    analysisResult.topCategories.forEach((item) => {
-      const label = item.category
-        .replace(/_/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-      const key = label.toLowerCase();
-      const existing = mergedMap.get(key);
-
-      if (existing) {
-        existing.percentage += item.percentage;
-      } else {
-        mergedMap.set(key, { label, percentage: item.percentage });
-      }
-    });
-
-    return Array.from(mergedMap.values())
-      .sort((a, b) => b.percentage - a.percentage)
-      .map((item, index) => ({
-        label: item.label,
-        percentage: Number(item.percentage.toFixed(1)),
-        color: index % 2 === 0 ? "#16B8C5" : "#27B1A8",
-      }));
-  }, [analysisResult?.topCategories]);
+  const usageCards = collectedData
+    ? [
+        {
+          title: "Total Screen Time",
+          value: formatMilliseconds(collectedData.usageMetrics.totalScreenTime),
+          icon: "time-outline" as const,
+          iconBackground: "#EAF6FF",
+          iconColor: "#2B8ED9",
+        },
+        {
+          title: "Apps Tracked",
+          value: String(collectedData.usageMetrics.totalAppsTracked),
+          icon: "apps-outline" as const,
+          iconBackground: "#EEF8EA",
+          iconColor: "#4C8F2F",
+        },
+        {
+          title: "Pickups",
+          value: String(collectedData.usageMetrics.pickups),
+          icon: "phone-portrait-outline" as const,
+          iconBackground: "#FFF3E8",
+          iconColor: "#D97D2B",
+        },
+        {
+          title: "Device Unlocks",
+          value: String(collectedData.usageMetrics.deviceUnlocks),
+          icon: "lock-open-outline" as const,
+          iconBackground: "#F1EEF9",
+          iconColor: "#7D58C2",
+        },
+      ]
+    : [];
 
   return (
     <View style={styles.container}>
@@ -92,7 +125,7 @@ export default function Analysis() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Academic Indicator</Text>
           {collectedData ? (
-            <>
+            <View style={styles.infoCard}>
               <Text style={styles.dataLabel}>
                 Your GWA: {collectedData.gwa.toFixed(2)}
               </Text>
@@ -103,7 +136,7 @@ export default function Analysis() {
                     ? "Your GWA suggests consistent academic engagement during this period."
                     : "Your GWA suggests room for improvement in academic engagement."}
               </Text>
-            </>
+            </View>
           ) : (
             <Text style={styles.sectionDescription}>
               Your GWA suggests consistent academic engagement during this
@@ -114,72 +147,46 @@ export default function Analysis() {
 
         {collectedData && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Usage Summary</Text>
-            <View style={styles.summaryGrid}>
-              <View style={styles.summaryItem}>
-                <Text style={styles.summaryLabel}>Total Screen Time</Text>
-                <Text style={styles.summaryValue}>
-                  {formatMilliseconds(
-                    collectedData.usageMetrics.totalScreenTime,
-                  )}
-                </Text>
-              </View>
-              <View style={styles.summaryItem}>
-                <Text style={styles.summaryLabel}>Apps Tracked</Text>
-                <Text style={styles.summaryValue}>
-                  {collectedData.usageMetrics.totalAppsTracked}
-                </Text>
-              </View>
-              <View style={styles.summaryItem}>
-                <Text style={styles.summaryLabel}>Tracking Period</Text>
-                <Text style={styles.summaryValue}>
-                  {collectedData.trackingDurationDays} days
-                </Text>
-              </View>
-              <View style={styles.summaryItem}>
-                <Text style={styles.summaryLabel}>Pickups</Text>
-                <Text style={styles.summaryValue}>
-                  {collectedData.usageMetrics.pickups}
-                </Text>
-              </View>
-              <View style={styles.summaryItem}>
-                <Text style={styles.summaryLabel}>Device Unlocks</Text>
-                <Text style={styles.summaryValue}>
-                  {collectedData.usageMetrics.deviceUnlocks}
-                </Text>
-              </View>
+            <Text style={styles.sectionTitle}>Device Activity</Text>
+            <View style={styles.metricCardsGrid}>
+              {usageCards.map((item) => (
+                <View key={item.title} style={styles.metricCard}>
+                  <View style={[styles.metricIconWrap, { backgroundColor: item.iconBackground }]}>
+                    <Ionicons name={item.icon} size={18} color={item.iconColor} />
+                  </View>
+                  <Text style={styles.metricTitle}>{item.title}</Text>
+                  <Text style={styles.metricValue}>{item.value}</Text>
+                </View>
+              ))}
             </View>
 
             <View style={styles.categoryContainer}>
               <Text style={styles.categoryTitle}>Top Apps by Usage</Text>
-              {mergedApps.slice(0, 10).map((app, index) => {
+              {mergedApps.slice(0, 5).map((app, index) => {
                 const total = collectedData.usageMetrics.totalScreenTime;
-                const percentage =
-                  total > 0
-                    ? Math.round((app.totalTimeInForeground / total) * 100)
-                    : 0;
+                const percentage = total > 0
+                  ? Math.round((app.totalTimeInForeground / total) * 200)
+                  : 0;
 
                 return (
                   <View
                     key={`${app.packageName}-${index}`}
-                    style={styles.categoryItem}
+                    style={styles.appRowCard}
                   >
                     <View style={styles.categoryHeader}>
-                      <Text style={styles.categoryLabel}>
-                        {index + 1}. {app.packageName}
+                      <Text style={styles.categoryRank}>{index + 1}.</Text>
+                      <Text style={[styles.categoryLabel, styles.categoryLabelName]} numberOfLines={1}>
+                        {app.packageName || "Unknown App"}
                       </Text>
                       <Text style={styles.categoryValue}>
-                        {formatMilliseconds(app.totalTimeInForeground)} (
-                        {percentage}%)
+                        {formatMilliseconds(app.totalTimeInForeground)}
                       </Text>
                     </View>
-                    <View style={styles.categoryBar}>
-                      <View
-                        style={[
-                          styles.categoryBarFill,
-                          { width: `${percentage}%` },
-                        ]}
-                      />
+                    <View style={styles.appShareRow}>
+                      <Text style={styles.appMetaText}>{percentage}%</Text>
+                      <View style={styles.appShareTrack}>
+                        <View style={[styles.appShareFill, { width: `${Math.max(percentage, 2)}%` }]} />
+                      </View>
                     </View>
                   </View>
                 );
@@ -192,24 +199,23 @@ export default function Analysis() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>ML Analysis Result</Text>
             <View style={styles.responseCard}>
-              <Text style={styles.responseText}>
-                <Text style={styles.boldText}>Dominant Profile: </Text>
-                {analysisResult.dominantProfile}
-              </Text>
-              <Text style={styles.responseText}>
-                <Text style={styles.boldText}>Confidence: </Text>
-                {(analysisResult.dominantScore * 100).toFixed(1)}%
-              </Text>
-              <Text style={styles.responseText}>
-                <Text style={styles.boldText}>Analyzed: </Text>
-                {new Date(analysisResult.dateAnalyzed).toLocaleString()}
-              </Text>
+              <View style={styles.resultRow}>
+                <Text style={styles.resultLabel}>Dominant Profile</Text>
+                <Text style={styles.resultValue}>{analysisResult.dominantProfile}</Text>
+              </View>
+              <View style={styles.resultRow}>
+                <Text style={styles.resultLabel}>Confidence</Text>
+                <Text style={styles.resultValue}>
+                  {(analysisResult.dominantScore * 100).toFixed(1)}%
+                </Text>
+              </View>
+              <View style={styles.resultRowNoBorder}>
+                <Text style={styles.resultLabel}>Analyzed</Text>
+                <Text style={styles.resultValueMuted}>
+                  {new Date(analysisResult.dateAnalyzed).toLocaleString()}
+                </Text>
+              </View>
             </View>
-            <Text style={styles.note}>
-              Your behavioral profile is based on machine learning analysis of
-              your app usage patterns, academic performance, and device
-              interaction habits.
-            </Text>
           </View>
         )}
 
@@ -217,59 +223,23 @@ export default function Analysis() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>ML Analysis Result (Raw)</Text>
             <View style={styles.responseCard}>
-              <Text style={styles.responseText}>{backendResponse}</Text>
+              <Text style={styles.rawResponseText}>{backendResponse}</Text>
             </View>
           </View>
         )}
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            {analysisResult
-              ? "App Category Usage Breakdown"
-              : "Digital Behavior (Sample)"}
-          </Text>
-
-          <View style={styles.distributionContainer}>
-            {distributionData.map((item, index) => (
-              <View key={item.label} style={styles.distributionItem}>
-                <View style={styles.progressBarContainer}>
-                  <View style={styles.progressBarBackground}>
-                    <View
-                      style={[
-                        styles.progressBarFill,
-                        {
-                          width: `${item.percentage}%`,
-                          backgroundColor: item.color,
-                        },
-                      ]}
-                    />
-                    <View
-                      style={[
-                        styles.progressDot,
-                        { left: `${item.percentage}%` },
-                      ]}
-                    />
-                  </View>
-                </View>
-                <View style={styles.distributionLabel}>
-                  <Text style={styles.labelText}>{item.label}</Text>
-                  <Text style={styles.percentageText}>{item.percentage}%</Text>
-                </View>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        <View style={styles.section}>
           <Text style={styles.sectionTitle}>Pattern Interpretation</Text>
-          <Text style={styles.sectionDescription}>
-            Your usage pattern shows frequent social interaction alongside
-            moderate structuredtask engagement.
-          </Text>
-          <Text style={styles.sectionDescription}>
-            This interpretation is descriptive and not a clinical or
-            psychological diagnosis.
-          </Text>
+          <View style={styles.infoCardMuted}>
+            <Text style={styles.sectionDescriptionCompact}>
+              Your usage pattern shows frequent social interaction alongside
+              moderate structured task engagement.
+            </Text>
+            <Text style={styles.sectionDescriptionCompactMuted}>
+              This interpretation is descriptive and not a clinical or
+              psychological diagnosis.
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -302,160 +272,186 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
     lineHeight: 20,
-    paddingBottom: 8,
     fontFamily: "Poppins_400Regular",
   },
-  summaryGrid: {
+  infoCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  metricCardsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12,
+    gap: 10,
     marginBottom: 16,
   },
-  summaryItem: {
-    flex: 1,
-    minWidth: "45%",
-    backgroundColor: "#F8F8F8",
-    padding: 12,
+  metricCard: {
+    width: "48%",
+    backgroundColor: "#FFFFFF",
+    padding: 14,
     borderRadius: 12,
+    alignItems: "flex-start",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    minHeight: 132,
+  },
+  metricIconWrap: {
+    width: 46,
+    height: 46,
+    borderRadius: 14,
     alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
   },
-  summaryLabel: {
-    fontSize: 12,
-    color: "#666",
+  metricTitle: {
+    fontSize: 15,
+    color: "#2F2F2F",
+    fontFamily: "Poppins_600SemiBold",
+    marginBottom: 6,
+    lineHeight: 20,
+  },
+  metricValue: {
+    fontSize: 14,
+    color: "#7C7C7C",
     fontFamily: "Poppins_400Regular",
-    marginBottom: 4,
-  },
-  summaryValue: {
-    fontSize: 18,
-    fontFamily: "Poppins_700Bold",
-    color: "#343235",
   },
   dataLabel: {
     fontSize: 16,
     fontFamily: "Poppins_600SemiBold",
     color: "#16B8C5",
-    marginBottom: 8,
+    marginBottom: 10,
   },
   categoryContainer: {
     marginTop: 16,
   },
   categoryTitle: {
-    fontSize: 16,
-    fontFamily: "Poppins_600SemiBold",
+    fontSize: 18,
+    fontFamily: "Poppins_700Bold",
     color: "#343235",
     marginBottom: 12,
   },
-  categoryItem: {
-    marginBottom: 16,
+  appRowCard: {
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 10,
   },
   categoryHeader: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 6,
+    gap: 8,
+  },
+  categoryRank: {
+    fontSize: 13,
+    color: "#16B8C5",
+    fontFamily: "Poppins_700Bold",
   },
   categoryLabel: {
     fontSize: 14,
     fontFamily: "Poppins_500Medium",
     color: "#343235",
   },
-  categoryValue: {
-    fontSize: 14,
-    fontFamily: "Poppins_400Regular",
-    color: "#666",
+  categoryLabelName: {
+    flex: 1,
   },
-  categoryBar: {
-    height: 8,
-    backgroundColor: "#E0E0E0",
-    borderRadius: 4,
+  categoryValue: {
+    fontSize: 13,
+    fontFamily: "Poppins_400Regular",
+    color: "#4B5563",
+  },
+  appMetaText: {
+    fontSize: 12,
+    color: "#8A8A8A",
+    fontFamily: "Poppins_400Regular",
+  },
+  appShareRow: {
+    marginTop: 6,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  appShareTrack: {
+    flex: 1,
+    height: 6,
+    backgroundColor: "#E5E7EB",
+    borderRadius: 999,
     overflow: "hidden",
   },
-  categoryBarFill: {
+  appShareFill: {
     height: "100%",
     backgroundColor: "#16B8C5",
-    borderRadius: 4,
+    borderRadius: 999,
   },
   responseCard: {
-    backgroundColor: "#F0F9FF",
-    padding: 16,
+    backgroundColor: "#FFFFFF",
+    padding: 12,
     borderRadius: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: "#16B8C5",
-    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
   },
-  responseText: {
-    fontSize: 16,
-    fontFamily: "Poppins_500Medium",
-    color: "#343235",
-    lineHeight: 24,
-    marginBottom: 8,
-  },
-  boldText: {
-    fontFamily: "Poppins_700Bold",
-    color: "#16B8C5",
-  },
-  note: {
-    fontSize: 12,
-    fontFamily: "Poppins_400Regular",
-    color: "#9CA3AF",
-    fontStyle: "italic",
-    lineHeight: 18,
-  },
-  distributionContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    padding: 20,
-    justifyContent: "center",
-    gap: 24,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  distributionItem: {
-    justifyContent: "center",
-  },
-  progressBarContainer: {
-    marginBottom: 8,
-  },
-  progressBarBackground: {
-    height: 8,
-    backgroundColor: "#E0E0E0",
-    borderRadius: 4,
-    position: "relative",
-    overflow: "visible",
-  },
-  progressBarFill: {
-    height: "100%",
-    borderRadius: 4,
-  },
-  progressDot: {
-    position: "absolute",
-    top: -4,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: "#16B8C5",
-    marginLeft: -8,
-    borderWidth: 3,
-    borderColor: "#fff",
-  },
-  distributionLabel: {
+  resultRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
   },
-  labelText: {
+  resultRowNoBorder: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: 8,
+  },
+  resultLabel: {
     fontSize: 13,
-    color: "#666",
+    color: "#6B7280",
+    fontFamily: "Poppins_500Medium",
+  },
+  resultValue: {
+    fontSize: 14,
+    color: "#1F2937",
+    fontFamily: "Poppins_600SemiBold",
+    maxWidth: "58%",
+    textAlign: "right",
+  },
+  resultValueMuted: {
+    fontSize: 13,
+    color: "#6B7280",
+    fontFamily: "Poppins_400Regular",
+    maxWidth: "58%",
+    textAlign: "right",
+  },
+  rawResponseText: {
+    fontSize: 12,
+    lineHeight: 18,
+    color: "#374151",
     fontFamily: "Poppins_400Regular",
   },
-  percentageText: {
-    fontSize: 14,
-    fontFamily: "Poppins_600SemiBold",
-    color: "#16B8C5",
+  infoCardMuted: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  sectionDescriptionCompact: {
+    fontSize: 13,
+    fontFamily: "Poppins_400Regular",
+    color: "#4B5563",
+    lineHeight: 18,
+    marginBottom: 6,
+  },
+  sectionDescriptionCompactMuted: {
+    fontSize: 13,
+    color: "#6B7280",
+    fontFamily: "Poppins_400Regular",
+    lineHeight: 18,
   },
 });
