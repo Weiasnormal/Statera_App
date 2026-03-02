@@ -1,6 +1,7 @@
 import API_CONFIG from "./api-config";
 import type { GetMLAnalysisResponse, UsageDataRequest } from "./api-types";
 import type { CollectedData } from "./data-collection";
+import { logger } from "./logger";
 
 class ApiClient {
   private baseURL: string;
@@ -75,12 +76,9 @@ class ApiClient {
         }
 
         attempt += 1;
-
-        if (__DEV__) {
-          console.warn(
-            `Request timed out. Retrying (${attempt}/${this.maxTimeoutRetries})...`,
-          );
-        }
+        logger.warn(
+          `Request timed out. Retrying (${attempt}/${this.maxTimeoutRetries})...`
+        );
       }
     }
 
@@ -122,7 +120,7 @@ class ApiClient {
         dateAnalyzed: data.dateAnalyzed,
       };
     } catch (error) {
-      console.error("Error calling getMLAnalysis:", error);
+      logger.error("Error calling getMLAnalysis", error);
       throw error;
     }
   }
@@ -157,25 +155,19 @@ class ApiClient {
         platform: collectedData.platform,
       };
 
-      if (__DEV__) {
-        console.log("Submitting raw usage data to backend (time in seconds):", {
-          gwa: usageDataRequest.gwa,
-          duration: usageDataRequest.trackingDurationDays,
-          totalScreenTimeSeconds: usageDataRequest.totalScreenTime,
-          appsTracked: usageDataRequest.totalAppsTracked,
-          pickups: usageDataRequest.pickups,
-          deviceUnlocks: usageDataRequest.deviceUnlocks,
-          totalApps: usageDataRequest.apps.length,
-        });
-        // Uncomment for full payload debugging:
-        // console.log("📤 Full API Payload being sent:", JSON.stringify(usageDataRequest, null, 2));
-      }
+      logger.debug("Submitting raw usage data to backend (time in seconds)", {
+        gwa: usageDataRequest.gwa,
+        duration: usageDataRequest.trackingDurationDays,
+        totalScreenTimeSeconds: usageDataRequest.totalScreenTime,
+        appsTracked: usageDataRequest.totalAppsTracked,
+        pickups: usageDataRequest.pickups,
+        deviceUnlocks: usageDataRequest.deviceUnlocks,
+        totalApps: usageDataRequest.apps.length,
+      });
 
       const url = `${this.getBaseURLOrThrow()}${API_CONFIG.ENDPOINTS.GET_ML_ANALYSIS}`;
 
-      if (__DEV__) {
-        console.log("📍 API Endpoint:", url);
-      }
+      logger.debug("📍 API Endpoint", url);
 
       const response = await this.fetchWithTimeoutRetry(url, {
         method: "POST",
@@ -192,12 +184,7 @@ class ApiClient {
 
       const data = await response.json();
 
-      if (__DEV__) {
-        console.log(
-          "✅ Backend response received:",
-          JSON.stringify(data, null, 2),
-        );
-      }
+      logger.debug("✅ Backend response received", JSON.stringify(data, null, 2));
 
       return {
         score: data.score,
@@ -206,7 +193,7 @@ class ApiClient {
         dateAnalyzed: data.dateAnalyzed,
       };
     } catch (error) {
-      console.error("Error submitting usage data:", error);
+      logger.error("Error submitting usage data", error);
       throw error;
     }
   }

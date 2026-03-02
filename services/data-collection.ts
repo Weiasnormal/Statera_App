@@ -8,6 +8,7 @@
 
 import { getUsageEvents, getUsageStats, hasUsageStatsPermission } from "expo-android-usagestats";
 import { Platform } from "react-native";
+import { logger } from "./logger";
 import { getAnalysisWindowStatus } from "./tracking-duration";
 
 // Android UsageEvents event types (raw Android system IDs)
@@ -46,7 +47,7 @@ async function getUsageStatisticsForRange(
   durationDays: number,
 ): Promise<AppUsageData[]> {
   if (Platform.OS !== "android") {
-    console.warn("Usage statistics only available on Android");
+    logger.warn("Usage statistics only available on Android");
     return [];
   }
 
@@ -76,13 +77,11 @@ async function getUsageStatisticsForRange(
         b.totalTimeInForeground - a.totalTimeInForeground,
       );
 
-    if (__DEV__) {
-      console.log(`Collected usage stats for custom ${durationDays}-day window`);
-    }
+    logger.debug(`Collected usage stats for custom ${durationDays}-day window`);
 
     return usageData;
   } catch (error) {
-    console.error("Error getting usage statistics:", error);
+    logger.error("Error getting usage statistics", error);
     throw error;
   }
 }
@@ -99,7 +98,7 @@ async function getDeviceInteractionsForRange(
   deviceUnlocks: number;
 }> {
   if (Platform.OS !== "android") {
-    console.warn("Device interactions only available on Android");
+    logger.warn("Device interactions only available on Android");
     return { pickups: 0, deviceUnlocks: 0 };
   }
 
@@ -122,15 +121,13 @@ async function getDeviceInteractionsForRange(
       }
     });
 
-    if (__DEV__) {
-      console.log(
-        `Detected ${pickups} pickups and ${deviceUnlocks} unlocks over custom ${durationDays}-day window`,
-      );
-    }
+    logger.debug(
+      `Detected ${pickups} pickups and ${deviceUnlocks} unlocks over custom ${durationDays}-day window`
+    );
 
     return { pickups, deviceUnlocks };
   } catch (error) {
-    console.error("Error getting device interactions:", error);
+    logger.error("Error getting device interactions", error);
     return { pickups: 0, deviceUnlocks: 0 };
   }
 }
@@ -199,20 +196,18 @@ export async function collectDataForAnalysis(
       platform: Platform.OS,
     };
 
-    if (__DEV__) {
-      console.log("Data collection summary:", {
-        gwa: collectedData.gwa,
-        duration: collectedData.trackingDurationDays,
-        totalScreenTime: collectedData.usageMetrics.totalScreenTime,
-        appsTracked: collectedData.usageMetrics.totalAppsTracked,
-        pickups: collectedData.usageMetrics.pickups,
-        deviceUnlocks: collectedData.usageMetrics.deviceUnlocks,
-      });
-    }
+    logger.debug("Data collection summary", {
+      gwa: collectedData.gwa,
+      duration: collectedData.trackingDurationDays,
+      totalScreenTime: collectedData.usageMetrics.totalScreenTime,
+      appsTracked: collectedData.usageMetrics.totalAppsTracked,
+      pickups: collectedData.usageMetrics.pickups,
+      deviceUnlocks: collectedData.usageMetrics.deviceUnlocks,
+    });
 
     return collectedData;
   } catch (error) {
-    console.error("Error collecting data:", error);
+    logger.error("Error collecting data", error);
     throw error;
   }
 }

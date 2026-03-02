@@ -5,6 +5,7 @@ import {
 import { apiClient } from "@/services/api-client";
 import { collectDataForAnalysis } from "@/services/data-collection";
 import { getGwa } from "@/services/gwa-storage";
+import { logger } from "@/services/logger";
 import { getAnalysisWindowStatus } from "@/services/tracking-duration";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -78,13 +79,13 @@ export default function DataConnectedScreen() {
       // Navigate to loading page immediately
       router.push("./loading_page");
 
-      console.log("Collecting usage data for GWA:", gwa);
+      logger.debug("Collecting usage data for GWA", gwa);
 
       // Collect all data
       const collectedData = await collectDataForAnalysis(gwa);
       setCollectedData(collectedData);
 
-      console.log("Sending data to backend...");
+      logger.debug("Sending data to backend...");
 
       // Submit to backend
       const response = await apiClient.submitUsageData(collectedData);
@@ -96,18 +97,14 @@ export default function DataConnectedScreen() {
       // Keep raw response for backward compatibility (deprecated)
       setBackendResponse(JSON.stringify(response, null, 2));
 
-      if (__DEV__) {
-        console.log("ML Analysis Result:", enhancedAnalysis);
-        console.log("Dominant Profile:", enhancedAnalysis.dominantProfile);
-        console.log(
-          "Dominant Score:",
-          (enhancedAnalysis.dominantScore * 100).toFixed(1) + "%",
-        );
-      }
+      logger.debug("ML Analysis Result", enhancedAnalysis);
+      logger.debug("Dominant Profile", enhancedAnalysis.dominantProfile);
+      logger.debug(
+        "Dominant Score",
+        (enhancedAnalysis.dominantScore * 100).toFixed(1) + "%"
+      );
 
-      if (__DEV__) {
-        console.log("Analysis complete, navigating to results...");
-      }
+      logger.debug("Analysis complete, navigating to results...");
 
       // Navigate to overview from loading page
       router.replace({
@@ -115,7 +112,7 @@ export default function DataConnectedScreen() {
         params: { tab: "overview" },
       });
     } catch (error) {
-      console.error("Error generating profile:", error);
+      logger.error("Error generating profile", error);
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error occurred";
       setError(errorMessage);
