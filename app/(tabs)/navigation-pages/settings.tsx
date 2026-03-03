@@ -1,14 +1,21 @@
 import { ScreenHeader } from "@/components/ui/screen-header";
 import {
   getAnalysisWindowStatus,
-  setAnalysisStartDate
+  setAnalysisStartDate,
 } from "@/services/tracking-duration";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
-const ANALYSIS_PERIOD_DAYS = 7;
+//const ANALYSIS_PERIOD_DAYS = 7;
 
 function normalizeDate(date: Date): Date {
   const normalized = new Date(date);
@@ -44,7 +51,9 @@ export default function Settings() {
   const isAnalysisReady = analysisWindow.isReady;
   const daysUntilStart = isStartInFuture
     ? Math.max(
-        Math.floor((startDate.getTime() - today.getTime()) / (24 * 60 * 60 * 1000)),
+        Math.floor(
+          (startDate.getTime() - today.getTime()) / (24 * 60 * 60 * 1000),
+        ),
         0,
       )
     : 0;
@@ -53,12 +62,14 @@ export default function Settings() {
     startDate.getTime() === normalizeDate(pastWindowStart).getTime();
   const modalSelectedStartDate = normalizeDate(draftStartDate ?? startDate);
   const isPastWindowSelectedModal =
-    modalSelectedStartDate.getTime() === normalizeDate(pastWindowStart).getTime();
+    modalSelectedStartDate.getTime() ===
+    normalizeDate(pastWindowStart).getTime();
   const selectableDates = Array.from({ length: 29 }, (_, index) =>
     addDays(today, index - 14),
   ).filter(
     (date) =>
-      normalizeDate(date).getTime() !== normalizeDate(pastWindowStart).getTime(),
+      normalizeDate(date).getTime() !==
+      normalizeDate(pastWindowStart).getTime(),
   );
 
   const handleSetStartDate = (date: Date) => {
@@ -100,15 +111,6 @@ export default function Settings() {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Tracking Duration Card */}
-        {/* <View style={styles.durationCard}>
-          <Text style={styles.durationLabel}>Tracking Duration</Text>
-          <View style={styles.durationValue}>
-            <Text style={styles.currentlyText}>Currently:</Text>
-            <Text style={styles.daysText}>{days} {days === 1 ? "Day" : "Days"}</Text>
-          </View>
-        </View> */}
-
         {/* Data Collection Window Card */}
         <View style={styles.durationCard}>
           <View style={styles.analysisStatusHeader}>
@@ -119,15 +121,23 @@ export default function Settings() {
             <Text style={styles.analysisReadyText}>
               {isPastWindowSelected ? (
                 <>
-                  <Text style={styles.daysHighlight}>Using past 7-day records</Text>
+                  <Text style={styles.daysHighlight}>
+                    Using past 7-day records
+                  </Text>
                 </>
               ) : isStartInFuture ? (
                 <>
-                  Starts in <Text style={styles.daysHighlight}>{daysUntilStart} day{daysUntilStart !== 1 ? "s" : ""}</Text>
+                  Starts in{" "}
+                  <Text style={styles.daysHighlight}>
+                    {daysUntilStart} day{daysUntilStart !== 1 ? "s" : ""}
+                  </Text>
                 </>
               ) : remainingDays > 0 ? (
                 <>
-                  Ready in <Text style={styles.daysHighlight}>{remainingDays} day{remainingDays !== 1 ? "s" : ""}</Text>
+                  Ready in{" "}
+                  <Text style={styles.daysHighlight}>
+                    {remainingDays} day{remainingDays !== 1 ? "s" : ""}
+                  </Text>
                 </>
               ) : (
                 <>
@@ -135,8 +145,12 @@ export default function Settings() {
                 </>
               )}
             </Text>
-            <Text style={styles.analysisMetaText}>Start date: {formatDate(startDate)}</Text>
-            <Text style={styles.analysisMetaText}>Target ready date: {formatDate(readyDate)}</Text>
+            <Text style={styles.analysisMetaText}>
+              Start date: {formatDate(startDate)}
+            </Text>
+            <Text style={styles.analysisMetaText}>
+              Target ready date: {formatDate(readyDate)}
+            </Text>
             <Pressable
               style={[
                 styles.runAnalysisButton,
@@ -153,13 +167,19 @@ export default function Settings() {
               >
                 Run New Analysis
               </Text>
-              <Ionicons name="arrow-forward" size={16} color={runAnalysisIconColor} />
+              <Ionicons
+                name="arrow-forward"
+                size={16}
+                color={runAnalysisIconColor}
+              />
             </Pressable>
             <Pressable
               style={styles.configureWindowButton}
               onPress={handleOpenScheduleModal}
             >
-              <Text style={styles.configureWindowButtonText}>Choose 7-Day Start</Text>
+              <Text style={styles.configureWindowButtonText}>
+                Choose 7-Day Start
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -168,20 +188,6 @@ export default function Settings() {
         <Text style={styles.sectionTitle}>Preferences</Text>
 
         <View style={styles.menuContainer}>
-          {/* Tracking Duration Menu - Hidden for now */}
-          {/* <Pressable
-            style={styles.menuItem}
-            onPress={() =>
-              router.push("/(tabs)/navigation-pages/tracking_duration")
-            }
-          >
-            <View style={styles.menuLeft}>
-              <Ionicons name="timer-outline" size={22} color="#343235" />
-              <Text style={styles.menuText}>Tracking Duration</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
-          </Pressable> */}
-
           {/* Meet the Team Menu */}
           <Pressable
             style={styles.menuItem}
@@ -225,10 +231,18 @@ export default function Settings() {
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>Choose Start Date</Text>
-            <Text style={styles.modalSubtitle}>Select when your next 7-day analysis window begins.</Text>
-            <ScrollView style={styles.dateOptionsList} showsVerticalScrollIndicator={false}>
+            <Text style={styles.modalSubtitle}>
+              Select when your next 7-day analysis window begins.
+            </Text>
+            <ScrollView
+              style={styles.dateOptionsList}
+              showsVerticalScrollIndicator={false}
+            >
               <Pressable
-                style={[styles.dateOption, isPastWindowSelectedModal && styles.dateOptionSelected]}
+                style={[
+                  styles.dateOption,
+                  isPastWindowSelectedModal && styles.dateOptionSelected,
+                ]}
                 onPress={handleUsePast7Days}
               >
                 <View style={styles.pastOptionContent}>
@@ -240,7 +254,8 @@ export default function Settings() {
                   <Text
                     style={[
                       styles.dateOptionText,
-                      isPastWindowSelectedModal && styles.dateOptionTextSelected,
+                      isPastWindowSelectedModal &&
+                        styles.dateOptionTextSelected,
                     ]}
                   >
                     {`Use Past ${trackingDurationDays} Days Records`}
@@ -250,15 +265,24 @@ export default function Settings() {
 
               {selectableDates.map((date) => {
                 const isSelected =
-                  normalizeDate(date).getTime() === normalizeDate(modalSelectedStartDate).getTime();
+                  normalizeDate(date).getTime() ===
+                  normalizeDate(modalSelectedStartDate).getTime();
 
                 return (
                   <Pressable
                     key={date.toISOString()}
-                    style={[styles.dateOption, isSelected && styles.dateOptionSelected]}
+                    style={[
+                      styles.dateOption,
+                      isSelected && styles.dateOptionSelected,
+                    ]}
                     onPress={() => handleSetStartDate(date)}
                   >
-                    <Text style={[styles.dateOptionText, isSelected && styles.dateOptionTextSelected]}>
+                    <Text
+                      style={[
+                        styles.dateOptionText,
+                        isSelected && styles.dateOptionTextSelected,
+                      ]}
+                    >
                       {formatDate(date)}
                     </Text>
                   </Pressable>
@@ -267,8 +291,13 @@ export default function Settings() {
             </ScrollView>
 
             <View style={styles.modalActions}>
-              <Pressable style={styles.modalActionSecondary} onPress={handleResetDefault}>
-                <Text style={styles.modalActionSecondaryText}>Reset to Default</Text>
+              <Pressable
+                style={styles.modalActionSecondary}
+                onPress={handleResetDefault}
+              >
+                <Text style={styles.modalActionSecondaryText}>
+                  Reset to Default
+                </Text>
               </Pressable>
               <Pressable
                 style={styles.modalActionPrimary}

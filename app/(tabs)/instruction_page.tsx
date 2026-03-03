@@ -1,16 +1,16 @@
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
-    Animated,
-    Dimensions,
-    Image,
-    PanResponder,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
+  Animated,
+  Dimensions,
+  Image,
+  PanResponder,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -21,7 +21,41 @@ export default function ViewResultsScreen() {
   const slideAnim = useRef(new Animated.Value(0)).current;
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const startSlideTimer = () => {
+  const goToSlide = useCallback(
+    (slideIndex: number) => {
+      setCurrentSlide(slideIndex);
+
+      // Animate horizontal slide transition
+      Animated.timing(slideAnim, {
+        toValue: -slideIndex,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+    },
+    [slideAnim],
+  );
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        return Math.abs(gestureState.dx) > 10;
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        setCurrentSlide((current) => {
+          if (gestureState.dx > 50 && current === 1) {
+            // Swipe right, go to previous slide
+            goToSlide(0);
+          } else if (gestureState.dx < -50 && current === 0) {
+            // Swipe left, go to next slide
+            goToSlide(1);
+          }
+          return current;
+        });
+      },
+    }),
+  ).current;
+
+  useEffect(() => {
     // Clear existing timer
     if (timerRef.current) {
       clearTimeout(timerRef.current);
@@ -31,54 +65,23 @@ export default function ViewResultsScreen() {
     timerRef.current = setTimeout(() => {
       goToSlide((currentSlide + 1) % 2);
     }, 3000) as unknown as NodeJS.Timeout;
-  };
 
-  const goToSlide = (slideIndex: number) => {
-    setCurrentSlide(slideIndex);
-
-    // Animate horizontal slide transition
-    Animated.timing(slideAnim, {
-      toValue: -slideIndex,
-      duration: 400,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (_, gestureState) => {
-        return Math.abs(gestureState.dx) > 10;
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dx > 50 && currentSlide === 1) {
-          // Swipe right, go to previous slide
-          goToSlide(0);
-        } else if (gestureState.dx < -50 && currentSlide === 0) {
-          // Swipe left, go to next slide
-          goToSlide(1);
-        }
-      },
-    }),
-  ).current;
-
-  useEffect(() => {
-    startSlideTimer();
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
     };
-  }, [currentSlide]);
+  }, [currentSlide, goToSlide]);
 
   const handleProgressDotPress = (index: number) => {
     goToSlide(index);
   };
 
   return (
-    <SafeAreaView 
+    <SafeAreaView
       style={styles.safeArea}
       edges={["top", "left", "right", "bottom"]}
-      >
+    >
       <View style={styles.container}>
         <Pressable
           style={styles.backButton}

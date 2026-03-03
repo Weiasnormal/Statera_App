@@ -1,6 +1,6 @@
 import {
-    computeEnhancedAnalysis,
-    useAnalysis,
+  computeEnhancedAnalysis,
+  useAnalysis,
 } from "@/context/AnalysisContext";
 import { apiClient } from "@/services/api-client";
 import { collectDataForAnalysis } from "@/services/data-collection";
@@ -11,13 +11,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-    Alert,
-    Image,
-    Pressable,
-    StatusBar,
-    StyleSheet,
-    Text,
-    View,
+  Alert,
+  Image,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -65,8 +65,7 @@ export default function DataConnectedScreen() {
           [
             {
               text: "Go to Settings",
-              onPress: () =>
-                router.push("/(tabs)/navigation-pages/settings"),
+              onPress: () => router.push("/(tabs)/navigation-pages/settings"),
             },
             { text: "OK", style: "cancel" },
           ],
@@ -101,7 +100,7 @@ export default function DataConnectedScreen() {
       logger.debug("Dominant Profile", enhancedAnalysis.dominantProfile);
       logger.debug(
         "Dominant Score",
-        (enhancedAnalysis.dominantScore * 100).toFixed(1) + "%"
+        (enhancedAnalysis.dominantScore * 100).toFixed(1) + "%",
       );
 
       logger.debug("Analysis complete, navigating to results...");
